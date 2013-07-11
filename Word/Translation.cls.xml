@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Translation">
+<Description>
+Class describes one translation</Description>
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63014,62792.482687</TimeCreated>
+
+<Property name="Name">
+<Description>
+Translation itself</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Rating">
+<Description>
+Users' rating of translation</Description>
+<Type>%Numeric</Type>
+</Property>
+
+<Property name="Context">
+<Description>
+Got to use it right</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="Term">
+<Type>Word.Term</Type>
+<Cardinality>parent</Cardinality>
+<Inverse>Translations</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheSerialState</Type>
+<DataLocation>^Word.TranslationD</DataLocation>
+<DefaultData>TranslationDefaultData</DefaultData>
+<IdLocation>^Word.TranslationD</IdLocation>
+<IndexLocation>^Word.TranslationI</IndexLocation>
+<State>TranslationState</State>
+<StreamLocation>^Word.TranslationS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="TranslationDefaultData">
+<Structure>listnode</Structure>
+<Subscript>"1"</Subscript>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+</Data>
+<Data name="TranslationState">
+<Value name="1">
+<Value>Name</Value>
+</Value>
+<Value name="2">
+<Value>Rating</Value>
+</Value>
+<Value name="3">
+<Value>Context</Value>
+</Value>
+<Value name="4">
+<Value>Term</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

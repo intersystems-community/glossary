@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="REST.Broker">
+<Description><![CDATA[
+*******************************************************
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" 
+by Chris Carmichael and Oliver Caudron
+*******************************************************
+Также использован код из проекта
+https://github.com/MDevelopmentGroup/Recruting
+*******************************************************
+После компиляции работает по адресу
+<a href = "http://localhost:57772/rest/test">http://localhost:57772/rest/test</a>]]></Description>
+<Super>%CSP.REST</Super>
+<TimeCreated>62999,56505.766013</TimeCreated>
+
+<XData name="UrlMap">
+<Data><![CDATA[
+<Routes>
+   <Route Url="/test" Method="GET" Call="REST.Broker:Test"/> 
+   <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
+   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
+   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddTerm"/>
+   <Route Url="/json/term/:termid" Method="DELETE" Call="REST.JSON:DeleteTerm"/>
+   <Route Url="/json/term/:termid" Method="PUT" Call="REST.JSON:UpdateTerm"/>
+ </Routes>
+]]></Data>
+</XData>
+
+<Method name="Test">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	&html<<h1>Работает?!</h1>>
+	&html<<h1>Работает!!!</h1>>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// переназначим реакцию на отсутствующую страницу
+
+]]></Content>
+</UDLText>
+
+<Method name="Http404">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	&html<<h1>Не Работает?!</h1>>
+	quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

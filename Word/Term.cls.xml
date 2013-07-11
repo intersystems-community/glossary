@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Term">
+<Description>
+Class describing terms and their definitions. </Description>
+<SqlTableName>Term</SqlTableName>
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63011,38444.690451</TimeCreated>
+
+<Property name="EnglishName">
+<Description>
+Original EnglishName of Term</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="100"/>
+<Parameter name="POPSPEC" value="Name()"/>
+</Property>
+
+<Index name="EnglishNameIndex">
+<Type>bitmap</Type>
+<Properties>EnglishName</Properties>
+</Index>
+
+<Property name="RussianName">
+<Description>
+RussianName of Term</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="100"/>
+<Parameter name="POPSPEC" value="Name()"/>
+</Property>
+
+<Index name="RussianNameIndex">
+<Type>bitmap</Type>
+<Properties>RussianName</Properties>
+</Index>
+
+<Property name="RussianDefinition">
+<Description>
+Definition of Term in Russian</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<Property name="EnglishDefinition">
+<Description>
+Definition of Term in English</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<Property name="FurtherRead">
+<Description>
+HTTP link to documentation/wikipedia/whatever</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="Context">
+<Description>
+Example of how to use Term in english</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="Official">
+<Description>
+Official, if submitted by ISC. Unofficial, if not. InitialExpression = 0,</Description>
+<Type>%Numeric</Type>
+</Property>
+
+<Property name="Translations">
+<Type>Word.Translation</Type>
+<Cardinality>children</Cardinality>
+<Inverse>Term</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Method name="QueryXecute">
+<Description>
+Main query
+Name - any part of a term in any target Language. In any part of the term (fulltext search)
+Languages - string of arbitrary number of numeric language codes, separated by comma
+Official - "0", "1","0,1" - official only, unofficial only, all
+Rating - any term must have equal or higher rating value </Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Name:%String="%",Languages:%String="45,570",Official:%String=1,Rating:%Integer=0</FormalSpec>
+<ReturnType>%ResultSet</ReturnType>
+<SqlProc>1</SqlProc>
+<ReturnResultsets>1</ReturnResultsets>
+<Implementation><![CDATA[
+    set LanguagesList=$LISTFROMSTRING(Languages)
+    set OfficialList=$LISTFROMSTRING(Official)
+	if (Name'="%") {set Name= "%"_Name_"%"}
+	
+	set sql= "SELECT EnglishName, LanguageTr, Name, Definition, Official, Rating, FurtherRead "
+		   _ "FROM Word.Term "
+		   _ "WHERE (EnglishName LIKE ? OR Name LIKE ?) AND LanguageTr %INLIST ? AND Official %INLIST ? AND Rating >= ? "
+		   _ "ORDER BY EnglishName, LanguageTr, Official DESC, Rating"
+		   
+	set resultSet =  $$$NULLOREF
+	set statement = ##class(%SQL.Statement).%New()
+	set status = statement.%Prepare(sql)
+
+	if $$$ISOK(status) 
+	{
+		set resultSet = statement.%Execute(Name, Name, LanguagesList, OfficialList, Rating) 
+		if (resultSet.%SQLCODE=0)
+		{
+			//do resultSet.%Display() 
+			//do %sqlcontext.AddResultSet(resultSet)
+		}
+		else 
+		{
+			set %sqlcontext.%SQLCODE = resultSet.%SQLCODE
+		}
+	}
+	else 
+	{
+		w $system.Status.DecomposeStatus(status, .err)
+		w $system.Status.DisplayError(status)
+		set %sqlcontext.%SQLCODE = err(1, "param", 1)
+		set %sqlcontext.%Message = err(1, "param", 2)
+		
+	}
+	return resultSet
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Word.TermD</DataLocation>
+<DefaultData>TermDefaultData</DefaultData>
+<IdLocation>^Word.TermD</IdLocation>
+<IndexLocation>^Word.TermI</IndexLocation>
+<StreamLocation>^Word.TermS</StreamLocation>
+<ExtentSize>200</ExtentSize>
+<Data name="TermDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>EnglishName</Value>
+</Value>
+<Value name="3">
+<Value>Name</Value>
+</Value>
+<Value name="4">
+<Value>Language</Value>
+</Value>
+<Value name="5">
+<Value>Definition</Value>
+</Value>
+<Value name="6">
+<Value>FurtherRead</Value>
+</Value>
+<Value name="7">
+<Value>Official</Value>
+</Value>
+<Value name="8">
+<Value>Rating</Value>
+</Value>
+<Value name="9">
+<Value>LanguageT</Value>
+</Value>
+<Value name="10">
+<Value>LanguageTr</Value>
+</Value>
+<Value name="11">
+<Value>Cotext</Value>
+</Value>
+<Value name="12">
+<Value>Context</Value>
+</Value>
+<Value name="13">
+<Value>RussianName</Value>
+</Value>
+<Value name="14">
+<Value>RussianDefinition</Value>
+</Value>
+<Value name="15">
+<Value>EnglishDefinition</Value>
+</Value>
+<Value name="16">
+<Value>Translations</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="Definition">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="EnglishName">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="FurtherRead">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="Language">
+<Selectivity>49.9998%</Selectivity>
+</Property>
+<Property name="LanguageTr">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<Property name="Name">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="Official">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<Property name="Rating">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<SQLMap name="$Term">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="EnglishNameIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="IDKEY">
+<BlockCount>-8</BlockCount>
+</SQLMap>
+<SQLMap name="NameIndex">
+<BlockCount>-8</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+</Export>

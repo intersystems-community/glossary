@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="REST.JSON">
+<Description>
+*******************************************************
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" 
+by Chris Carmichael and Oliver Caudron
+*******************************************************
+JSON Test class
+Также использован код из проекта
+https://github.com/MDevelopmentGroup/Recruting</Description>
+<Super>%Base</Super>
+<TimeCreated>63000,44444.255278</TimeCreated>
+
+<Method name="GetAllTerms">
+<Description>
+Get a list of all terms in JSON format</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   
+   set st=$$$OK
+   try{
+
+	   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(," SELECT ID, EnglishName, LanguageTr, Name, Definition, Official, Rating FROM Word.Term ORDER BY EnglishName, LanguageTr, Official DESC, Rating")
+ 
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="GetTerm">
+<Description>
+Get one term in JSON format</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Term WHERE %ID="_termid)
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="AddTerm">
+<Description>
+Add one term/translation</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+		//опять же преобраразуем переданный JSON в объект
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))
+	   $$$THROWONERROR(st,obj.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="UpdateTerm">
+<Description>
+Update term with new values</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{ 
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
+       set term=##class(Word.Term).%OpenId(termid)
+       throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       set term.Name=obj.Name
+       set term.EnglishName=obj.EnglishName
+       set term.LanguageTr=obj.LanguageTr
+       set term.Definition=obj.Definition
+       set term.Context=obj.Context
+       set term.FurtherRead=obj.FurtherRead
+       &html<<h1>Name <b>#(obj.Name)#</b></h1>>  
+       &html<<h1>ID <b>#(termid)#</b></h1>>  
+       $$$THROWONERROR(st,term.%Save())
+ 
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteTerm">
+<Description>
+Delete one term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   $$$THROWONERROR(st,##class(Word.Term).%DeleteId(termid))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+</Class>
+</Export>

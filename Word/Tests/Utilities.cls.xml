@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Tests.Utilities">
+<Super>%UnitTest.TestCase</Super>
+<TimeCreated>63011,40987.477678</TimeCreated>
+
+<Method name="Populate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	w ##class(Word.Term).Populate(100)
+]]></Implementation>
+</Method>
+
+<Method name="KillAll">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	w ##class(Word.Term).%DeleteExtent()
+]]></Implementation>
+</Method>
+
+<Method name="RunQuery">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ##class(Word.Term).QueryXecute("A","45,570","0,1",0)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

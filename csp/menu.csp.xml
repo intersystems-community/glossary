@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="menu.csp" application="/csp/glossary/" default="1"><![CDATA[
+		<head>
+					
+			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+		</head>
+		<a href="/csp/angularjs/rest1.CSP"><img src="intersystems-header.gif" hspace="20"></a>
+    <div class="navbar">
+    <div class="navbar-inner">
+   <!-- <a class="brand" href="#">Title</a> -->
+    <ul class="nav">
+        <form class="navbar-form pull-left">
+    		<input type="text" class="search-query" placeholder="Термин" ng-model="search.$">
+			<button type="submit" class="btn">Поиск</button>
+			<select ng-model="search.LanguageTr">
+				<option value="">Все языки</option>
+				<option>English</option>
+				<option>Русский</option>
+			</select>
+			<select ng-model="search.Official">
+				<option value="">Любой статус</option>
+				<option value="1">Официальные</option>
+				<option value="0">Неофициальные</option>				
+				</select>
+ 			<select ng-model="orderProp">
+ 				<option value="">Сортировка</option>
+				<option value="LanguageTr">English first</option>
+				<option value="-LanguageTr">Сначала по русски</option>
+				<option value="Rating">По рейтингу</option>
+ 			</select>
+    	</form>    	
+    	<form class="navbar-form pull-right"> 
+			<input name="login" type="text" class="span2" placeholder="логин">
+			<input name="pass" type="password" class="span2" placeholder="пароль">
+			<button type="submit" class="btn" >Войти</button>
+		</form>
+    </ul>
+    </div>
+    </div>]]></CSP>
+</Export>

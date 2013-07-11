@@ -1,0 +1,9 @@
+<cspapp>/intersystems-header.gif
+<cspapp>/menu.csp
+<cspapp>/rest1.CSP
+<cspapp>/term.csp
+REST.Broker.CLS
+REST.JSON.CLS
+Word.Term.CLS
+Word.Tests.PKG
+Word.Translation.CLS

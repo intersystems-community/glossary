@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="rest1.CSP" application="/csp/glossary/" default="1"><![CDATA[
+<!-- 
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" by Chris Carmichael and Oliver Caudron
+-->
+<!doctype html>
+<html ng-app>
+<head>
+	<title>InterSystems Glossary</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<script language ="javascript"> 
+	
+	// отвечает за контроль над Ангуляром
+	function control ($scope,$http){
+		
+		// выбор всех определений	    
+		$scope.getTerms=function(){
+		$http.get("/rest/json/terms").success(function(data){
+			$scope.terms=data.children;}).error(function(data,status){
+			$scope.alertzone="["+status+"] Ошибка загрузки слов :( ["+data+"]"; });
+			}   
+			
+		//  добавление термина. Язык - английский
+	    $scope.addTerm = function (term){
+
+		    // что б кашэ был в курсе что мы ему предлагаем
+		    term.class="Word.Term";
+		    $http.post("/rest/json/term",term)
+		    .success(function(data){$scope.getTerms();$scope.alertzone="Добавили!!!"+term.Name;}).error(function(data,status){
+			$scope.alertzone="["+status+"] Ошибка добавления термина :( ["+data+"]"; });
+		    } 
+		   
+	 //тк теперь это функция - вызываем её, т.к. при изменениях в БД необходимо повторно обновлять используемый набор данных
+		//$scope.getTerms();
+		$scope.getTerms();
+		alertzone=123123123;
+	 // добавляем обновление
+	    $scope.updateTerm = function (term){
+		    $http.put("/rest/json/term/"+term.ID,term)
+		    .success(function(data){$scope.alertzone="Обновили"+term.Name;}).error(function(data,status){ // поменял alert(....); на alertzone
+			$scope.alertzone="["+status+"] Ошибка обновления термина :( ["+data+"]"; });
+		    }    
+		    
+	// добавляем удаление
+	    $scope.deleteTerm = function (term){
+		    $http.delete("/rest/json/term/"+term.ID)
+		    .success(function(data){$scope.getTerms();$scope.alertzone="Удаление!!!";}).error(function(data,status){
+			$scope.alertzone="["+status+"] Ошибка удаления компании :( ["+data+"]"; });
+		    }    
+	
+		};
+	
+	</script>
+</head>
+<style type="text/css">
+	.terms {
+		list-style: none; 
+	}
+	
+	.addTerm {
+		clear: both;
+	  	padding-top: 15px; 
+	  	padding: 4px;
+	  	border: 1px solid rgb(221, 221, 221);
+	  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+	  	vertical-align:middle;
+	  	line-height:40px;
+	  	border-radius: 4px 4px 4px 4px;
+	  	margin-top: 20px 
+	}
+	
+	.terms li {
+		/*height: 50px; */
+  		clear: both;
+	  	padding-top: 15px; 
+	  	padding: 4px;
+	  	border: 1px solid rgb(221, 221, 221);
+	  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+	  	vertical-align:middle;
+	  	line-height:40px;
+	  	border-radius: 4px 4px 4px 4px;
+	  	margin-top: 20px
+	}
+	
+</style>
+	<!-- Назначаем контроллером страницы созданную выше функцию-->
+<body ng-controller="control">
+<h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
+<CSP:INCLUDE PAGE="menu.csp">
+<!--<form name="compCreateForm" ng-model="company" ng-submit="create(company); company.Name='';">
+новая компания <input type="text" ng-model="company.Name"/>
+<input type="submit" value="Сохранить"/>
+</form> -->
+ <ul class="terms"> 
+<li ng-repeat="term in terms | filter:search | orderBy:orderProp">
+ <b><a href="http://localhost:57772/csp/angularjs/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} - {{term.Name}}</a></b><br>
+ {{term.Definition}}
+</div>
+</ul> 
+<br>
+
+<ul class="addTerm"> 
+	<button ng-click="showState=!showState" class="btn">Добавить термин (на английском языке)</button>
+	<form ng-show="showState" name="AddTermForm" ng-model="term" ng-submit="term.Name=term.EnglishName; term.LanguageTr='English'; term.Rating='0'; term.Official='0'; addTerm(term);">
+		<input type="text" placeholder="Термин" ng-model="term.EnglishName" required/> <br>
+		<textarea class="span6" rows="3" ng-model="term.Definition" placeholder="Определение" required></textarea> <br>
+		<input type="text" placeholder="Контекст" ng-model="term.Context"/> <br>
+		<input type="text" placeholder="Доп. информация" ng-model="term.FurtherRead"/> <br>
+		<input type="submit" class="btn" value="Добавить"/>
+	</form>
+</ul>
+</ul>
+</body>
+</html>
+]]></CSP>
+</Export>
