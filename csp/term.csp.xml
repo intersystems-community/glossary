@@ -9,15 +9,26 @@
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
 </head>
-<!--<style type="text/css">
-
-	.block1 {
-			height:50px;
-			background:magenta;
-	       }
+<style type="text/css">
+	
+	.terms {
+		list-style: none; 
+	}
+		.terms li {
+		/*height: 50px; */
+  		clear: both;
+	  	padding-top: 15px; 
+	  	padding: 4px;
+	  	border: 1px solid rgb(221, 221, 221);
+	  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+	  	vertical-align:middle;
+	  	line-height:40px;
+	  	border-radius: 4px 4px 4px 4px;
+	  	margin-top: 20px
+	}
 
 	
-</style> -->
+</style>
 <script language ="javascript"> 
 
 	// здесь обработчики будут
@@ -34,12 +45,13 @@ function control ($scope,$http){
 		     $scope.getTerm(#($Get(%request.Data("id",1),1))#);
 		     
 		     //  добавление термина. Язык - английский или русский
-	    	$scope.addTerm = function (term){
+	    	$scope.addTranslation = function (termid,translation){
 
-		    // что б кашэ был в курсе что мы ему предлагаем
-		    term.class="Word.Term";
-		    $http.post("/rest/json/term",term, {headers: { 'Content-Type': 'application/json; charset=utf-8'}})
-		    .success(function(data){$scope.getTerms();$scope.alertzone="Добавили!!!"+term.Name;}).error(function(data,status){
+		    // что б кашэ был в курсе что мы ему предлагаем  
+		    translation.class="Word.Translation";
+		    // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
+		    $http.post("/rest/json/term/"+termid,translation)
+		    .success(function(data){$scope.getTerm(termid);$scope.alertzone="Добавили перевод для "+terms[0].EnglishName;}).error(function(data,status){
 			$scope.alertzone="["+status+"] Ошибка добавления перевода:( ["+data+"]"; });
 		    } 
 
@@ -60,30 +72,30 @@ function control ($scope,$http){
 				<ul class='nav nav-tabs nav-stacked'>
 				
 				
-				<H2><br>{{terms[0].EnglishName}} - {{terms[0].Name}}<br></H2> 
-				{{terms[0].Definition}} <br>
-				Official: {{terms[0].Official}} <br>
-				Rating: {{terms[0].Rating}} <br>
+				<H2><br>{{terms[0].EnglishName}} - {{terms[0].RussianName}}<br></H2> 
+				En: {{terms[0].EnglishDefinition}} <br>
+				RU: {{terms[0].RussianDefinition}} <br>
 				<a href='{{terms[0].FurtherRead}}'>Further Reading</a> <br>
+				<br>
+				<ul class="terms"> 
+				Альтернативные варианты перевода: 
+					<li ng-show="terms[0].TranslationName!=''" ng-repeat="term in terms">
+ 					<b>{{term.TranslationName}}</H3> </b> <br>		
+ 					Контекст: {{term.TranslationContext}} <br>	
+					Рейтинг: {{term.TranslationRating}} <br>
 				
+				</ul> 
 				
 				<hr>
-				
-				<ul class="addTranslation"> 
+				<!--translation.Term='{{terms[0].ID}}';-->
+				<ul class="addTranslationUi"> 
 					<button ng-click="showState=!showState" class="btn">Добавить перевод</button> <br>
 					<form ng-show="showState" name="AddTermForm" ng-model="term" 
-						  		ng-submit="term.EnglishName='{{terms[0].EnglishName}}'; 
-						  		term.Rating='0'; term.Official='0'; addTerm(term);  
-						 		term.$setPristine();">
+						  		ng-submit= "
+						  		translation.TranslationRating='0'; addTranslation('{{terms[0].ID}}',translation); term.$setPristine();">
 						<H3>{{terms[0].EnglishName}}</H3>
-						<select ng-model="term.LanguageTr">
-							<option>English</option>
-							<option>Русский</option>
-						</select> <br>
-						<input type="text" placeholder="Перевод" ng-model="term.Name" required/> <br>
-						<textarea class="span6" rows="3" ng-model="term.Definition" placeholder="Определение" required></textarea> <br>
-						<input type="text" placeholder="Контекст" ng-model="term.Context"/> <br>
-						<input type="text" placeholder="Доп. информация" ng-model="term.FurtherRead"/> <br>
+						<input type="text" placeholder="Перевод" ng-model="translation.TranslationName" required/> <br>
+						<input type="text" placeholder="Контекст" ng-model="translation.TranslationContext"/> <br>
 						<input type="submit" class="btn" value="Добавить"/>
 					</form>
 				</ul>

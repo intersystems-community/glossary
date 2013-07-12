@@ -25,8 +25,8 @@ Get a list of all terms in JSON format</Description>
    set st=$$$OK
    try{
 
-	   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(," SELECT ID, EnglishName, LanguageTr, Name, Definition, Official, Rating FROM Word.Term ORDER BY EnglishName, LanguageTr, Official DESC, Rating")
- 
+	 //  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(," SELECT ID, EnglishName, LanguageTr, RussianName, Definition, Official, Rating FROM Word.Term ORDER BY EnglishName, LanguageTr, Official DESC, Rating")
+ 				 do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext FROM Word.Term ORDER BY EnglishName")
    } catch ex{
 	  &html<<h1>entering <b>CATCH</b> block</h1>>  
 	  set st=ex.AsStatus()
@@ -42,14 +42,17 @@ Get one term in JSON format</Description>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Term WHERE %ID="_termid)
+ // do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Term WHERE %ID="_termid)
+  	do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT Word.Term.ID, EnglishNameContext, EnglishDefinition, EnglishName, FurtherRead, RussianDefinition, RussianName, RussianNameContext, RussianNameRating, TranslationContext, TranslationName, TranslationRating "
+  	_"FROM Word.Term LEFT JOIN Word.Translation ON  Word.Term.ID=Word.Translation.Term "
+  	_"WHERE Word.Term.ID="_termid)
   quit $$$OK
 ]]></Implementation>
 </Method>
 
 <Method name="AddTerm">
 <Description>
-Add one term/translation</Description>
+Add one term</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
@@ -57,6 +60,31 @@ Add one term/translation</Description>
    try{	
 		//опять же преобраразуем переданный JSON в объект
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))
+	   set term=##class(Word.Term).%OpenId(1)
+	   set obj.Term=term
+	   $$$THROWONERROR(st,obj.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddTranslation">
+<Description>
+Add one translation</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+		//опять же преобраразуем переданный JSON в объект
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
+	   set term=##class(Word.Term).%OpenId(termid)
+	   set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
+	   set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
+	   set obj.Term=term
 	   $$$THROWONERROR(st,obj.%Save())
    } catch ex{
 	  set st=ex.AsStatus()

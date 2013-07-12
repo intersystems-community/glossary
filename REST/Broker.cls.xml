@@ -23,7 +23,8 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/> 
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
    <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
-   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddTerm"/>
+ <!--  <Route Url="/json/term" Method="POST" Call="REST.JSON:AddTerm"/> -->
+   <Route Url="/json/term/:termid" Method="POST" Call="REST.JSON:AddTranslation"/>
    <Route Url="/json/term/:termid" Method="DELETE" Call="REST.JSON:DeleteTerm"/>
    <Route Url="/json/term/:termid" Method="PUT" Call="REST.JSON:UpdateTerm"/>
  </Routes>

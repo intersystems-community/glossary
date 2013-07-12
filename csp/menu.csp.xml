@@ -4,32 +4,54 @@
 		<head>
 					
 			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+				<script language ="javascript"> 
+	
+	// отвечает за контроль над Ангуляром
+	function ctrl ($scope,$http){
+		
+		// переход на страницу rest1.csp и заполнение поля поиска. Не работает   
+		$scope.dosearch=function(){
+			alert("!");
+		$http.get("/rest/json/terms").success(function(data){
+			$scope.terms=data.children;}).error(function(data,status){
+			$scope.alertzone="["+status+"] Ошибка загрузки слов :( ["+data+"]"; });
+			}   
+	}
+	</script>
 		</head>
-		<a href="/csp/angularjs/rest1.CSP"><img src="intersystems-header.gif" hspace="20"></a>
+		<body  ng-controller="control">
+		<a href="/csp/glossary/rest1.CSP"><img src="intersystems-header.gif" hspace="20"></a>
     <div class="navbar">
     <div class="navbar-inner">
    <!-- <a class="brand" href="#">Title</a> -->
     <ul class="nav">
-        <form class="navbar-form pull-left">
+        <form class="navbar-form pull-left" ng-submit="dosearch();">
     		<input type="text" class="search-query" placeholder="Термин" ng-model="search.$">
-			<button type="submit" class="btn">Поиск</button>
-			<select ng-model="search.LanguageTr">
+			<input type="submit" class="btn" value="Поиск"/>
+		<!--	<select ng-model="search.LanguageTr">
 				<option value="">Все языки</option>
-				<option>English</option>
+				<option action="showStateEN='0';">English</option>
 				<option>Русский</option>
-			</select>
-			<select ng-model="search.Official">
+			</select> -->
+
+			<!-- <form name="myForm" ng-controller="control"> -->
+				RU: <input type="checkbox" ng-model="showStateRU">
+				En: <input type="checkbox" ng-model="showStateEN">
+	<!--		</form>   -->
+			
+		<!--	<select ng-model="search.Official">
 				<option value="">Любой статус</option>
 				<option value="1">Официальные</option>
 				<option value="0">Неофициальные</option>				
-				</select>
+				</select> -->
+				
  			<select ng-model="orderProp">
  				<option value="">Сортировка</option>
-				<option value="LanguageTr">English first</option>
-				<option value="-LanguageTr">Сначала по русски</option>
-				<option value="Rating">По рейтингу</option>
+				<option value="EnglishName">English first</option>
+				<option value="RussianName">Сначала по русски</option>
  			</select>
     	</form>    	
+    	<li class="divider-vertical"></li>
     	<form class="navbar-form pull-right"> 
 			<input name="login" type="text" class="span2" placeholder="логин">
 			<input name="pass" type="password" class="span2" placeholder="пароль">
@@ -37,5 +59,6 @@
 		</form>
     </ul>
     </div>
-    </div>]]></CSP>
+    </div>
+</body>]]></CSP>
 </Export>

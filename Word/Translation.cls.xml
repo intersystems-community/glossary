@@ -6,31 +6,42 @@ Class describes one translation</Description>
 <Super>%Persistent,%Populate,%XML.Adaptor</Super>
 <TimeCreated>63014,62792.482687</TimeCreated>
 
-<Property name="Name">
+<Property name="TranslationName">
 <Description>
 Translation itself</Description>
 <Type>%String</Type>
 <Required>1</Required>
 </Property>
 
-<Property name="Rating">
+<Property name="TranslationRating">
 <Description>
 Users' rating of translation</Description>
-<Type>%Numeric</Type>
+<Type>%Integer</Type>
 </Property>
 
-<Property name="Context">
+<Property name="TranslationContext">
 <Description>
 Got to use it right</Description>
 <Type>%String</Type>
 </Property>
 
+<UDLText name="T">
+<Content><![CDATA[
+// Relationship Term As Word.Term [ Cardinality = parent, Inverse = Translations ];
+
+]]></Content>
+</UDLText>
+
 <Property name="Term">
 <Type>Word.Term</Type>
-<Cardinality>parent</Cardinality>
+<Cardinality>one</Cardinality>
 <Inverse>Translations</Inverse>
 <Relationship>1</Relationship>
 </Property>
+
+<Index name="TermIndex">
+<Properties>Term</Properties>
+</Index>
 
 <Storage name="Default">
 <Type>%Library.CacheSerialState</Type>
@@ -40,12 +51,20 @@ Got to use it right</Description>
 <IndexLocation>^Word.TranslationI</IndexLocation>
 <State>TranslationState</State>
 <StreamLocation>^Word.TranslationS</StreamLocation>
-<ExtentSize>100000</ExtentSize>
+<ExtentSize>10</ExtentSize>
 <Data name="TranslationDefaultData">
-<Structure>listnode</Structure>
 <Subscript>"1"</Subscript>
 <Value name="1">
 <Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>TranslationName</Value>
+</Value>
+<Value name="3">
+<Value>TranslationRating</Value>
+</Value>
+<Value name="4">
+<Value>TranslationContext</Value>
 </Value>
 </Data>
 <Data name="TranslationState">
@@ -62,6 +81,39 @@ Got to use it right</Description>
 <Value>Term</Value>
 </Value>
 </Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="Context">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Name">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Rating">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Term">
+<Selectivity>14.2857%</Selectivity>
+</Property>
+<Property name="TranslationContext">
+<Selectivity>10.0000%</Selectivity>
+</Property>
+<Property name="TranslationName">
+<Selectivity>10.0000%</Selectivity>
+</Property>
+<Property name="TranslationRating">
+<Selectivity>10.0000%</Selectivity>
+</Property>
+<Property name="childsub">
+<Selectivity>10.0000%</Selectivity>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="TermIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
 </Storage>
 </Class>
 </Export>

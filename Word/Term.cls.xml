@@ -21,22 +21,17 @@ Original EnglishName of Term</Description>
 <Properties>EnglishName</Properties>
 </Index>
 
-<Property name="RussianName">
-<Description>
-RussianName of Term</Description>
-<Type>%String</Type>
-<Required>1</Required>
-<Parameter name="MAXLEN" value="100"/>
-<Parameter name="POPSPEC" value="Name()"/>
-</Property>
+<UDLText name="T">
+<Content><![CDATA[
+// Index RussianNameIndex On RussianName [ Type = bitmap ];
 
-<Index name="RussianNameIndex">
-<Type>bitmap</Type>
-<Properties>RussianName</Properties>
-</Index>
+]]></Content>
+</UDLText>
 
 <Property name="RussianDefinition">
 <Description>
+RussianName of Term
+Property OfficialTranslation As Word.Translation;
 Definition of Term in Russian</Description>
 <Type>%String</Type>
 <Parameter name="MAXLEN" value="5000"/>
@@ -56,25 +51,44 @@ HTTP link to documentation/wikipedia/whatever</Description>
 <Parameter name="MAXLEN" value="500"/>
 </Property>
 
-<Property name="Context">
+<Property name="EnglishNameContext">
 <Description>
 Example of how to use Term in english</Description>
 <Type>%String</Type>
 <Parameter name="MAXLEN" value="500"/>
 </Property>
 
-<Property name="Official">
+<Property name="RussianName">
 <Description>
-Official, if submitted by ISC. Unofficial, if not. InitialExpression = 0,</Description>
-<Type>%Numeric</Type>
+Official russian translation</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="RussianNameRating">
+<Description>
+Users' rating of translation</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Property name="RussianNameContext">
+<Description>
+Got to use it right</Description>
+<Type>%String</Type>
 </Property>
 
 <Property name="Translations">
 <Type>Word.Translation</Type>
-<Cardinality>children</Cardinality>
+<Cardinality>many</Cardinality>
 <Inverse>Term</Inverse>
 <Relationship>1</Relationship>
 </Property>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Relationship Translations As Word.Translation [ Cardinality = children, Inverse = Term ];
+
+]]></Content>
+</UDLText>
 
 <Method name="QueryXecute">
 <Description>
@@ -134,7 +148,7 @@ Rating - any term must have equal or higher rating value </Description>
 <IdLocation>^Word.TermD</IdLocation>
 <IndexLocation>^Word.TermI</IndexLocation>
 <StreamLocation>^Word.TermS</StreamLocation>
-<ExtentSize>200</ExtentSize>
+<ExtentSize>100</ExtentSize>
 <Data name="TermDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
@@ -184,18 +198,42 @@ Rating - any term must have equal or higher rating value </Description>
 <Value name="16">
 <Value>Translations</Value>
 </Value>
+<Value name="17">
+<Value>Translationss</Value>
+</Value>
+<Value name="18">
+<Value>OfficialTranslation</Value>
+</Value>
+<Value name="19">
+<Value>RussianNameRating</Value>
+</Value>
+<Value name="20">
+<Value>RussianNameContext</Value>
+</Value>
+<Value name="21">
+<Value>EnglishNameContext</Value>
+</Value>
 </Data>
 <Property name="%%CLASSNAME">
 <Selectivity>100.0000%</Selectivity>
 </Property>
+<Property name="Context">
+<Selectivity>1.0000%</Selectivity>
+</Property>
 <Property name="Definition">
 <Selectivity>0.5000%</Selectivity>
 </Property>
+<Property name="EnglishDefinition">
+<Selectivity>1.0000%</Selectivity>
+</Property>
 <Property name="EnglishName">
-<Selectivity>0.5000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="EnglishNameContext">
+<Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="FurtherRead">
-<Selectivity>0.5000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="Language">
 <Selectivity>49.9998%</Selectivity>
@@ -207,10 +245,29 @@ Rating - any term must have equal or higher rating value </Description>
 <Selectivity>0.5000%</Selectivity>
 </Property>
 <Property name="Official">
-<Selectivity>50.0000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="OfficialTranslation">
+<Selectivity>0.7246%</Selectivity>
+<OutlierSelectivity>.5:</OutlierSelectivity>
 </Property>
 <Property name="Rating">
-<Selectivity>0.5000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="RussianDefinition">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="RussianName">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="RussianNameContext">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="RussianNameRating">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Translations">
+<Selectivity>1.0526%</Selectivity>
 </Property>
 <SQLMap name="$Term">
 <BlockCount>-4</BlockCount>
@@ -223,6 +280,9 @@ Rating - any term must have equal or higher rating value </Description>
 </SQLMap>
 <SQLMap name="NameIndex">
 <BlockCount>-8</BlockCount>
+</SQLMap>
+<SQLMap name="RussianNameIndex">
+<BlockCount>-4</BlockCount>
 </SQLMap>
 </Storage>
 </Class>

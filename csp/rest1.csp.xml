@@ -17,6 +17,8 @@ InterSystems Global Summit 2013
 	
 	// отвечает за контроль над Ангуляром
 	function control ($scope,$http){
+		$scope.showStateEN='0';
+		$scope.showStateRU='0';
 		
 		// выбор всех определений	    
 		$scope.getTerms=function(){
@@ -50,10 +52,11 @@ InterSystems Global Summit 2013
 	    $scope.deleteTerm = function (term){
 		    $http.delete("/rest/json/term/"+term.ID)
 		    .success(function(data){$scope.getTerms();$scope.alertzone="Удаление!!!";}).error(function(data,status){
-			$scope.alertzone="["+status+"] Ошибка удаления компании :( ["+data+"]"; });
+			$scope.alertzone="["+status+"] Ошибка удаления термина :( ["+data+"]"; });
 		    }    
 	
 		};
+		
 	
 	</script>
 </head>
@@ -98,8 +101,10 @@ InterSystems Global Summit 2013
 </form> -->
  <ul class="terms"> 
 <li ng-repeat="term in terms | filter:search | orderBy:orderProp">
- <b><a href="http://localhost:57772/csp/angularjs/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} - {{term.Name}}</a></b><br>
- {{term.Definition}}
+ <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} - {{term.RussianName}}</a></b><br>
+ <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
+ <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
+ 
 </div>
 </ul> 
 <br>
