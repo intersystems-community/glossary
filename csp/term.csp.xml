@@ -33,25 +33,37 @@
 
 	// здесь обработчики будут
 function control ($scope,$http){
-		   
-		    
-		 $scope.getTerm=function(termid){
-		
+	$scope.getTerm=function(termid){
+			
 			$http.get("/rest/json/term/"+termid).success(function(data){
-			$scope.terms=data.children;}).error(function(data,status){
+			$scope.terms=data.children; $scope.getTranslations(terms[0].ID);}).error(function(data,status){
 			$scope.alertzone="["+status+"] Ошибка загрузки термина :( ["+data+"]"; });
-//			$scope.alertzone==data.children[0].Name;
+ 			
 		    }   
-		     $scope.getTerm(#($Get(%request.Data("id",1),1))#);
+	 
+		    $scope.getTerm(#($Get(%request.Data("id",1),1))#);
+		    
+		    $scope.getTranslations=function(termid){
+		
+			$http.get("/rest/json/translation/"+termid).success(function(data){
+			$scope.translations=data.children;}).error(function(data,status){
+			$scope.alertzone="["+status+"] Ошибка загрузки перевода :( ["+data+"]"; });
+//			$scope.alertzone==data.children[0].Name;
+		    }  
+		    
+		    $scope.getTranslations(#($Get(%request.Data("id",1),1))#);
+		    		     
+		    
 		     
+		    // $scope.getTranslations(#($Get(%request.Data("id",1),1))#);
 		     //  добавление термина. Язык - английский или русский
-	    	$scope.addTranslation = function (termid,translation){
+	    	$scope.addTranslation = function (translation){
 
 		    // что б кашэ был в курсе что мы ему предлагаем  
 		    translation.class="Word.Translation";
 		    // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
-		    $http.post("/rest/json/term/"+termid,translation)
-		    .success(function(data){$scope.getTerm(termid);$scope.alertzone="Добавили перевод для "+terms[0].EnglishName;}).error(function(data,status){
+		    $http.post("/rest/json/term",translation)
+		    .success(function(data){$scope.getTranslations(#($Get(%request.Data("id",1),1))#); $scope.alertzone="Добавили перевод для "+terms[0].EnglishName;}).error(function(data,status){
 			$scope.alertzone="["+status+"] Ошибка добавления перевода:( ["+data+"]"; });
 		    } 
 
@@ -79,10 +91,10 @@ function control ($scope,$http){
 				<br>
 				<ul class="terms"> 
 				Альтернативные варианты перевода: 
-					<li ng-show="terms[0].TranslationName!=''" ng-repeat="term in terms">
- 					<b>{{term.TranslationName}}</H3> </b> <br>		
- 					Контекст: {{term.TranslationContext}} <br>	
-					Рейтинг: {{term.TranslationRating}} <br>
+					<li ng-show="terms[0].TranslationName!=''" ng-repeat="translation in translations">
+ 					<b>{{translation.TranslationName}}</H3> </b> <br>		
+ 					Контекст: {{translation.TranslationContext}} <br>	
+					Рейтинг: {{translation.TranslationRating}} <br>
 				
 				</ul> 
 				
@@ -91,8 +103,8 @@ function control ($scope,$http){
 				<ul class="addTranslationUi"> 
 					<button ng-click="showState=!showState" class="btn">Добавить перевод</button> <br>
 					<form ng-show="showState" name="AddTermForm" ng-model="term" 
-						  		ng-submit= "
-						  		translation.TranslationRating='0'; addTranslation('{{terms[0].ID}}',translation); term.$setPristine();">
+						  		ng-submit= "translation.TermId='{{terms[0].ID}}';
+						  		translation.TranslationRating='0'; addTranslation(translation); term.$setPristine();">
 						<H3>{{terms[0].EnglishName}}</H3>
 						<input type="text" placeholder="Перевод" ng-model="translation.TranslationName" required/> <br>
 						<input type="text" placeholder="Контекст" ng-model="translation.TranslationContext"/> <br>

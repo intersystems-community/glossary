@@ -32,16 +32,53 @@ Got to use it right</Description>
 ]]></Content>
 </UDLText>
 
-<Property name="Term">
-<Type>Word.Term</Type>
-<Cardinality>one</Cardinality>
-<Inverse>Translations</Inverse>
-<Relationship>1</Relationship>
+<Property name="TermId">
+<Type>%Integer</Type>
 </Property>
 
 <Index name="TermIndex">
-<Properties>Term</Properties>
+<Properties>TermId</Properties>
 </Index>
+
+<Method name="PopulateXML">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  #dim sc As %Status = $$$OK
+  // очистка существующих данных класса
+  s sc=..%DeleteExtent()  
+  if $$$ISERR(sc) quit sc
+  
+  // загрузка xml-данных блока XData из библиотеки скомпилированных классов  
+  #dim stream As %Stream.Object = ##class(%Dictionary.CompiledXData).%OpenId(..%ClassName(1) _ "||" _ "populate").Data
+  // создание инстанса XML ридера
+  #dim reader As %XML.Reader = ##class(%XML.Reader).%New()
+  // открытие в ридере поток xml 
+  set sc = reader.OpenStream(stream, "literal")
+  if $$$ISERR(sc) quit sc
+  // указание ридеру в каком элементе искать данные класса
+  do reader.Correlate("Translation", ..%ClassName(1))
+  
+  #dim obj as %Persistent
+  // загрука в цикле элементов класса
+  while reader.Next(.obj, .sc)
+  {
+    if $$$ISERR(sc) quit
+    // сохранение прочитанного из xml инстанс в базу данных
+    set sc = obj.%Save()
+    if $$$ISERR(sc) quit
+    
+    set obj = ""
+  }
+  
+  quit sc
+]]></Implementation>
+</Method>
+
+<XData name="populate">
+<Data><![CDATA[<xml><Translation><TranslationName>Глобаль</TranslationName><TranslationRating>0</TranslationRating><TermId>3</TermId></Translation><Translation><TranslationName>Подиндекс</TranslationName><TranslationRating>0</TranslationRating><TermId>11</TermId></Translation><Translation><TranslationName>Ключ</TranslationName><TranslationRating>0</TranslationRating><TermId>11</TermId></Translation></xml>
+]]></Data>
+</XData>
 
 <Storage name="Default">
 <Type>%Library.CacheSerialState</Type>
@@ -51,7 +88,7 @@ Got to use it right</Description>
 <IndexLocation>^Word.TranslationI</IndexLocation>
 <State>TranslationState</State>
 <StreamLocation>^Word.TranslationS</StreamLocation>
-<ExtentSize>10</ExtentSize>
+<ExtentSize>100</ExtentSize>
 <Data name="TranslationDefaultData">
 <Subscript>"1"</Subscript>
 <Value name="1">
@@ -65,6 +102,9 @@ Got to use it right</Description>
 </Value>
 <Value name="4">
 <Value>TranslationContext</Value>
+</Value>
+<Value name="5">
+<Value>TermId</Value>
 </Value>
 </Data>
 <Data name="TranslationState">
@@ -94,16 +134,16 @@ Got to use it right</Description>
 <Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="Term">
-<Selectivity>14.2857%</Selectivity>
+<Selectivity>1.6667%</Selectivity>
 </Property>
 <Property name="TranslationContext">
-<Selectivity>10.0000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="TranslationName">
-<Selectivity>10.0000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="TranslationRating">
-<Selectivity>10.0000%</Selectivity>
+<Selectivity>1.0000%</Selectivity>
 </Property>
 <Property name="childsub">
 <Selectivity>10.0000%</Selectivity>

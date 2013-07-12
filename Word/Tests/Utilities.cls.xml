@@ -6,15 +6,19 @@
 
 <Method name="Populate">
 <ClassMethod>1</ClassMethod>
-<FormalSpec>num:%Integer</FormalSpec>
 <Implementation><![CDATA[
-	// do ##class(Word.Tests.Utilities).Populate(100)
-	w ##class(Word.Term).%DeleteExtent()
+	// do ##class(Word.Tests.Utilities).Populate()
+	w "1111 - success",!
 	w ##class(Word.Translation).%DeleteExtent()
-	do ##class(Word.Term).Populate(num)
-	w ##class(Word.Translation).Populate(num)
+	w ##class(Word.Term).%DeleteExtent()	
+	//do ##class(Word.Term).Populate(num)
+	//w ##class(Word.Translation).Populate(num)
 	// do ##class(Word.Tests.Utilities).SerializeToFileTerm("D:\Git\terms.xml")
 	// do ##class(Word.Tests.Utilities).SerializeToFileTranslation("D:\Git\translations.xml")
+	
+	
+	w ##class(Word.Term).PopulateXML()
+	w ##class(Word.Translation).PopulateXML()
 ]]></Implementation>
 </Method>
 
