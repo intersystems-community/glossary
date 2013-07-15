@@ -106,7 +106,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
  <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} - {{term.RussianName}}</a></b><br>
  <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
  <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
- 
+ </li>
 </div>
 </ul> 
 <br>

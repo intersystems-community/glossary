@@ -159,5 +159,54 @@ Delete one term</Description>
     quit st
 ]]></Implementation>
 </Method>
+
+<Method name="DeleteTranslation">
+<Description>
+Delete one term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>translationid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   $$$THROWONERROR(st,##class(Word.Translation).%DeleteId(translationid))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="MakeTranslationDefault">
+<Description>
+Make new translation default. INPROGRESS</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>translationid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{ 
+   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
+       set term=##class(Word.Term).%OpenId(termid)
+       throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       set term.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       set term.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       set term.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       set term.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       set term.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       set term.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       set term.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+       &html<<h1>Name <b>#(obj.EnglishName)#</b></h1>>  
+       &html<<h1>ID <b>#(termid)#</b></h1>>  
+       $$$THROWONERROR(st,term.%Save())
+ 
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
 </Class>
 </Export>
