@@ -83,57 +83,6 @@ Got to use it right</Description>
 ]]></Content>
 </UDLText>
 
-<Method name="QueryXecute">
-<Description>
-Main query
-Name - any part of a term in any target Language. In any part of the term (fulltext search)
-Languages - string of arbitrary number of numeric language codes, separated by comma
-Official - "0", "1","0,1" - official only, unofficial only, all
-Rating - any term must have equal or higher rating value </Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>Name:%String="%",Languages:%String="45,570",Official:%String=1,Rating:%Integer=0</FormalSpec>
-<ReturnType>%ResultSet</ReturnType>
-<SqlProc>1</SqlProc>
-<ReturnResultsets>1</ReturnResultsets>
-<Implementation><![CDATA[
-    set LanguagesList=$LISTFROMSTRING(Languages)
-    set OfficialList=$LISTFROMSTRING(Official)
-	if (Name'="%") {set Name= "%"_Name_"%"}
-	
-	set sql= "SELECT EnglishName, LanguageTr, Name, Definition, Official, Rating, FurtherRead "
-		   _ "FROM Word.Term "
-		   _ "WHERE (EnglishName LIKE ? OR Name LIKE ?) AND LanguageTr %INLIST ? AND Official %INLIST ? AND Rating >= ? "
-		   _ "ORDER BY EnglishName, LanguageTr, Official DESC, Rating"
-		   
-	set resultSet =  $$$NULLOREF
-	set statement = ##class(%SQL.Statement).%New()
-	set status = statement.%Prepare(sql)
-
-	if $$$ISOK(status) 
-	{
-		set resultSet = statement.%Execute(Name, Name, LanguagesList, OfficialList, Rating) 
-		if (resultSet.%SQLCODE=0)
-		{
-			//do resultSet.%Display() 
-			//do %sqlcontext.AddResultSet(resultSet)
-		}
-		else 
-		{
-			set %sqlcontext.%SQLCODE = resultSet.%SQLCODE
-		}
-	}
-	else 
-	{
-		w $system.Status.DecomposeStatus(status, .err)
-		w $system.Status.DisplayError(status)
-		set %sqlcontext.%SQLCODE = err(1, "param", 1)
-		set %sqlcontext.%Message = err(1, "param", 2)
-		
-	}
-	return resultSet
-]]></Implementation>
-</Method>
-
 <Method name="PopulateXML">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>

@@ -4,7 +4,7 @@
 		<head>
 					
 			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
-				<script language ="javascript"> 
+		<!--		<script language ="javascript"> 
 	
 	// отвечает за контроль над Ангуляром
 	function ctrl ($scope,$http){
@@ -17,16 +17,16 @@
 			$scope.alertzone="["+status+"] Ошибка загрузки слов :( ["+data+"]"; });
 			}   
 	}
-	</script>
+	</script> -->
 		</head>
-		<body  ng-controller="control">
+
 		<a href="/csp/glossary/rest1.CSP"><img src="intersystems-header.gif" hspace="20"></a>
     <div class="navbar">
     <div class="navbar-inner">
    <!-- <a class="brand" href="#">Title</a> -->
     <ul class="nav">
         <form class="navbar-form pull-left" ng-submit="dosearch();">
-    		<input type="text" class="search-query" placeholder="Термин" ng-model="search.$">
+    		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
 			<input type="submit" class="btn" value="Поиск"/>
 		<!--	<select ng-model="search.LanguageTr">
 				<option value="">Все языки</option>
@@ -60,5 +60,5 @@
     </ul>
     </div>
     </div>
-</body>]]></CSP>
+]]></CSP>
 </Export>

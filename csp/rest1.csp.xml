@@ -6,12 +6,14 @@
 some part of this source code getting from
 InterSystems Global Summit 2013 
 "Building Mobile Applications with RESTful Interfaces" by Chris Carmichael and Oliver Caudron
+http://code.angularjs.org/1.1.5/angular.min.js
 -->
 <!doctype html>
 <html ng-app>
 <head>
 	<title>InterSystems Glossary</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<script language ="javascript"> 
 	

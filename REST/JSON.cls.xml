@@ -26,7 +26,7 @@ Get a list of all terms in JSON format</Description>
    try{
 
 	 //  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(," SELECT ID, EnglishName, LanguageTr, RussianName, Definition, Official, Rating FROM Word.Term ORDER BY EnglishName, LanguageTr, Official DESC, Rating")
- 				 do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext FROM Word.Term ORDER BY EnglishName")
+ 				 do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext,RussianNameContext FROM Word.Term ORDER BY EnglishName")
    } catch ex{
 	  &html<<h1>entering <b>CATCH</b> block</h1>>  
 	  set st=ex.AsStatus()
@@ -71,9 +71,17 @@ Add one term</Description>
    set st=$$$OK
    try{	
 		//опять же преобраразуем переданный JSON в объект
-	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))
-	   set term=##class(Word.Term).%OpenId(1)
-	   set obj.Term=term
+		set obj=##class(Word.Term).%New()
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))	   
+	   set obj.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       set obj.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       set obj.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       set obj.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       set obj.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       set obj.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       set obj.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+	   //set term=##class(Word.Term).%OpenId(1)
+	   //set obj.Term=term
 	   $$$THROWONERROR(st,obj.%Save())
    } catch ex{
 	  set st=ex.AsStatus()
@@ -111,16 +119,18 @@ Update term with new values</Description>
 <Implementation><![CDATA[
    set st=$$$OK
    try{ 
+   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
        set term=##class(Word.Term).%OpenId(termid)
        throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
-       set term.Name=obj.Name
-       set term.EnglishName=obj.EnglishName
-       set term.LanguageTr=obj.LanguageTr
-       set term.Definition=obj.Definition
-       set term.Context=obj.Context
-       set term.FurtherRead=obj.FurtherRead
-       &html<<h1>Name <b>#(obj.Name)#</b></h1>>  
+       set term.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       set term.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       set term.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       set term.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       set term.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       set term.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       set term.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+       &html<<h1>Name <b>#(obj.EnglishName)#</b></h1>>  
        &html<<h1>ID <b>#(termid)#</b></h1>>  
        $$$THROWONERROR(st,term.%Save())
  
@@ -142,6 +152,7 @@ Delete one term</Description>
    set st=$$$OK
    try{
 	   $$$THROWONERROR(st,##class(Word.Term).%DeleteId(termid))
+	   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"DELETE FROM Word.Translation WHERE TermId="_termid)
    } catch ex{
 	  set st=ex.AsStatus()
     }
