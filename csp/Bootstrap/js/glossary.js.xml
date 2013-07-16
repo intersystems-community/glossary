@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
+// User-controller. Can get all/one term(s), get/add translations
+function control($scope, $http) {
+    $scope.showStateEN = '0';
+    $scope.showStateRU = '0';
+
+    // Get all terms
+    $scope.getTerms = function () {
+        $http.get("/rest/json/terms").success(function (data) {
+            $scope.terms = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
+            });
+
+    }
+    
+    // Add one translation to term
+	$scope.addTranslation = function (translation) {
+        translation.class = "Word.Translation";
+        // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
+        // can specify it in  $http.post. Does not work, though
+        $http.post("/rest/json/translation", translation)
+            .success(function (data) {
+	            $scope.getTranslations($scope.terms[0].ID);
+                $scope.alertzone = "Добавили перевод для " + terms[0].EnglishName;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка добавления перевода:( [" + data + "]";
+            });
+    }
+
+	// Get one term by its id in database
+    $scope.getTerm = function (termid) {
+        $http.get("/rest/json/term/" + termid).success(function (data) {
+            $scope.terms = data.children;
+            $scope.getTranslations($scope.terms[0].ID);
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки термина :( [" + data + "]";
+            });
+
+    }
+
+	// Get all translations of a term
+    $scope.getTranslations = function (termid) {
+        $http.get("/rest/json/translation/" + termid).success(function (data) {
+            $scope.translations = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+            });
+    }
+
+
+
+};]]></CSP>
+</Export>

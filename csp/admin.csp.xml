@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="admin.CSP" application="/csp/glossary/" default="1"><![CDATA[
+<!-- 
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" by Chris Carmichael and Oliver Caudron
+http://code.angularjs.org/1.1.5/angular.min.js
+-->
+<!doctype html>
+<html ng-app>
+<head>
+    <title>InterSystems Glossary</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="bootstrap/js/glossary_admin.js"></script>
+    <!--	<script src="/Bootstrap/js/angular.min.js"></script> -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+    <!-- -->
+
+</head>
+
+<body ng-controller="control" ng-init="getTerms();">
+
+<h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
+<CSP:INCLUDE PAGE="menu.csp">
+    <ul class="addTerm">
+        <button ng-click="showState=!showState" class="btn">Добавить термин</button>
+        <br>
+
+        <form ng-show="showState" name="AddTermForm" ng-model="term"
+              ng-submit="term.RussianNameRating=0; addTerm(term);">
+            <input type="text" placeholder="English name" ng-model="term.EnglishName" required/> <br>
+            <input type="text" placeholder="Русское имя" ng-model="term.RussianName" required/> <br>
+            <textarea class="span6" rows="3" placeholder="Definition" ng-model="term.EnglishDefinition"
+                      required></textarea> <br>
+            <textarea class="span6" rows="3" placeholder="Определение" ng-model="term.RussianDefinition"
+                      required></textarea> <br>
+            <input type="text" placeholder="Context" ng-model="term.EnglishNameContext"/> <br>
+            <input type="text" placeholder="Контекст" ng-model="term.RussianNameContext"/> <br>
+            <input type="text" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/> <br> <input type="submit"
+                                                                                                         class="btn"
+                                                                                                         value="Добавить"/>
+        </form>
+    </ul>
+
+    <ul class="terms">
+        <li ng-animate="'animate'" ng-click="Expand(term.EnglishName)"
+            ng-repeat="term in terms | filter:search | orderBy:orderProp">
+
+
+            <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} -
+                {{term.RussianName}}</a></b><br>
+
+            <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
+
+            <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
+            <button ng-Click="deleteTerm(term.ID)" class="btn">Удалить</button>
+
+            <button ng-click="showStateEditForm=!showStateEditForm; getTranslationsByIndex({{$index}})" class="btn">
+                Редактировать
+            </button>
+            <table ng-show="showStateEditForm" class="table-bordered">
+                <tr>
+                    <td>
+                        <form ng-animate="'animate'" name="EditTermForm" ng-model="term" ng-submit="updateTerm(term);">
+                            <input type="text" ng-model="term.EnglishName" required/> <br>
+                            <input type="text" ng-model="term.RussianName" required/> <br>
+                            <textarea class="span6" rows="3" placeholder="Definition" ng-model="term.EnglishDefinition"
+                                      required></textarea> <br>
+                            <textarea class="span6" rows="3" placeholder="Определение" ng-model="term.RussianDefinition"
+                                      required></textarea> <br>
+                            <input type="text" placeholder="Context" ng-model="term.EnglishNameContext"/> <br>
+                            <input type="text" placeholder="Контекст" ng-model="term.RussianNameContext"/> <br>
+                            <input type="text" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/> <br>
+                            <input type="submit" class="btn" value="Сохранить изменения"/>
+                        </form>
+                    </td>
+                    <td>
+                        Альтернативные варианты перевода:
+                        <li ng-model="term.translations" ng-repeat="translation in term.translations">
+                            <b>{{translation.TranslationName}} </b> <br>
+                            Контекст: {{translation.TranslationContext}} <br>
+                            Рейтинг: {{translation.TranslationRating}} <br>
+                            <button class="btn" ng-click="makeDefaultTranslation(translation.ID, {{$parent.$index}});">
+                                Сделать переводом
+                            </button>
+                            <button class="btn" ng-click="deleteTranslation(translation.ID, {{$parent.$index}});">
+                                Удалить
+                            </button>
+                        </li>
+                    </td>
+                    <td>
+                        Комментарии
+                    </td>
+                </tr>
+            </table>
+            </div>
+    </ul>
+    <br>
+
+
+    
+</body>
+</html>
+]]></CSP>
+</Export>

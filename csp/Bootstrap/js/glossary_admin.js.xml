@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/js/glossary_admin.js" application="/csp/glossary/" default="1"><![CDATA[
+//Admin controller. Can get/edit/delete term(s), get/add/delete/make_default translations
+function control($scope, $http) {
+    $scope.showStateEN = '0';
+    $scope.showStateRU = '0';
+
+    // Get all terms
+    $scope.getTerms = function () {
+        $http.get("/rest/json/terms").success(function (data) {
+            $scope.terms = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
+            });
+
+    }
+
+    //  Add one term
+    $scope.addTerm = function (term) {
+        term.class = "Word.Term";
+        $http.post("/rest/json/term", term)
+            .success(function (data) {
+                $scope.getTerms();
+                $scope.alertzone = "Добавили!!!" + term.EnglishName;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка добавления термина :( [" + data + "]";
+            });
+    }
+
+	// Edit term
+    $scope.updateTerm = function (term) {
+        $http.put("/rest/json/term/" + term.ID, term)
+            .success(function (data) {
+                $scope.alertzone = "Обновили" + term.EnglishName;
+            }).error(function (data, status) { // поменял alert(....); на alertzone
+                $scope.alertzone = "[" + status + "] Ошибка обновления термина :( [" + data + "]";
+            });
+        $scope.showStateEditForm = '0';
+    }
+
+    // Delete one term
+    $scope.deleteTerm = function (termid) {
+        $http.delete("/rest/json/term/" + termid)
+            .success(function (data) {
+                $scope.getTerms();
+                $scope.alertzone = "Удаление!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления термина :( [" + data + "]";
+            });
+    }
+	
+	// Get term translations by its index. Needed to perform no-refresh translations autoupdate
+    $scope.getTranslationsByIndex = function (index) {
+        //alert($scope.terms[index].ID);
+        $http.get("/rest/json/translation/" + ($scope.terms[index].ID)).success(function (data) {
+            $scope.terms[index].translations = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+            });
+    }
+
+    /// Deletes translation, index - for translations autoupdate
+    $scope.deleteTranslation = function (translationid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/rest/json/translation/" + translationid)
+            .success(function (data) {
+                $scope.getTranslationsByIndex(index);
+                $scope.alertzone = "Удаление!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления перевода :( [" + data + "]";
+            });
+    }
+
+	// Make translation default one
+    $scope.makeDefaultTranslation = function (translationid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.post("/rest/json/translation/" + translationid)
+            .success(function (data) {
+                $scope.getTranslationsByIndex(index);
+                $scope.alertzone = "Новая по умолчанию!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка изменения перевода :( [" + data + "]";
+            });
+    }
+
+
+};]]></CSP>
+</Export>

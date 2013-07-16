@@ -11,117 +11,29 @@ http://code.angularjs.org/1.1.5/angular.min.js
 <!doctype html>
 <html ng-app>
 <head>
-	<title>InterSystems Glossary</title>
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-
-	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-	<script language ="javascript"> 
-	
-	// отвечает за контроль над Ангуляром
-	function control ($scope,$http){
-		$scope.showStateEN='0';
-		$scope.showStateRU='0';
-		
-		// выбор всех определений	    
-		$scope.getTerms=function(){
-		$http.get("/rest/json/terms").success(function(data){
-			$scope.terms=data.children;}).error(function(data,status){
-			$scope.alertzone="["+status+"] Ошибка загрузки слов :( ["+data+"]"; });
-			}   
-			
-		//  добавление термина. Язык - английский
-	    $scope.addTerm = function (term){
-
-		    // что б кашэ был в курсе что мы ему предлагаем
-		    term.class="Word.Term";
-		    $http.post("/rest/json/term",term)
-		    .success(function(data){$scope.getTerms();$scope.alertzone="Добавили!!!"+term.Name;}).error(function(data,status){
-			$scope.alertzone="["+status+"] Ошибка добавления термина :( ["+data+"]"; });
-		    } 
-		   
-	 //тк теперь это функция - вызываем её, т.к. при изменениях в БД необходимо повторно обновлять используемый набор данных
-		//$scope.getTerms();
-		$scope.getTerms();
-		alertzone=123123123;
-	 // добавляем обновление
-	    $scope.updateTerm = function (term){
-		    $http.put("/rest/json/term/"+term.ID,term)
-		    .success(function(data){$scope.alertzone="Обновили"+term.Name;}).error(function(data,status){ // поменял alert(....); на alertzone
-			$scope.alertzone="["+status+"] Ошибка обновления термина :( ["+data+"]"; });
-		    }    
-		    
-	// добавляем удаление
-	    $scope.deleteTerm = function (term){
-		    $http.delete("/rest/json/term/"+term.ID)
-		    .success(function(data){$scope.getTerms();$scope.alertzone="Удаление!!!";}).error(function(data,status){
-			$scope.alertzone="["+status+"] Ошибка удаления термина :( ["+data+"]"; });
-		    }    
-	
-		};
-		
-	
-	</script>
+    <title>InterSystems Glossary</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="Bootstrap/js/glossary.js"></script>
+    <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
 </head>
-<style type="text/css">
-	.terms {
-		list-style: none; 
-	}
-	
-	.addTerm {
-		clear: both;
-	  	padding-top: 15px; 
-	  	padding: 4px;
-	  	border: 1px solid rgb(221, 221, 221);
-	  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
-	  	vertical-align:middle;
-	  	line-height:40px;
-	  	border-radius: 4px 4px 4px 4px;
-	  	margin-top: 20px 
-	}
-	
-	.terms li {
-		/*height: 50px; */
-  		clear: both;
-	  	padding-top: 15px; 
-	  	padding: 4px;
-	  	border: 1px solid rgb(221, 221, 221);
-	  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
-	  	vertical-align:middle;
-	  	line-height:40px;
-	  	border-radius: 4px 4px 4px 4px;
-	  	margin-top: 20px
-	}
-	
-</style>
-	<!-- Назначаем контроллером страницы созданную выше функцию-->
-<body ng-controller="control">
+<!-- ng-controller="control" from glossary_admin.js
+	 ng-init="getTerms();" - call "getTerms();" from "control" after page load -->
+<body ng-controller="control" ng-init="getTerms();"> 
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <CSP:INCLUDE PAGE="menu.csp">
-<!--<form name="compCreateForm" ng-model="company" ng-submit="create(company); company.Name='';">
-новая компания <input type="text" ng-model="company.Name"/>
-<input type="submit" value="Сохранить"/>
-</form> -->
- <ul class="terms"> 
-<li ng-repeat="term in terms | filter:search | orderBy:orderProp">
- <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} - {{term.RussianName}}</a></b><br>
- <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
- <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
- </li>
-</div>
-</ul> 
-<br>
-
-<ul class="addTerm"> 
-	<button ng-click="showState=!showState" class="btn">Добавить термин (на английском языке)</button>
-	<form ng-show="showState" name="AddTermForm" ng-model="term" ng-submit="term.Name=term.EnglishName; term.LanguageTr='English'; term.Rating='0'; term.Official='0'; addTerm(term);">
-		<input type="text" placeholder="Термин" ng-model="term.EnglishName" required/> <br>
-		<textarea class="span6" rows="3" ng-model="term.Definition" placeholder="Определение" required></textarea> <br>
-		<input type="text" placeholder="Контекст" ng-model="term.Context"/> <br>
-		<input type="text" placeholder="Доп. информация" ng-model="term.FurtherRead"/> <br>
-		<input type="submit" class="btn" value="Добавить"/>
-	</form>
-</ul>
-</ul>
+    <ul class="terms">
+    	<!--Loop through all terms -->
+        <li ng-repeat="term in terms | filter:search | orderBy:orderProp">
+            <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} -
+                {{term.RussianName}}</a></b><br>
+            <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
+            <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
+        </li>
+        <!--END Loop through all terms -->
+        </div>
+    </ul>
+    <br>
 </body>
 </html>
 ]]></CSP>

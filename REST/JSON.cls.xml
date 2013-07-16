@@ -119,7 +119,7 @@ Update term with new values</Description>
 <Implementation><![CDATA[
    set st=$$$OK
    try{ 
-   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
+   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8") <- does not work
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
        set term=##class(Word.Term).%OpenId(termid)
        throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
@@ -187,19 +187,29 @@ Make new translation default. INPROGRESS</Description>
    set st=$$$OK
    try{ 
    		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
-	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
-       set term=##class(Word.Term).%OpenId(termid)
+											   
+       set translation=##class(Word.Translation).%OpenId(translationid)
+       throw:translation=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       set term=##class(Word.Term).%OpenId(translation.TermId)
        throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
-       set term.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
-       set term.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
-       set term.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
-       set term.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
-       set term.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
-       set term.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
-       set term.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
-       &html<<h1>Name <b>#(obj.EnglishName)#</b></h1>>  
-       &html<<h1>ID <b>#(termid)#</b></h1>>  
+       //swapping two objects
+       set tempName =  term.RussianName
+       set tempContext = term.RussianNameContext
+       set tempRating = term.RussianNameRating
+       
+       
+       set term.RussianName = translation.TranslationName
+       set term.RussianNameContext = translation.TranslationContext
+       set term.RussianNameRating = translation.TranslationRating
+       
+       set translation.TranslationName = tempName
+       set translation.TranslationContext = tempContext
+       set translation.TranslationRating = tempRating
+
+       &html<<h1>Name <b>#(translation.TranslationName)#</b></h1>>  
+       &html<<h1>ID <b>#(translationid)#</b></h1>>  
        $$$THROWONERROR(st,term.%Save())
+       $$$THROWONERROR(st,translation.%Save())
  
    } catch ex{
 	  &html<<h1>entering <b>CATCH</b> block</h1>>  
