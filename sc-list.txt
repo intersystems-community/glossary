@@ -1,3 +1,4 @@
+<cspapp>/Bootstrap/css/bootstrap.css
 <cspapp>/Bootstrap/css/bootstrap.min.css
 <cspapp>/Bootstrap/css/glossary.css
 <cspapp>/Bootstrap/js/glossary.js
@@ -12,3 +13,4 @@ REST.JSON.CLS
 Word.Term.CLS
 Word.Tests.PKG
 Word.Translation.CLS
+Word.User.CLS

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.User">
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63020,38756.679731</TimeCreated>
+
+<Property name="Name">
+<Description>
+User  name</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="PasswodSetter">
+<Description><![CDATA[
+User string password -> encrypted password]]></Description>
+<Type>%String</Type>
+<Calculated>1</Calculated>
+</Property>
+
+<Property name="Password">
+<Description><![CDATA[
+User encrypted password -> database]]></Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="50"/>
+</Property>
+
+<Method name="PasswordSetterSet">
+<Description><![CDATA[
+Do (User string password -> encrypted password) transformation via MD5 hash]]></Description>
+<FormalSpec>Arg:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set ..Password  = $system.Encryption.MD5Hash(Arg) 
+	return $$$OK
+]]></Implementation>
+</Method>
+
+<Property name="Priveledge">
+<Description>
+User priveledge level. 0 - user, 1 - administrator.</Description>
+<Type>%Integer</Type>
+<Required>1</Required>
+<Parameter name="MAXVAL" value="5"/>
+<Parameter name="MINVAL" value="0"/>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Word.UserD</DataLocation>
+<DefaultData>UserDefaultData</DefaultData>
+<IdLocation>^Word.UserD</IdLocation>
+<IndexLocation>^Word.UserI</IndexLocation>
+<StreamLocation>^Word.UserS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="UserDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>Password</Value>
+</Value>
+<Value name="4">
+<Value>Priveledge</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
