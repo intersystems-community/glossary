@@ -25,7 +25,7 @@
     <div class="navbar-inner">
    <!-- <a class="brand" href="#">Title</a> -->
     <ul class="nav">
-        <form class="navbar-form pull-left" ng-submit="dosearch();">
+        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
     		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
 			<input type="submit" class="btn" value="Поиск"/>
 		<!--	<select ng-model="search.LanguageTr">

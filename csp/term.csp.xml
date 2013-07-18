@@ -35,18 +35,18 @@
                     <a href='{{terms[0].FurtherRead}}'>Further Reading</a> <br>
                     <br>
                     <ul class="terms">
-                        Альтернативные варианты перевода:
-                        <li ng-show="terms[0].TranslationName!=''" ng-repeat="translation in translations">
+                    
+                       <p ng-if="translations[0].TranslationName!=undefined"> Альтернативные варианты перевода:</p>                       
+                        <li ng-show="translations[0].TranslationName!=undefined" ng-repeat="translation in translations">
                             <b>{{translation.TranslationName}}</H3> </b> <br>
                             Контекст: {{translation.TranslationContext}} <br>
                             Рейтинг: {{translation.TranslationRating}} <br>
-
                     </ul>
 
                     <hr>
                     <!--translation.Term='{{terms[0].ID}}';-->
                     <ul class="addTranslationUi">
-                        <button ng-click="showState=!showState" class="btn">Добавить перевод</button>
+                        <button ng-click="showState=!showState" class="btn">Добавить альтернативный перевод</button>
                         <br>
 
                         <form ng-show="showState" name="AddTermForm" ng-model="translation"

@@ -33,6 +33,17 @@
     margin-top: 20px
 }
 
+.terms table {
+    width: 98%;
+    margin: auto;
+    margin-top: 20px;
+}
+.terms table td {
+    vertical-align: text-top;
+    padding: 15px;
+    width: 33%;
+}
+
 
 
 .animate-enter,

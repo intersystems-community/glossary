@@ -19,12 +19,12 @@ http://code.angularjs.org/1.1.5/angular.min.js
 </head>
 <!-- ng-controller="control" from glossary_admin.js
 	 ng-init="getTerms();" - call "getTerms();" from "control" after page load -->
-<body ng-controller="control" ng-init="getTerms();"> 
+<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),1))#);"> 
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <CSP:INCLUDE PAGE="menu.csp">
     <ul class="terms">
     	<!--Loop through all terms -->
-        <li ng-repeat="term in terms | filter:search | orderBy:orderProp">
+        <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | orderBy:orderProp">
             <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} -
                 {{term.RussianName}}</a></b><br>
             <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>

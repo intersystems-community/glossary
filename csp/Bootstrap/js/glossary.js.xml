@@ -31,7 +31,7 @@ function control($scope, $http) {
     }
 
 	// Get one term by its id in database
-    $scope.getTerm = function (termid) {
+    $scope.getTerm = function (termid) {  
         $http.get("/rest/json/term/" + termid).success(function (data) {
             $scope.terms = data.children;
             $scope.getTranslations($scope.terms[0].ID);
@@ -42,13 +42,18 @@ function control($scope, $http) {
     }
 
 	// Get all translations of a term
-    $scope.getTranslations = function (termid) {
+    $scope.getTranslations = function (termid) { 
         $http.get("/rest/json/translation/" + termid).success(function (data) {
             $scope.translations = data.children;
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
             });
     }
+    
+    // Dosearch
+    $scope.dosearch=function(query){
+			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
+	}
 
 
 
