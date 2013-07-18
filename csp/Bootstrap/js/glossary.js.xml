@@ -50,10 +50,16 @@ function control($scope, $http) {
             });
     }
     
-    // Dosearch
+    // Redirect to 
     $scope.dosearch=function(query){
 			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
 	}
+	
+	$scope.letters = [
+        {text: "A"},
+        {text: "B"},
+        {text: "C"}
+    ];
 
 
 

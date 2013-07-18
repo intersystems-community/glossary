@@ -19,7 +19,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
 </head>
 <!-- ng-controller="control" from glossary_admin.js
 	 ng-init="getTerms();" - call "getTerms();" from "control" after page load -->
-<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),1))#);"> 
+<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),"undefined"))#);"> 
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <CSP:INCLUDE PAGE="menu.csp">
     <ul class="terms">
