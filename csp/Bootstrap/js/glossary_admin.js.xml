@@ -52,7 +52,6 @@ function control($scope, $http) {
 	
 	// Get term translations by its index. Needed to perform no-refresh translations autoupdate
     $scope.getTranslationsByIndex = function (index) {
-        //alert($scope.terms[index].ID);
         $http.get("/rest/json/translation/" + ($scope.terms[index].ID)).success(function (data) {
             $scope.terms[index].translations = data.children;
         }).error(function (data, status) {

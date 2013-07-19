@@ -22,9 +22,12 @@ http://code.angularjs.org/1.1.5/angular.min.js
 <body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),"undefined"))#);"> 
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <CSP:INCLUDE PAGE="menu.csp">
+<div class="letter_select_bar">
+ <div class="letter_select_box" ng-repeat="letter in letters" ng-bind="letter.text" ng-click="SetStartLetter(letter.text); filterFn(terms[2]);"></div>
+	</div>
     <ul class="terms">
     	<!--Loop through all terms -->
-        <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | orderBy:orderProp">
+        <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filterFn orderBy:orderProp">
             <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} -
                 {{term.RussianName}}</a></b><br>
             <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>

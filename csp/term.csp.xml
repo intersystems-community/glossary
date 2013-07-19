@@ -30,8 +30,8 @@
 
 
                     <H2><br>{{terms[0].EnglishName}} - {{terms[0].RussianName}}<br></H2>
-                    En: {{terms[0].EnglishDefinition}} <br>
-                    RU: {{terms[0].RussianDefinition}} <br>
+                    English definition: {{terms[0].EnglishDefinition}} <br>
+                    Русское определение: {{terms[0].RussianDefinition}} <br>
                     <a href='{{terms[0].FurtherRead}}'>Further Reading</a> <br>
                     <br>
                     <ul class="terms">

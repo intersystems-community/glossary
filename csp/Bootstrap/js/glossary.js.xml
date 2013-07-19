@@ -5,6 +5,7 @@
 function control($scope, $http) {
     $scope.showStateEN = '0';
     $scope.showStateRU = '0';
+    $scope.StartLetter= '';
 
     // Get all terms
     $scope.getTerms = function () {
@@ -50,7 +51,7 @@ function control($scope, $http) {
             });
     }
     
-    // Redirect to 
+    // Redirect to main page with search query
     $scope.dosearch=function(query){
 			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
 	}
@@ -58,8 +59,34 @@ function control($scope, $http) {
 	$scope.letters = [
         {text: "A"},
         {text: "B"},
-        {text: "C"}
+        {text: "P"}
     ];
+    
+    $scope.filterTermsByFirstLetter = function(terms,letter) {
+  		var filteredTerms = [];
+  		var queryRegExp = RegExp(query, 'i'); //'i' -> case insensitive
+  		angular.forEach(phones, function(phone) {
+    	if (phone.name.match(queryRegExp) || phone.snippet.match(queryRegExp)) {
+      		filteredPhones.push(phone);
+    	}
+  		});
+  		return filteredPhones;
+		};
+		
+	$scope.SetStartLetter = function(letter) {
+		$scope.StartLetter=letter;	
+	}
+		
+	$scope.filterFn = function(term) {
+		alert($scope.StartLetter);
+
+    if(term.EnglishName.charAt(0)=$scope.StartLetter)
+    {
+        return true; // this will be listed in the results
+    }
+   	if ($scope.StartLetter='') {  return true; } 
+    return false; // otherwise it won't be within the results
+};
 
 
 

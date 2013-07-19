@@ -72,5 +72,16 @@
     opacity: 1;
     width: 150px;
     height: 30px;
+}
+
+.letter_select_box {
+float: left;
+padding: 5px 10px;
+margin-right: 10px;
+margin-down: 20px;
+font-size: 1.2em;
+cursor: pointer;
+border-radius: 2px;
+border: 1px solid #EEE;
 }]]></CSP>
 </Export>

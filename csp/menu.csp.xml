@@ -4,6 +4,7 @@
 		<head>
 					
 			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+		<!--	<script src="Bootstrap/js/glossary.js"></script> -->
 		<!--		<script language ="javascript"> 
 	
 	// отвечает за контроль над Ангуляром
@@ -37,14 +38,7 @@
 			<!-- <form name="myForm" ng-controller="control"> -->
 				RU: <input type="checkbox" ng-model="showStateRU">
 				En: <input type="checkbox" ng-model="showStateEN">
-	<!--		</form>   -->
-			
-		<!--	<select ng-model="search.Official">
-				<option value="">Любой статус</option>
-				<option value="1">Официальные</option>
-				<option value="0">Неофициальные</option>				
-				</select> -->
-				
+
  			<select ng-model="orderProp">
  				<option value="">Сортировка</option>
 				<option value="EnglishName">English first</option>
@@ -59,6 +53,6 @@
 		</form>
     </ul>
     </div>
-    </div>
+     </div>
 ]]></CSP>
 </Export>
