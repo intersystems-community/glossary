@@ -21,11 +21,11 @@
 	</script> -->
 		</head>
 
-		<a href="/csp/glossary/rest1.CSP"><img src="intersystems-header.gif" hspace="20"></a>
+		<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="Bootstrap/img/intersystems-header4.gif" hspace="20"></a></div>
     <div class="navbar">
     <div class="navbar-inner">
    <!-- <a class="brand" href="#">Title</a> -->
-    <ul class="nav">
+  
         <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
     		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
 			<input type="submit" class="btn" value="Поиск"/>
@@ -44,14 +44,15 @@
 				<option value="EnglishName">English first</option>
 				<option value="RussianName">Сначала по русски</option>
  			</select>
-    	</form>    	
-    	<li class="divider-vertical"></li>
-    	<form class="navbar-form pull-right"> 
+    	</form>  
+    	  	
+   
+    	<form class="navbar-form pull-right" ng-submit="dologin(login,pass);"> 
 			<input name="login" type="text" class="span2" placeholder="логин">
 			<input name="pass" type="password" class="span2" placeholder="пароль">
 			<button type="submit" class="btn" >Войти</button>
 		</form>
-    </ul>
+    
     </div>
      </div>
 ]]></CSP>

@@ -82,7 +82,10 @@ function control($scope, $http) {
                 $scope.alertzone = "[" + status + "] Ошибка изменения перевода :( [" + data + "]";
             });
     }
-
+    
+    $scope.dosearch=function(query){
+			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
+	}
 
 };]]></CSP>
 </Export>

@@ -6,6 +6,7 @@
 <cspapp>/admin.CSP
 <cspapp>/intersystems-header.gif
 <cspapp>/menu.csp
+<cspapp>/menuTerm.csp
 <cspapp>/rest1.CSP
 <cspapp>/term.csp
 REST.Broker.CLS

@@ -16,10 +16,9 @@
 
 <body ng-controller="control" ng-init="getTerm(#($Get(%request.Data("id",1),1))#);">
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
-<CSP:INCLUDE PAGE="menu.csp">
+<CSP:INCLUDE PAGE="menuTerm.csp">
     <div class="container">
-
-
+    
         <h1 ng-hide="true">
         </h1>
 
@@ -27,44 +26,48 @@
             <article class="span12">
                 <p>
                 <ul class='nav nav-tabs nav-stacked'>
-
-
-                    <H2><br>{{terms[0].EnglishName}} - {{terms[0].RussianName}}<br></H2>
-                    English definition: {{terms[0].EnglishDefinition}} <br>
-                    Русское определение: {{terms[0].RussianDefinition}} <br>
-                    <a href='{{terms[0].FurtherRead}}'>Further Reading</a> <br>
                     <br>
-                    <ul class="terms">
+
+                    <H2>{{terms[0].EnglishName}} - {{terms[0].RussianName}} <button ng-click="showState=!showState" class="btn">Альтернативные определения</button></H2>
                     
-                       <p ng-if="translations[0].TranslationName!=undefined"> Альтернативные варианты перевода:</p>                       
-                        <li ng-show="translations[0].TranslationName!=undefined" ng-repeat="translation in translations">
-                            <b>{{translation.TranslationName}}</H3> </b> <br>
-                            Контекст: {{translation.TranslationContext}} <br>
-                            Рейтинг: {{translation.TranslationRating}} <br>
-                    </ul>
+                    <div class="translations" ng-show="showState">
+                        <ul class="terms">
 
-                    <hr>
-                    <!--translation.Term='{{terms[0].ID}}';-->
-                    <ul class="addTranslationUi">
-                        <button ng-click="showState=!showState" class="btn">Добавить альтернативный перевод</button>
-                        <br>
+                            <p ng-if="translations[0].TranslationName==undefined"> <br> Альтернативные варианты перевода
+                                отсутствуют. Добавить?</p>
+                            <li ng-show="translations[0].TranslationName!=undefined"
+                                ng-repeat="translation in translations">
+                                <b>{{translation.TranslationName}}</H3> </b> <br>
+                                Контекст: {{translation.TranslationContext}} <br>
+                                Рейтинг: {{translation.TranslationRating}} <br>
+                        </ul>
 
-                        <form ng-show="showState" name="AddTermForm" ng-model="translation"
-                              ng-submit="translation.TermId='{{terms[0].ID}}';
+                        <hr>
+                        <ul class="addTranslation">
+                            <form name="AddTermForm" ng-model="translation"
+                                  ng-submit="translation.TermId='{{terms[0].ID}}';
 						  		translation.TranslationRating='0'; addTranslation(translation); translation.$setPristine();">
-                            <H3>{{terms[0].EnglishName}}</H3>
-                            <input type="text" placeholder="Перевод" ng-model="translation.TranslationName" required/>
-                            <br>
-                            <input type="text" placeholder="Контекст" ng-model="translation.TranslationContext"/> <br>
-                            <input type="submit" class="btn" value="Добавить"/>
-                        </form>
-                    </ul>
+                                <H3>{{terms[0].EnglishName}}</H3>
+                                <input type="text" placeholder="Перевод" ng-model="translation.TranslationName"
+                                       required/>
+                                <br>
+                                 <textarea class="span6" rows="3" placeholder="Контекст" ng-model="translation.TranslationContext"></textarea> <br>
+                                <br>
+                                <input type="submit" class="btn" value="Добавить альтернативное определение"/>
+                            </form>
+                        </ul>
+                    </div>
+                    <br><br>
+                    Русское описание: {{terms[0].RussianDefinition}} <br>  <br>
+                     <button ng-click="showEngDef=!showEngDef" class="btn">English definition</button>
+                      <p ng-if="showEngDef==1"><br> {{terms[0].EnglishDefinition}} </p> 
+                     <p ng-if="showEngDef==undefined"></p>  <p ng-if="showEngDef==0"></p>
+                    <a href='{{terms[0].FurtherRead}}'>Дальнейшее чтение</a> <br>
+                    <br>
 
 
-                   
                 </ul>
 
-               
 
             </article>
         </div>
@@ -78,19 +81,19 @@
 
     </div>
 
-  <!--  <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="bootstrap/js/jquery.js"></script>
-    <!-- ОООЧЕНЬ медленно
-    <script src="http://code.jquery/jquery-latest.js"></script>	-->
+    <!--  <script src="bootstrap/js/bootstrap.min.js"></script>
+      <script src="bootstrap/js/jquery.js"></script>
+      <!-- ОООЧЕНЬ медленно
+      <script src="http://code.jquery/jquery-latest.js"></script>	-->
     <!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script> -->
- <!--   <script src="bootstrap/js/angular-cookies.min.js"></script>
-    <script src="bootstrap/js/angular-loader.min.js"></script>
-    <script src="bootstrap/js/angular-bootstrap-prettify.min.js"></script>
-    <script src="bootstrap/js/angular-bootstrap.min.js"></script>
-    <script src="bootstrap/js/angular-cookies.min.js"></script>
-    <script src="bootstrap/js/angular-loader.min.js"></script>
-    <script src="bootstrap/js/angular-resource.min.js"></script>
-    <script src="bootstrap/js/angular-sanitize.min.js"></script> -->
+    <!--   <script src="bootstrap/js/angular-cookies.min.js"></script>
+       <script src="bootstrap/js/angular-loader.min.js"></script>
+       <script src="bootstrap/js/angular-bootstrap-prettify.min.js"></script>
+       <script src="bootstrap/js/angular-bootstrap.min.js"></script>
+       <script src="bootstrap/js/angular-cookies.min.js"></script>
+       <script src="bootstrap/js/angular-loader.min.js"></script>
+       <script src="bootstrap/js/angular-resource.min.js"></script>
+       <script src="bootstrap/js/angular-sanitize.min.js"></script> -->
 
 
     </body>
