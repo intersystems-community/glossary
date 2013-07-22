@@ -3,10 +3,11 @@
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
 // User-controller. Can get all/one term(s), get/add translations
 function control($scope, $http) {
-    $scope.showStateEN = '0';
-    $scope.showStateRU = '0';
-    $scope.StartLetter= '';
-
+    $scope.showStateEN = "0";
+    $scope.showStateRU = "0";
+    $scope.StartLetter = "";
+	$scope.letterLanguage= "En"
+	
     // Get all terms
     $scope.getTerms = function () {
         $http.get("/rest/json/terms").success(function (data) {
@@ -14,6 +15,7 @@ function control($scope, $http) {
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
             });
+            
 
     }
     
@@ -56,37 +58,92 @@ function control($scope, $http) {
 			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
 	}
 	
-	$scope.letters = [
+	$scope.lettersEn = [
+		{text: "All"},
         {text: "A"},
         {text: "B"},
-        {text: "P"}
+        {text: "C"},
+        {text: "D"},
+        {text: "E"},
+        {text: "F"},
+   		{text: "G"},
+        {text: "H"},
+        {text: "I"},
+        {text: "G"},
+        {text: "K"},
+        {text: "L"},
+        {text: "M"},
+  		{text: "N"},
+        {text: "O"},
+        {text: "P"},
+        {text: "Q"},
+        {text: "R"},
+        {text: "S"},
+        {text: "T"},
+   		{text: "U"},
+        {text: "V"},
+        {text: "W"},
+        {text: "X"},
+        {text: "Y"},
+        {text: "Z"}        
     ];
     
-    $scope.filterTermsByFirstLetter = function(terms,letter) {
-  		var filteredTerms = [];
-  		var queryRegExp = RegExp(query, 'i'); //'i' -> case insensitive
-  		angular.forEach(phones, function(phone) {
-    	if (phone.name.match(queryRegExp) || phone.snippet.match(queryRegExp)) {
-      		filteredPhones.push(phone);
-    	}
-  		});
-  		return filteredPhones;
-		};
+    $scope.lettersRu = [
+		{text: "Все"},
+        {text: "А"},
+        {text: "Б"},
+        {text: "В"},
+        {text: "Г"},
+        {text: "Д"},
+        {text: "Е"},
+   		{text: "Ж"},
+        {text: "З"},
+        {text: "И"},
+        {text: "К"},
+        {text: "Л"},
+        {text: "М"},
+        {text: "Н"},
+  		{text: "О"},
+        {text: "П"},
+        {text: "P"},
+        {text: "С"},
+        {text: "Т"},
+        {text: "У"},
+        {text: "Ф"},
+   		{text: "Х"},
+        {text: "Ц"},
+        {text: "Ч"},
+        {text: "Ш"},
+        {text: "Щ"},
+        {text: "Э"},
+        {text: "Ю"},
+        {text: "Я"}
+              
+    ];
+    
+    // Default letters scope. We push here lettersRu or lettersEn. For 
+    $scope.letters = [];
 		
-	$scope.SetStartLetter = function(letter) {
-		$scope.StartLetter=letter;	
+	$scope.SetStartLetter = function(letter) {	
+		if ($scope.StartLetter==letter) {$scope.StartLetter = '';} 
+			else {$scope.StartLetter=letter;};
+			
 	}
 		
-	$scope.filterFn = function(term) {
-		alert($scope.StartLetter);
+	$scope.filterFL =  function(term) {
+		if ($scope.StartLetter=='' || $scope.StartLetter=="All" || $scope.StartLetter=="Все") {  return true; } // fasttrack to results
+    	if(term.EnglishName.charAt(0)==$scope.StartLetter || term.RussianName.charAt(0)==$scope.StartLetter)
+    	{
+        	return true; // this will be listed in the results
+    	}
+    	return false; // otherwise it won't be within the results
+	};
 
-    if(term.EnglishName.charAt(0)=$scope.StartLetter)
-    {
-        return true; // this will be listed in the results
-    }
-   	if ($scope.StartLetter='') {  return true; } 
-    return false; // otherwise it won't be within the results
-};
+	$scope.ChangeLetterLanguage = function(CurrentActiveLanguage) {
+		if (CurrentActiveLanguage=="En") { $scope.letterLanguage="Ру";  $scope.letters=$scope.lettersRu}
+		 else { $scope.letterLanguage="En";  $scope.letters=$scope.lettersEn;};
+		 $scope.StartLetter = '';		
+	}
 
 
 

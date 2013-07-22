@@ -3,8 +3,8 @@
 <CSP name="Bootstrap/js/glossary_admin.js" application="/csp/glossary/" default="1"><![CDATA[
 //Admin controller. Can get/edit/delete term(s), get/add/delete/make_default translations
 function control($scope, $http) {
-    $scope.showStateEN = '0';
-    $scope.showStateRU = '0';
+    $scope.showStateEN = "0";
+    $scope.showStateRU = "0";
 
     // Get all terms
     $scope.getTerms = function () {
