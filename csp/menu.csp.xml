@@ -45,15 +45,18 @@
 				<option value="RussianName">Сначала по русски</option>
  			</select>
     	</form>  
-    	  	
+    	  
    
-    	<form class="navbar-form pull-right" ng-submit="dologin(login,pass);"> 
-			<input name="login" type="text" class="span2" placeholder="логин">
-			<input name="pass" type="password" class="span2" placeholder="пароль">
-			<button type="submit" class="btn" >Войти</button>
-		</form>
+    	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Name, user.PasswordSetter);"> 
+			<input ng-model="user.Name" type="text" class="span2" placeholder="логин">
+			<input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль">
+			<button type="submit" class="btn" >Вход</button>
+			<button type="button" ng-click="doRegister(user);" class="btn" >Регистрация</button>
+		</form>  
+			<button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right" >Выход</button> 
     
     </div>
      </div>
+
 ]]></CSP>
 </Export>

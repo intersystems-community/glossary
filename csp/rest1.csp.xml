@@ -9,22 +9,33 @@ InterSystems Global Summit 2013
 http://code.angularjs.org/1.1.5/angular.min.js
 -->
 <!doctype html>
-<html ng-app>
+<html ng-app="GlossaryApp">
 <head>
-    <title>InterSystems Glossary</title>
+    <title>InterSystems Glossary</title>		
+
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="Bootstrap/js/glossary.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+      
+  
 </head>
-
+<!-- ng-controller="control" from glossary.js
+     ng-init="getTerms();" - call "getTerms();" from "control" after page load
+     search.$=(#($Get(%request.Data("q",1),"undefined"))#); - fill SearchQuery 
+     							from menu.csp with query passed as a parameter
+     ChangeLetterLanguage('En'); - fill $scope.letters with  letters       -->
 <body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),"undefined"))#); ChangeLetterLanguage('En');"> 
+<!-- Alertzone to display errors -->
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <CSP:INCLUDE PAGE="menu.csp">
+<!--  First letter filter bar -->
 <div class="letter_select_bar">
  <div class="letter_select_box" ng-bind="letterLanguage" ng-click="ChangeLetterLanguage(letterLanguage);"></div>
  <div class="letter_select_box" ng-repeat="letter in letters" ng-bind="letter.text" ng-click="SetStartLetter(letter.text);"></div>
 	</div>
+	<!--  END First letter filter bar -->
     <ul class="terms">
     	<!--Loop through all terms -->
         <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filter:filterFL | orderBy:orderProp">
@@ -33,8 +44,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
             <p ng-show="showStateRU">Русское описание: {{term.RussianDefinition}}</p>
             <p ng-show="showStateEN">English definition: {{term.EnglishDefinition}}</p>
         </li>
-        <!--END Loop through all terms -->
-        </div>
+        <!--END Loop through all terms -->      
     </ul>
     <br>
 </body>

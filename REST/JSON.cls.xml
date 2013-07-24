@@ -98,7 +98,7 @@ Add one translation</Description>
 <Implementation><![CDATA[
    set st=$$$OK
    try{	
-		//опять же преобраразуем переданный JSON в объект
+		//опять же преобразуем переданный JSON в объект
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
 	   set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
 	   set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
@@ -107,6 +107,40 @@ Add one translation</Description>
 	  set st=ex.AsStatus()
     }
     quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddUser">
+<Description>
+Add one user</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))
+	   set obj.Name=$ZCONVERT(obj.Name,"I","UTF8")
+	   // Check password codepage
+	   set obj.Priveledge="0"
+	   $$$THROWONERROR(st,obj.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="LoginUser">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>login,password</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set phash = $system.Encryption.MD5Hash(password)
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Name, Priveledge FROM Word.UserTable WHERE Name='"_login_"' and Password='"_phash_"'")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Translation WHERE TermId=11")
+
+  quit $$$OK
 ]]></Implementation>
 </Method>
 

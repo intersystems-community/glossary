@@ -2,13 +2,13 @@
 <Export generator="Cache" version="25">
 <CSP name="term.csp" application="/csp/glossary/" default="1"><![CDATA[
 <!doctype html>
-<html ng-app>
+<html ng-app="GlossaryApp">
 <head>
     <meta charset="utf-8">
     <title>InterSystems Glossary</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="Bootstrap/js/glossary.js"></script>
-
+	<script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
 
@@ -57,10 +57,11 @@
                             </form>
                         </ul>
                     </div>
-                    <br><br>
-                    Русское описание: {{terms[0].RussianDefinition}} <br>  <br>
+                    <br>
+                    <div class="DefinitionText">Русское описание: {{terms[0].RussianDefinition}}</div>  <br>
+                    <div class="DefinitionText">Контекст: {{terms[0].RussianNameContext}}</div>  <br>
                      <button ng-click="showEngDef=!showEngDef" class="btn">English definition</button>
-                      <p ng-if="showEngDef==1"><br> {{terms[0].EnglishDefinition}} </p> 
+                       <div class="DefinitionText" ng-if="showEngDef==1"> <br>{{terms[0].EnglishDefinition}} <br> <br>Context: {{terms[0].EnglishNameContext}} </div>
                      <p ng-if="showEngDef==undefined"></p>  <p ng-if="showEngDef==0"></p>
                     <a href='{{terms[0].FurtherRead}}'>Дальнейшее чтение</a> <br>
                     <br>

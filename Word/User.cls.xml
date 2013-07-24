@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <Class name="Word.User">
+<SqlTableName>UserTable</SqlTableName>
 <Super>%Persistent,%Populate,%XML.Adaptor</Super>
 <TimeCreated>63020,38756.679731</TimeCreated>
 
@@ -11,7 +12,7 @@ User  name</Description>
 <Required>1</Required>
 </Property>
 
-<Property name="PasswodSetter">
+<Property name="PasswordSetter">
 <Description><![CDATA[
 User string password -> encrypted password]]></Description>
 <Type>%String</Type>
@@ -37,10 +38,19 @@ Do (User string password -> encrypted password) transformation via MD5 hash]]></
 ]]></Implementation>
 </Method>
 
+<Method name="PasswordSetterGet">
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	//set ..Password  = $system.Encryption.MD5Hash(Arg) 
+	return "1"
+]]></Implementation>
+</Method>
+
 <Property name="Priveledge">
 <Description>
 User priveledge level. 0 - user, 1 - administrator.</Description>
 <Type>%Integer</Type>
+<InitialExpression>0</InitialExpression>
 <Required>1</Required>
 <Parameter name="MAXVAL" value="5"/>
 <Parameter name="MINVAL" value="0"/>

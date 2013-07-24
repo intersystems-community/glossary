@@ -74,6 +74,7 @@ Users' rating of translation</Description>
 <Description>
 Got to use it right</Description>
 <Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
 </Property>
 
 <UDLText name="T">

@@ -33,7 +33,7 @@ function control($scope, $http) {
         $http.put("/rest/json/term/" + term.ID, term)
             .success(function (data) {
                 $scope.alertzone = "Обновили" + term.EnglishName;
-            }).error(function (data, status) { // поменял alert(....); на alertzone
+            }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка обновления термина :( [" + data + "]";
             });
         $scope.showStateEditForm = '0';
