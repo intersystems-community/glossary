@@ -96,16 +96,18 @@ Add one translation</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-   set st=$$$OK
-   try{	
-		//опять же преобразуем переданный JSON в объект
-	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
-	   set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
-	   set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
-	   $$$THROWONERROR(st,obj.%Save())
-   } catch ex{
-	  set st=ex.AsStatus()
-    }
+	set st=$$$OK
+	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddTranslation") {    		
+   		try{	
+			//опять же преобразуем переданный JSON в объект
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
+	   		set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
+	   		set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
+	   		$$$THROWONERROR(st,obj.%Save())
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+	}
     quit st
 ]]></Implementation>
 </Method>
@@ -120,9 +122,9 @@ Add one user</Description>
    try{	
 
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))
-	   set obj.Name=$ZCONVERT(obj.Name,"I","UTF8")
+	   set obj.Login=$ZCONVERT(obj.Login,"I","UTF8")
 	   // Check password codepage
-	   set obj.Priveledge="0"
+	   //set obj.Priveledge="1"
 	   $$$THROWONERROR(st,obj.%Save())
    } catch ex{
 	  set st=ex.AsStatus()
@@ -137,10 +139,38 @@ Add one user</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
 	set phash = $system.Encryption.MD5Hash(password)
-  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Name, Priveledge FROM Word.UserTable WHERE Name='"_login_"' and Password='"_phash_"'")
-  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Translation WHERE TermId=11")
-
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_login_"' and Password='"_phash_"'")
   quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="StartSession">
+<Description>
+Create new session</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>login,password</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set phash = $system.Encryption.MD5Hash(password)
+	  &sql(SELECT Priveledge INTO :Priveledge FROM Word.UserTable WHERE Login = :login and Password=:phash)
+        
+    If (SQLCODE = 0) {
+	    try {
+	    	set Session=##class(Word.Session).%New()
+			set Usr=##class(Word.User).%OpenId(login)
+			set Session.User=Usr
+			do Session.SIDGenerate()
+			$$$THROWONERROR(st,Session.%Save()) // setContentType(type)
+			// ugly thing next line, but I have no idea how to make "setContentText" method work
+			do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select SID FROM Word.Session WHERE SID='"_Session.SID_"'")
+	    } catch ex{
+	  		set st=ex.AsStatus()
+    	}    
+    } ELSE {
+	    set st=$$$ERROR()
+    } 
+  //do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_login_"' and Password='"_phash_"'")
+  quit st
 ]]></Implementation>
 </Method>
 

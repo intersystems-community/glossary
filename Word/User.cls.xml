@@ -5,12 +5,18 @@
 <Super>%Persistent,%Populate,%XML.Adaptor</Super>
 <TimeCreated>63020,38756.679731</TimeCreated>
 
-<Property name="Name">
+<Property name="Login">
 <Description>
 User  name</Description>
 <Type>%String</Type>
 <Required>1</Required>
 </Property>
+
+<Index name="LoginIndex">
+<IdKey>1</IdKey>
+<Properties>Login</Properties>
+<Unique>1</Unique>
+</Index>
 
 <Property name="PasswordSetter">
 <Description><![CDATA[
@@ -48,12 +54,25 @@ Do (User string password -> encrypted password) transformation via MD5 hash]]></
 
 <Property name="Priveledge">
 <Description>
-User priveledge level. 0 - user, 1 - administrator.</Description>
+User priveledge level. 0 - read-only, 1 - user, 2- moderator 3 - administrator.</Description>
 <Type>%Integer</Type>
-<InitialExpression>0</InitialExpression>
+<InitialExpression>1</InitialExpression>
 <Required>1</Required>
 <Parameter name="MAXVAL" value="5"/>
 <Parameter name="MINVAL" value="0"/>
+</Property>
+
+<Property name="Email">
+<Description>
+User Email</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="Sessions">
+<Type>Word.Session</Type>
+<Cardinality>children</Cardinality>
+<Inverse>User</Inverse>
+<Relationship>1</Relationship>
 </Property>
 
 <Storage name="Default">
@@ -76,6 +95,9 @@ User priveledge level. 0 - user, 1 - administrator.</Description>
 </Value>
 <Value name="4">
 <Value>Priveledge</Value>
+</Value>
+<Value name="5">
+<Value>Email</Value>
 </Value>
 </Data>
 </Storage>

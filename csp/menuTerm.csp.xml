@@ -6,7 +6,7 @@
 			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
 		</head>
 
-	<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="Bootstrap/img/intersystems-header4.gif" hspace="20"></a></div>
+	<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="Bootstrap/img/intersystems-header6.gif" hspace="20"></a></div>
     <div class="navbar">
     <div class="navbar-inner">
 
@@ -15,8 +15,8 @@
 			<input type="submit" class="btn" value="Поиск"/>
     	</form>    	
    		
-   	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Name, user.PasswordSetter);"> 
-			<input ng-model="user.Name" type="text" class="span2" placeholder="логин">
+   	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Login, user.PasswordSetter);"> 
+			<input ng-model="user.Login" type="text" class="span2" placeholder="логин">
 			<input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль">
 			<button type="submit" class="btn" >Вход</button>
 			<button type="button" ng-click="doRegister(user);" class="btn" >Регистрация</button>

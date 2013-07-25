@@ -34,7 +34,8 @@
                         <ul class="terms">
 
                             <p ng-if="translations[0].TranslationName==undefined"> <br> Альтернативные варианты перевода
-                                отсутствуют. Добавить?</p>
+                                отсутствуют. Добавить? <p ng-if="loginState!=1">Необходимо зарегистрироваться или войти. </p> 
+                                <p ng-if="Priveledge==0">Вы в рид-онли.</p> </p>
                             <li ng-show="translations[0].TranslationName!=undefined"
                                 ng-repeat="translation in translations">
                                 <b>{{translation.TranslationName}}</H3> </b> <br>
@@ -43,7 +44,7 @@
                         </ul>
 
                         <hr>
-                        <ul class="addTranslation">
+                        <ul ng-if="Priveledge>0" class="addTranslation">
                             <form name="AddTermForm" ng-model="translation"
                                   ng-submit="translation.TermId='{{terms[0].ID}}';
 						  		translation.TranslationRating='0'; addTranslation(translation); translation.$setPristine();">
@@ -57,8 +58,7 @@
                             </form>
                         </ul>
                     </div>
-                    <br>
-                    <div class="DefinitionText">Русское описание: {{terms[0].RussianDefinition}}</div>  <br>
+                    <div class="DefinitionText"><H4>Описание</H4> {{terms[0].RussianDefinition}}</div>  <br>
                     <div class="DefinitionText">Контекст: {{terms[0].RussianNameContext}}</div>  <br>
                      <button ng-click="showEngDef=!showEngDef" class="btn">English definition</button>
                        <div class="DefinitionText" ng-if="showEngDef==1"> <br>{{terms[0].EnglishDefinition}} <br> <br>Context: {{terms[0].EnglishNameContext}} </div>

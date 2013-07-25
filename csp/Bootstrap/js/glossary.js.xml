@@ -3,6 +3,7 @@
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
  angular.module('GlossaryApp', ['ngCookies']);
 
+config(['$httpProvider', function($httpProvider) {$httpProvider.defaults.withCredentials = true;}]);
 // User-controller. Can get all/one term(s), get/add translations
  function control($scope, $http, $cookies, $cookieStore) {
 
@@ -11,7 +12,8 @@
     $scope.showStateRU = "0";
     $scope.StartLetter = "";
 	$scope.letterLanguage= "En"
-	$scope.loginState=$cookieStore.get('Login');
+	$scope.loginState=$cookieStore.get('LoginState');
+	$scope.Priveledge=$cookieStore.get('Priveledge');
 	
     // Get all terms
     $scope.getTerms = function () {
@@ -29,7 +31,7 @@
         translation.class = "Word.Translation";
         // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
         // can specify it in  $http.post. Does not work, though
-        $http.post("/rest/json/translation", translation)
+        $http.post("/rest/json/translation", translation, {headers: {withCredentials:true}} )
             .success(function (data) {
 	            $scope.getTranslations($scope.terms[0].ID);
                 $scope.alertzone = "Добавили перевод для " + terms[0].EnglishName;
@@ -170,12 +172,13 @@
     $http.get("/rest/json/user/"+ login + "/" + password)
             .success(function (data) {
 	            if (data.children[0]!=undefined)	{
-                	$cookieStore.put('Name',  data.children[0].Name);  
+                	$cookieStore.put('Login',  data.children[0].Login);  
                 	$cookieStore.put('Priveledge',data.children[0].Priveledge);
-                	$cookieStore.put('Login',1); 
-                	$scope.loginState=1;               	
-                	$cookieStore.put('SID',data.children[0].SID);
-                	$scope.alertzone = "Вход успешен "+$cookieStore.get('Name'); 
+                	$cookieStore.put('LoginState',1); 
+                	$scope.loginState=1;  
+                	$scope.Priveledge=data.children[0].Priveledge;
+                	$scope.startSession(login, password);           	
+                	$scope.alertzone = "Вход успешен "+$cookieStore.get('Login'); 
 	            } else {$scope.alertzone = "Ошибка входа";  }            
             }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка входа:( [" + data + "]";
@@ -184,12 +187,29 @@
 	
 	$scope.doExit  = function() {
 		
-		$cookieStore.remove('Name');
+		$cookieStore.remove('Login');
 		$cookieStore.remove('Priveledge');
 		$cookieStore.remove('SID');
-		$cookieStore.remove('Login');
+		$cookieStore.remove('LoginState');
 		$scope.loginState=0;  		
 	}  
+	
+	$scope.startSession = function(login, password) {
+	  $http.get("/rest/json/session/"+ login + "/" + password)
+            .success(function (data) {
+	            if (data.children[0]!=undefined)	{
+                	$cookieStore.put('SID',data.children[0].SID);
+	            } else {$scope.alertzone = "Ошибка входа";  }            
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка входа:( [" + data + "]";
+            });
+	}	
+		
+		
+		
+	
+	
+	
 
 };
 

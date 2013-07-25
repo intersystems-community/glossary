@@ -28,6 +28,7 @@
 	// do ##class(Word.Tests.Utilities).KillAll()
 	w ##class(Word.Term).%DeleteExtent()
 	w ##class(Word.Translation).%DeleteExtent()
+	w ##class(Word.Session).%DeleteExtent()
 ]]></Implementation>
 </Method>
 
