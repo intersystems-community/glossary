@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
- angular.module('GlossaryApp', ['ngCookies']).config(['$httpProvider', 	function($httpProvider) {$httpProvider.defaults.withCredentials = true;}], 
- 	['$http', 	function($http) {$http.defaults.headers.common.Auth = 'token';} ]);
+ angular.module('GlossaryApp', ['ngCookies']);
 
  //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
  //.config(function ($cookieStore, $http) {$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookieStore.get('SID');}
@@ -50,12 +49,26 @@
                 $scope.alertzone = "[" + status + "] Ошибка добавления перевода:( [" + data + "]";
             });
     }
+    
+    
+     // Add one comment to term
+	$scope.addComment = function (comment) {
+        comment.class = "Word.Comment";
+        $http.post("/rest/json/comment/"+$scope.terms[0].ID, comment)
+            .success(function (data) {
+	            $scope.getComments($scope.terms[0].ID);
+                $scope.alertzone = "Добавили комментарий для " + terms[0].EnglishName;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка добавления комментария:( [" + data + "]";
+            });
+    }
 
 	// Get one term by its id in database
     $scope.getTerm = function (termid) {  
         $http.get("/rest/json/term/" + termid).success(function (data) {
             $scope.terms = data.children;
             $scope.getTranslations($scope.terms[0].ID);
+            $scope.getComments($scope.terms[0].ID);
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки термина :( [" + data + "]";
             });
@@ -68,6 +81,15 @@
             $scope.translations = data.children;
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+            });
+    }
+    
+    // Get all comments of a term
+    $scope.getComments = function (termid) { 
+        $http.get("/rest/json/comment/" + termid).success(function (data) {
+            $scope.comments = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
             });
     }
     

@@ -40,6 +40,25 @@ Got to use it right</Description>
 <Properties>TermId</Properties>
 </Index>
 
+<Property name="User">
+<Type>Word.User</Type>
+<Cardinality>one</Cardinality>
+<Inverse>Translations</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="CreationDate">
+<Type>%Date</Type>
+<InitialExpression>$PIECE($NOW(),",",1)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Property name="CreationTime">
+<Type>%Time</Type>
+<InitialExpression>$PIECE($NOW(),",",2)</InitialExpression>
+<Required>1</Required>
+</Property>
+
 <Method name="PopulateXML">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>

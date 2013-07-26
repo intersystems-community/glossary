@@ -38,6 +38,9 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/json/user/:login/:password" Method="GET" Call="REST.JSON:LoginUser"/>
    
    <Route Url="/json/session/:login/:password" Method="GET" Call="REST.JSON:StartSession"/>
+   
+   <Route Url="/json/comment/:termid" Method="GET" Call="REST.JSON:GetComments"/>
+   <Route Url="/json/comment/:termid" Method="POST" Call="REST.JSON:AddComment"/>
  </Routes>
 ]]></Data>
 </XData>

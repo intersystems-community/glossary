@@ -63,11 +63,32 @@
                      <button ng-click="showEngDef=!showEngDef" class="btn">English definition</button>
                        <div class="DefinitionText" ng-if="showEngDef==1"> <br>{{terms[0].EnglishDefinition}} <br> <br>Context: {{terms[0].EnglishNameContext}} </div>
                      <p ng-if="showEngDef==undefined"></p>  <p ng-if="showEngDef==0"></p>
-                    <a href='{{terms[0].FurtherRead}}'>Дальнейшее чтение</a> <br>
-                    <br>
-
-
-                </ul>
+                    <a href='{{terms[0].FurtherRead}}'>Дальнейшее чтение</a>
+                </ul>                           
+                  <div class="comments">
+                        <ul class="terms">
+                            <p ng-if="comments[0].Text==undefined"> <br> Комментарии
+                                отсутствуют. Добавить?  </p> 
+                                 <p ng-if="comments[0].Text!=undefined"> <br> Комментарии:</p>
+                            <li ng-show="comments[0].Text!=undefined"
+                                ng-repeat="comment in comments">
+                                <b>{{comment.Login}} </b> писал {{comment.CreationDate}} в {{comment.CreationTime}}  <br>
+                                {{comment.Text}} <br>
+                        </ul>
+                        
+                        <hr>
+                        <ul ng-if="Priveledge>0" ng-if="Priveledge>0" class="addComentform">
+                        
+                            <form name="AddCommentForm" ng-model="comment"
+                                  ng-submit="addComment(comment); comment=''">
+                                 <textarea class="span6" rows="3" placeholder="Текст" ng-model="comment.Text"></textarea> <br>
+                                <br>
+                                <input type="submit" class="btn" value="Добавить комментарий"/>
+                            </form>                           
+                        </ul>
+                        <ul class="terms"  ng-if="loginState!=1">Для добавления комментариев необходимо зарегистрироваться или войти. </ul>
+                    	<ul class="terms"  ng-if="Priveledge==0">Вы в рид-онли.</ul>
+                    </div>
 
 
             </article>

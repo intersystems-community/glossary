@@ -13,6 +13,8 @@
 	w ##class(Word.Term).%DeleteExtent()	
 	//do ##class(Word.Term).Populate(num)
 	//w ##class(Word.Translation).Populate(num)
+	// w ##class(Word.User).Populate(num)
+	// w ##class(Word.Comment).Populate(num)
 	// do ##class(Word.Tests.Utilities).SerializeToFileTerm("D:\Git\terms.xml")
 	// do ##class(Word.Tests.Utilities).SerializeToFileTranslation("D:\Git\translations.xml")
 	

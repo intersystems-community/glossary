@@ -37,7 +37,7 @@ Get a list of all terms in JSON format</Description>
 
 <Method name="GetTranslations">
 <Description>
-Get one translations in JSON format</Description>
+Get one term translations in JSON format</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
@@ -47,9 +47,19 @@ Get one translations in JSON format</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="GetComments">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ""User""->Login As Login,Text,CreationDate,CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
 <Method name="GetTerm">
 <Description>
-Get all translations</Description>
+Get one term</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
@@ -101,10 +111,41 @@ Add one translation</Description>
 	/// AllowAction - return true or false based on arbitrary parameters
 	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddTranslation") {    		
    		try{	
+   			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
+   			set user=##class(Word.User).%OpenId(Id)
 			//опять же преобразуем переданный JSON в объект
 	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
 	   		set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
 	   		set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
+	   		set obj.User=user
+	   		$$$THROWONERROR(st,obj.%Save())
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+	}
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddComment">
+<Description>
+Add one comment</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+
+	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddComment") {    		
+   		try{	
+   			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
+   			set user=##class(Word.User).%OpenId(Id)
+   			set term=##class(Word.Term).%OpenId(termid)
+			//опять же преобразуем переданный JSON в объект
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Comment",.obj,1))
+	   		set obj.Text=$ZCONVERT(obj.Text,"I","UTF8")
+	   		set obj.User=user
+	   		set obj.Term=term
 	   		$$$THROWONERROR(st,obj.%Save())
    		} catch ex{
 	  		set st=ex.AsStatus()

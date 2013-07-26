@@ -84,6 +84,13 @@ Got to use it right</Description>
 ]]></Content>
 </UDLText>
 
+<Property name="Comments">
+<Type>Word.Comment</Type>
+<Cardinality>children</Cardinality>
+<Inverse>Term</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
 <Method name="PopulateXML">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
