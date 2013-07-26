@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
- angular.module('GlossaryApp', ['ngCookies']);
+ angular.module('GlossaryApp', ['ngCookies']).config(['$httpProvider', 	function($httpProvider) {$httpProvider.defaults.withCredentials = true;}], 
+ 	['$http', 	function($http) {$http.defaults.headers.common.Auth = 'token';} ]);
 
-config(['$httpProvider', function($httpProvider) {$httpProvider.defaults.withCredentials = true;}]);
+ //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
+ //.config(function ($cookieStore, $http) {$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookieStore.get('SID');}
+ //.config(['$httpProvider', 	function($httpProvider) {$httpProvider.defaults.withCredentials = true;}]);
+
+
 // User-controller. Can get all/one term(s), get/add translations
  function control($scope, $http, $cookies, $cookieStore) {
 
@@ -14,7 +19,7 @@ config(['$httpProvider', function($httpProvider) {$httpProvider.defaults.withCre
 	$scope.letterLanguage= "En"
 	$scope.loginState=$cookieStore.get('LoginState');
 	$scope.Priveledge=$cookieStore.get('Priveledge');
-	
+
     // Get all terms
     $scope.getTerms = function () {
         $http.get("/rest/json/terms").success(function (data) {
@@ -31,7 +36,13 @@ config(['$httpProvider', function($httpProvider) {$httpProvider.defaults.withCre
         translation.class = "Word.Translation";
         // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
         // can specify it in  $http.post. Does not work, though
-        $http.post("/rest/json/translation", translation, {headers: {withCredentials:true}} )
+		//  "Content-Type": "application/json"
+		// headers: { 'Set-Cookie': "SID="+$cookieStore.get('SID')+";" }
+		///MIME-field = field-name ":" #field-value
+		//data: { email: "111", password: "22"},
+		//translation.SID = $cookieStore.get('SID');
+		// {headers : { "Set-cookie" : "sessionId="+$cookieStore.get('SID')+";"}}
+        $http.post("/rest/json/translation", translation)
             .success(function (data) {
 	            $scope.getTranslations($scope.terms[0].ID);
                 $scope.alertzone = "Добавили перевод для " + terms[0].EnglishName;
@@ -198,7 +209,7 @@ config(['$httpProvider', function($httpProvider) {$httpProvider.defaults.withCre
 	  $http.get("/rest/json/session/"+ login + "/" + password)
             .success(function (data) {
 	            if (data.children[0]!=undefined)	{
-                	$cookieStore.put('SID',data.children[0].SID);
+                	//$cookieStore.put('SID',data.children[0].SID);
 	            } else {$scope.alertzone = "Ошибка входа";  }            
             }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка входа:( [" + data + "]";

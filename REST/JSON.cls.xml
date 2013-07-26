@@ -97,6 +97,8 @@ Add one translation</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
 	set st=$$$OK
+	/// %request.Cookies("SID",1) - get cookie SID (see StartSession for details)
+	/// AllowAction - return true or false based on arbitrary parameters
 	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddTranslation") {    		
    		try{	
 			//опять же преобразуем переданный JSON в объект
@@ -161,14 +163,17 @@ Create new session</Description>
 			set Session.User=Usr
 			do Session.SIDGenerate()
 			$$$THROWONERROR(st,Session.%Save()) // setContentType(type)
-			// ugly thing next line, but I have no idea how to make "setContentText" method work
-			do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select SID FROM Word.Session WHERE SID='"_Session.SID_"'")
+			/// Important cookie for authentification
+			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_httpreq
+			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_sessions#GCSP_sessions_cookies
+			Do %response.SetCookie("SID",Session.SID,,"/")
 	    } catch ex{
 	  		set st=ex.AsStatus()
     	}    
     } ELSE {
 	    set st=$$$ERROR()
     } 
+   
   //do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_login_"' and Password='"_phash_"'")
   quit st
 ]]></Implementation>
