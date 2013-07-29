@@ -35,6 +35,23 @@ Get a list of all terms in JSON format</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="GetAllUsers">
+<Description>
+Get a list of all Users</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   
+   set st=$$$OK
+   try{
+ 		do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime, Email, Login, Priveledge FROM Word.UserTable ORDER BY CreationDate DESC, CreationTime DESC")
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
 <Method name="GetTranslations">
 <Description>
 Get one term translations in JSON format</Description>
@@ -48,12 +65,40 @@ Get one term translations in JSON format</Description>
 </Method>
 
 <Method name="GetComments">
+<Description>
+Get all comments on one term</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
 	// Date format conversion http://docs.intersystems.com/ens20091/csp/docbook/DocBook.UI.Page.cls?KEY=RSQL_convert
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ID, ""User""->Login As Login,Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetCommentsByUser">
+<Description>
+Get all comments by one user</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTranslationsByUser">
+<Description>
+Get all translations by one user</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT EnglishName, Word.Translation.ID, TranslationContext,TranslationName, TranslationRating, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate,CreationTime FROM Word.Translation JOIN Word.Term ON Word.Term.Id=TermId  WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC,CreationTime DESC")
   quit $$$OK
 ]]></Implementation>
 </Method>
@@ -252,6 +297,30 @@ Update term with new values</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="UpdateUser">
+<Description>
+Update one user.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+
+   try{   
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))											   
+       /// url -> encoded url -> utf8
+       set user=##class(Word.User).%OpenId($ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8"))
+       set user.Email = $ZCONVERT(obj.Email ,"I","UTF8")
+       set user.Login = $ZCONVERT(obj.Login ,"I","UTF8")
+       set user.Priveledge = $ZCONVERT(obj.Priveledge ,"I","UTF8")
+       $$$THROWONERROR(st,user.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
 <Method name="DeleteTerm">
 <Description>
 Delete one term</Description>
@@ -263,6 +332,42 @@ Delete one term</Description>
    try{
 	   $$$THROWONERROR(st,##class(Word.Term).%DeleteId(termid))
 	   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"DELETE FROM Word.Translation WHERE TermId="_termid)
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteUser">
+<Description>
+Delete user. Scale - 0 only user, 1 - user and his comments, 2 - user and his translations
+3 - user and his comments and translations. (User sessions deleted regardless of scale)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String,scale:%Integer</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+	    IF (scale=0) {
+		   $$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}
+		ELSEIF (scale=1) { 			
+			&SQL(DELETE FROM Word.Comment WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}
+		ELSEIF (scale=2) {
+			
+			&SQL(DELETE FROM Word.Translation WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))			
+		}
+		ELSEIF (scale=3) { 
+			
+			&SQL(DELETE FROM Word.Comment WHERE "User"->Login=:usr)
+			&SQL(DELETE FROM Word.Translation WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}						
    } catch ex{
 	  set st=ex.AsStatus()
     }
@@ -297,9 +402,7 @@ Delete one comment</Description>
    set st=$$$OK
    try{	  
    		//  HTML encoding -> Plaintext (%7C = |)
-   		// Incoming: TermId%7C%7Cchildsub
-		SET commentid=$PIECE(commentid,"%7C",1)_"||"_$PIECE(commentid,"%7C",3)
-	   $$$THROWONERROR(st,##class(Word.Comment).%DeleteId(commentid))
+	   $$$THROWONERROR(st,##class(Word.Comment).%DeleteId($ZCONVERT($ZCONVERT(commentid ,"I","URL") ,"I","UTF8")))
    } catch ex{
 	  set st=ex.AsStatus()
     }
@@ -309,7 +412,7 @@ Delete one comment</Description>
 
 <Method name="MakeTranslationDefault">
 <Description>
-Make new translation default. INPROGRESS</Description>
+Make new translation default.</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>translationid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
