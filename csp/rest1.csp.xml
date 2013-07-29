@@ -15,6 +15,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="Bootstrap/js/glossary.js"></script>
+    <script src="Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
     <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
@@ -36,6 +37,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
  <div class="letter_select_box" ng-repeat="letter in letters" ng-bind="letter.text" ng-click="SetStartLetter(letter.text);"></div>
 	</div>
 	<!--  END First letter filter bar -->
+
     <ul class="terms">
     	<!--Loop through all terms -->
         <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filter:filterFL | orderBy:orderProp">

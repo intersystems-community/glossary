@@ -120,5 +120,9 @@ html {
 .DefinitionText {
 	text-align: justify; 	
 }
-]]></CSP>
+
+#regbtn {
+	margin-right: 5px;
+	float: right !important;
+}]]></CSP>
 </Export>

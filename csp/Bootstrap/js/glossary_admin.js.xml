@@ -41,13 +41,16 @@ function control($scope, $http) {
 
     // Delete one term
     $scope.deleteTerm = function (termid) {
-        $http.delete("/rest/json/term/" + termid)
-            .success(function (data) {
-                $scope.getTerms();
-                $scope.alertzone = "Удаление!!!";
-            }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка удаления термина :( [" + data + "]";
-            });
+		if (confirm('Действительно удалить?')== true) {
+        	$http.delete("/rest/json/term/" + termid)
+            	.success(function (data) {
+	            	///Page reload because index problems
+                	window.location.reload()
+                	$scope.alertzone = "Удаление!!!";
+            	}).error(function (data, status) {
+                	$scope.alertzone = "[" + status + "] Ошибка удаления термина :( [" + data + "]";
+            	});
+		}
     }
 	
 	// Get term translations by its index. Needed to perform no-refresh translations autoupdate
@@ -83,9 +86,30 @@ function control($scope, $http) {
             });
     }
     
+    // To the front page
     $scope.dosearch=function(query){
 			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
 	}
+	
+	  // Get all comments of a term
+    $scope.getCommentsByIndex = function (index) { 
+        $http.get("/rest/json/comment/" + ($scope.terms[index].ID)).success(function (data) {
+             $scope.terms[index].comments = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
+            });
+    }
+    
+       $scope.deleteComment = function (commentid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/rest/json/comment/" + commentid)
+            .success(function (data) {
+                $scope.getCommentsByIndex(index);
+                $scope.alertzone = "Удаление!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления комментария :( [" + data + "]";
+            });
+    }
 
 };]]></CSP>
 </Export>

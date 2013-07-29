@@ -8,6 +8,7 @@
     <title>InterSystems Glossary</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="Bootstrap/js/glossary.js"></script>
+    <script src="Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
 	<script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
@@ -47,7 +48,7 @@
                         <ul ng-if="Priveledge>0" class="addTranslation">
                             <form name="AddTermForm" ng-model="translation"
                                   ng-submit="translation.TermId='{{terms[0].ID}}';
-						  		translation.TranslationRating='0'; addTranslation(translation); translation.$setPristine();">
+						  		translation.TranslationRating='0'; addTranslation(translation); translation='';">
                                 <H3>{{terms[0].EnglishName}}</H3>
                                 <input type="text" placeholder="Перевод" ng-model="translation.TranslationName"
                                        required/>

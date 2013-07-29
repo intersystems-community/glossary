@@ -41,6 +41,7 @@ https://github.com/MDevelopmentGroup/Recruting
    
    <Route Url="/json/comment/:termid" Method="GET" Call="REST.JSON:GetComments"/>
    <Route Url="/json/comment/:termid" Method="POST" Call="REST.JSON:AddComment"/>
+   <Route Url="/json/comment/:commentid" Method="DELETE" Call="REST.JSON:DeleteComment"/>   
  </Routes>
 ]]></Data>
 </XData>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
- angular.module('GlossaryApp', ['ngCookies']);
+ angular.module('GlossaryApp', ['ngCookies', 'ui.bootstrap']);
 
  //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
  //.config(function ($cookieStore, $http) {$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookieStore.get('SID');}
@@ -9,7 +9,7 @@
 
 
 // User-controller. Can get all/one term(s), get/add translations
- function control($scope, $http, $cookies, $cookieStore) {
+ function control($scope, $http, $cookies, $cookieStore, $dialog) {
 
 	
     $scope.showStateEN = "0";
@@ -189,11 +189,11 @@
 	}
 
 	$scope.doRegister = function(user) {
-	//alert(user.Name+" "+user.PasswordSetter);
 	user.class = "Word.User";
     $http.post("/rest/json/user", user)
             .success(function (data) {	           
-                $scope.alertzone = "Регистрация успешна " + user.Name;
+                $scope.alertzone = "Регистрация успешна " + user.Login;
+                 $scope.doLogin(user.Login, user.PasswordSetter);
             }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка регистрации:( [" + data + "]";
             });
@@ -238,13 +238,47 @@
             });
 	}	
 		
-		
-		
-	
-	
-	
+		///__________________REG
+	 var t = '<div class="modal-header">'+
+          '<h3>Регистрация</h3>'+
+          '</div>'+
+          '<div class="modal-body">'+
+          '<p>Все поля обязательны для заполнения</p>'+
+          '<form class="form"  ng-model="user" ng-submit="close(User)">'+          
+          '<p><input ng-model="User.Email" type="email" class="span2" placeholder="Email" required/></p>'+
+          '<p><input ng-model="User.Login" type="text" class="span2" placeholder="Логин" required/></p>'+
+          '<p><input ng-model="User.PasswordSetter" type="text" class="span2" placeholder="Пароль" required/></p>'+
+          '<button type="submit" class="btn">Регистрация</button>'+
+          '</form>'+          
+          '</div>';
 
-};
+  	$scope.opts = {
+    	backdrop: true,
+    	keyboard: true,
+    	backdropClick: true,
+    	template:  t, // OR: templateUrl: 'path/to/view.html',
+    	controller: 'RegistrationDialogController'
+  	};
+
+  	$scope.openDialog = function(){
+    	var d = $dialog.dialog($scope.opts);
+    	d.open().then(function(user){
+      	if(user)
+      	{
+        	$scope.doRegister(user);
+      	}
+    	});
+  	};
+
+}
+
+	// the dialog is injected in the specified controller
+	function RegistrationDialogController($scope, dialog){
+  	$scope.close = function(user){
+    	dialog.close(user);
+    	//alert(user.Login+" "+user.Email+" "+user.PasswordSetter);
+  	};
+}
 
 
 

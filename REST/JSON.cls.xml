@@ -52,7 +52,8 @@ Get one term translations in JSON format</Description>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ""User""->Login As Login,Text,CreationDate,CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
+	// Date format conversion http://docs.intersystems.com/ens20091/csp/docbook/DocBook.UI.Page.cls?KEY=RSQL_convert
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ID, ""User""->Login As Login,Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
   quit $$$OK
 ]]></Implementation>
 </Method>
@@ -80,9 +81,10 @@ Add one term</Description>
 <Implementation><![CDATA[
    set st=$$$OK
    try{	
-		//опять же преобраразуем переданный JSON в объект
+		//JSON -> Object
 		set obj=##class(Word.Term).%New()
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))	   
+	   // Solves problems with encoding 
 	   set obj.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
        set obj.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
        set obj.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
@@ -90,8 +92,7 @@ Add one term</Description>
        set obj.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
        set obj.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
        set obj.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
-	   //set term=##class(Word.Term).%OpenId(1)
-	   //set obj.Term=term
+       
 	   $$$THROWONERROR(st,obj.%Save())
    } catch ex{
 	  set st=ex.AsStatus()
@@ -107,13 +108,13 @@ Add one translation</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
 	set st=$$$OK
-	/// %request.Cookies("SID",1) - get cookie SID (see StartSession for details)
+	/// %request.Cookies("SID",1) - get first value of cookie named SID (see StartSession for details)
 	/// AllowAction - return true or false based on arbitrary parameters
 	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddTranslation") {    		
    		try{	
    			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
    			set user=##class(Word.User).%OpenId(Id)
-			//опять же преобразуем переданный JSON в объект
+			//JSON -> Object
 	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
 	   		set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
 	   		set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
@@ -141,7 +142,6 @@ Add one comment</Description>
    			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
    			set user=##class(Word.User).%OpenId(Id)
    			set term=##class(Word.Term).%OpenId(termid)
-			//опять же преобразуем переданный JSON в объект
 	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Comment",.obj,1))
 	   		set obj.Text=$ZCONVERT(obj.Text,"I","UTF8")
 	   		set obj.User=user
@@ -204,7 +204,7 @@ Create new session</Description>
 			set Session.User=Usr
 			do Session.SIDGenerate()
 			$$$THROWONERROR(st,Session.%Save()) // setContentType(type)
-			/// Important cookie for authentification
+			/// Important cookie for authentification purposes. Info:
 			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_httpreq
 			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_sessions#GCSP_sessions_cookies
 			Do %response.SetCookie("SID",Session.SID,,"/")
@@ -272,7 +272,7 @@ Delete one term</Description>
 
 <Method name="DeleteTranslation">
 <Description>
-Delete one term</Description>
+Delete one translation</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>translationid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
@@ -280,6 +280,26 @@ Delete one term</Description>
    set st=$$$OK
    try{
 	   $$$THROWONERROR(st,##class(Word.Translation).%DeleteId(translationid))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteComment">
+<Description>
+Delete one comment</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>commentid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	  
+   		//  HTML encoding -> Plaintext (%7C = |)
+   		// Incoming: TermId%7C%7Cchildsub
+		SET commentid=$PIECE(commentid,"%7C",1)_"||"_$PIECE(commentid,"%7C",3)
+	   $$$THROWONERROR(st,##class(Word.Comment).%DeleteId(commentid))
    } catch ex{
 	  set st=ex.AsStatus()
     }

@@ -30,7 +30,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
         <br>
 
         <form ng-show="showState" name="AddTermForm" ng-model="term"
-              ng-submit="term.RussianNameRating=0; addTerm(term);">
+              ng-submit="term.RussianNameRating=0; addTerm(term); term=''">
             <input type="text" placeholder="English name" ng-model="term.EnglishName" required/> <br>
             <input type="text" placeholder="Русское имя" ng-model="term.RussianName" required/> <br>
             <textarea class="span6" rows="3" placeholder="Definition" ng-model="term.EnglishDefinition"
@@ -58,12 +58,13 @@ http://code.angularjs.org/1.1.5/angular.min.js
             <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
             <button ng-Click="deleteTerm(term.ID)" class="btn">Удалить</button>
 
-            <button ng-click="showStateEditForm=!showStateEditForm; getTranslationsByIndex({{$index}});" class="btn">
+            <button ng-click="showStateEditForm=!showStateEditForm; getTranslationsByIndex({{$index}});  getCommentsByIndex({{$index}})" class="btn">
                 Редактировать
             </button>
             <table ng-show="showStateEditForm" class="table-bordered">
                 <tr>
                     <td>
+                    	Термин:
                         <form name="EditTermForm" ng-model="term" ng-submit="updateTerm(term);">
                             <input type="text" ng-model="term.EnglishName" required/> <br>
                             <input type="text" ng-model="term.RussianName" required/> <br>
@@ -92,7 +93,15 @@ http://code.angularjs.org/1.1.5/angular.min.js
                         </li>
                     </td>
                     <td>
-                        Комментарии
+                        Комментарии:
+                        <li ng-model="term.comments" ng-repeat="comment in term.comments">
+                             <b>{{comment.Login}} </b> писал {{comment.CreationDate}} в {{comment.CreationTime}}  <br>
+                                {{comment.Text}} <br>                           
+                            <button class="btn" ng-click="deleteComment(comment.ID, {{$parent.$index}});">
+                                Удалить
+                            </button>
+                        </li>
+                        
                     </td>
                 </tr>
             </table>
