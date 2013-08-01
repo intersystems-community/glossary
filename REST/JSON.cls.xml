@@ -253,6 +253,7 @@ Create new session</Description>
 			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_httpreq
 			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_sessions#GCSP_sessions_cookies
 			Do %response.SetCookie("SID",Session.SID,,"/")
+			Do %response.SetCookie("LoginState","1",,"/")
 	    } catch ex{
 	  		set st=ex.AsStatus()
     	}    
@@ -422,15 +423,14 @@ Make new translation default.</Description>
    		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
 											   
        set translation=##class(Word.Translation).%OpenId(translationid)
-       throw:translation=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       //throw:translation=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
        set term=##class(Word.Term).%OpenId(translation.TermId)
-       throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       //throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
        //swapping two objects
        set tempName =  term.RussianName
        set tempContext = term.RussianNameContext
        set tempRating = term.RussianNameRating
-       
-       
+	   //set usrDefault=##class(Word.User).%OpenId("Admin")
        set term.RussianName = translation.TranslationName
        set term.RussianNameContext = translation.TranslationContext
        set term.RussianNameRating = translation.TranslationRating
@@ -438,7 +438,8 @@ Make new translation default.</Description>
        set translation.TranslationName = tempName
        set translation.TranslationContext = tempContext
        set translation.TranslationRating = tempRating
-
+		do term.%Save()
+		do translation.%Save()
        &html<<h1>Name <b>#(translation.TranslationName)#</b></h1>>  
        &html<<h1>ID <b>#(translationid)#</b></h1>>  
        $$$THROWONERROR(st,term.%Save())

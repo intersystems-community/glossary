@@ -21,7 +21,7 @@
 
     // Get all terms
     $scope.getTerms = function () {
-        $http.get("/rest/json/terms").success(function (data) {
+        $http.get("/glossary/json/terms").success(function (data) {
             $scope.terms = data.children;
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
@@ -41,7 +41,7 @@
 		//data: { email: "111", password: "22"},
 		//translation.SID = $cookieStore.get('SID');
 		// {headers : { "Set-cookie" : "sessionId="+$cookieStore.get('SID')+";"}}
-        $http.post("/rest/json/translation", translation)
+        $http.post("/glossary/json/translation", translation)
             .success(function (data) {
 	            $scope.getTranslations($scope.terms[0].ID);
                 $scope.alertzone = "Добавили перевод для " + terms[0].EnglishName;
@@ -54,7 +54,7 @@
      // Add one comment to term
 	$scope.addComment = function (comment) {
         comment.class = "Word.Comment";
-        $http.post("/rest/json/comment/"+$scope.terms[0].ID, comment)
+        $http.post("/glossary/json/comment/"+$scope.terms[0].ID, comment)
             .success(function (data) {
 	            $scope.getComments($scope.terms[0].ID);
                 $scope.alertzone = "Добавили комментарий для " + terms[0].EnglishName;
@@ -65,7 +65,7 @@
 
 	// Get one term by its id in database
     $scope.getTerm = function (termid) {  
-        $http.get("/rest/json/term/" + termid).success(function (data) {
+        $http.get("/glossary/json/term/" + termid).success(function (data) {
             $scope.terms = data.children;
             $scope.getTranslations($scope.terms[0].ID);
             $scope.getComments($scope.terms[0].ID);
@@ -77,7 +77,7 @@
 
 	// Get all translations of a term
     $scope.getTranslations = function (termid) { 
-        $http.get("/rest/json/translation/" + termid).success(function (data) {
+        $http.get("/glossary/json/translation/" + termid).success(function (data) {
             $scope.translations = data.children;
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
@@ -86,7 +86,7 @@
     
     // Get all comments of a term
     $scope.getComments = function (termid) { 
-        $http.get("/rest/json/comment/" + termid).success(function (data) {
+        $http.get("/glossary/json/comment/" + termid).success(function (data) {
             $scope.comments = data.children;
         }).error(function (data, status) {
                 $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
@@ -95,11 +95,11 @@
     
     // Redirect to main page with search query
     $scope.dosearch=function(query){
-			window.location.href = "/rest/terms/"+query;
+			window.location.href = "/glossary/terms/"+query;
 	}
 	
 	$scope.openAbout=function(){
-			window.location.href = "/rest/about";
+			window.location.href = "/glossary/about";
 	}
 		
 	$scope.lettersEn = [
@@ -194,7 +194,7 @@
 
 	$scope.doRegister = function(user) {
 	user.class = "Word.User";
-    $http.post("/rest/json/user", user)
+    $http.post("/glossary/json/user", user)
             .success(function (data) {	           
                 $scope.alertzone = "Регистрация успешна " + user.Login;
                  $scope.doLogin(user.Login, user.PasswordSetter);
@@ -206,12 +206,12 @@
 	
 	
 	$scope.doLogin  = function(login, password) {           
-    $http.get("/rest/json/user/"+ login + "/" + password)
+    $http.get("/glossary/json/user/"+ login + "/" + password)
             .success(function (data) {
 	            if (data.children[0]!=undefined)	{
                 	$cookieStore.put('Login',  data.children[0].Login);  
                 	$cookieStore.put('Priveledge',data.children[0].Priveledge);
-                	$cookieStore.put('LoginState',1); 
+                	//$cookieStore.put('LoginState',1); 
                 	$scope.loginState=1;  
                 	$scope.Priveledge=data.children[0].Priveledge;
                 	$scope.startSession(login, password);           	
@@ -223,16 +223,16 @@
 	}
 	
 	$scope.doExit  = function() {
-		
-		$cookieStore.remove('Login');
-		$cookieStore.remove('Priveledge');
-		$cookieStore.remove('SID');
-		$cookieStore.remove('LoginState');
-		$scope.loginState=0;  		
+		$scope.loginState=0;  
+		$cookieStore.remove("Login");
+		$cookieStore.remove("Priveledge");
+		$cookieStore.put("LoginState",0); 	
+		document.cookie = "LoginState" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+		document.cookie = "SID" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";	
 	}  
 	
 	$scope.startSession = function(login, password) {
-	  $http.get("/rest/json/session/"+ login + "/" + password)
+	  $http.get("/glossary/json/session/"+ login + "/" + password)
             .success(function (data) {
 	            if (data.children[0]!=undefined)	{
                 	//$cookieStore.put('SID',data.children[0].SID);

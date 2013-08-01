@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-<Class name="REST.Broker">
-<Description><![CDATA[
-*******************************************************
-использованы материалы с мероприятия
-some part of this source code getting from
-InterSystems Global Summit 2013 
-"Building Mobile Applications with RESTful Interfaces" 
-by Chris Carmichael and Oliver Caudron
-*******************************************************
-Также использован код из проекта
-https://github.com/MDevelopmentGroup/Recruting
-*******************************************************
-После компиляции работает по адресу
-<a href = "http://localhost:57772/rest/test">http://localhost:57772/rest/test</a>]]></Description>
+<Class name="REST.BrokerAdmin">
 <Super>%CSP.REST</Super>
-<TimeCreated>62999,56505.766013</TimeCreated>
+<TimeCreated>63035,61098.747218</TimeCreated>
 
 <XData name="UrlMap">
 <Data><![CDATA[
@@ -26,12 +13,18 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/terms/" Method="GET" Call="csp.rest1:OnPage"/>
    <Route Url="/about" Method="GET" Call="csp.about:OnPage"/>
    <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
+   <Route Url="/admin" Method="GET" Call="csp.admin:OnPage"/>
 
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
    <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
+   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddTerm"/>
+   <Route Url="/json/term/:termid" Method="DELETE" Call="REST.JSON:DeleteTerm"/>
+   <Route Url="/json/term/:termid" Method="PUT" Call="REST.JSON:UpdateTerm"/>
    
    <Route Url="/json/translation" Method="POST" Call="REST.JSON:AddTranslation"/>
    <Route Url="/json/translation/:termid" Method="GET" Call="REST.JSON:GetTranslations"/> 
+   <Route Url="/json/translation/:translationid" Method="DELETE" Call="REST.JSON:DeleteTranslation"/>   
+   <Route Url="/json/translation/:translationid" Method="POST" Call="REST.JSON:MakeTranslationDefault"/>
    
    <Route Url="/json/user" Method="POST" Call="REST.JSON:AddUser"/>
    <Route Url="/json/user/:login/:password" Method="GET" Call="REST.JSON:LoginUser"/>
@@ -40,11 +33,14 @@ https://github.com/MDevelopmentGroup/Recruting
    
    <Route Url="/json/comment/:termid" Method="GET" Call="REST.JSON:GetComments"/>
    <Route Url="/json/comment/:termid" Method="POST" Call="REST.JSON:AddComment"/>
-    
+   <Route Url="/json/comment/:commentid" Method="DELETE" Call="REST.JSON:DeleteComment"/>   
+   
    <Route Url="/json/users" Method="GET" Call="REST.JSON:GetAllUsers"/>
    <Route Url="/json/user_comment/:userid" Method="GET" Call="REST.JSON:GetCommentsByUser"/>
    <Route Url="/json/user_translation/:userid" Method="GET" Call="REST.JSON:GetTranslationsByUser"/>
-
+   <Route Url="/json/user/:userid/:scale" Method="DELETE" Call="REST.JSON:DeleteUser"/>
+   <Route Url="/json/user/:userid" Method="PUT" Call="REST.JSON:UpdateUser"/>
+   
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
  </Routes>
 ]]></Data>

@@ -32,7 +32,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 <!--<div ng-include src="'/csp/glossary/menu.html'"></div>-->
 <!-- MENU -->
-	<div align="middle" ><a href="/rest/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
+	<div align="middle" ><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
     <div class="navbar">
     <div class="navbar-inner">
  
@@ -76,7 +76,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
     <ul class="terms">
     	<!--Loop through all terms -->
         <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filter:filterFL | orderBy:orderProp">
-            <b><a href="/rest/term/{{term.ID}}" class="link">{{term.EnglishName}} -
+            <b><a href="/glossary/term/{{term.ID}}" class="link">{{term.EnglishName}} -
                 {{term.RussianName}}</a></b><br>            
             <p ng-show="showStateRU">Русское описание: {{term.RussianDefinition}}</p>
             <p ng-show="showStateEN">English definition: {{term.EnglishDefinition}}</p>

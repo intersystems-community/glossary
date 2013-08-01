@@ -13,7 +13,7 @@
 		// переход на страницу rest1.csp и заполнение поля поиска. Не работает   
 		$scope.dosearch=function(){
 			alert("!");
-		$http.get("/rest/json/terms").success(function(data){
+		$http.get("/glossary/json/terms").success(function(data){
 			$scope.terms=data.children;}).error(function(data,status){
 			$scope.alertzone="["+status+"] Ошибка загрузки слов :( ["+data+"]"; });
 			}   

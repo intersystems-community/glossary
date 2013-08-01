@@ -18,7 +18,7 @@
 <body ng-controller="control">
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
 
-	<div align="middle" ><a href="/rest/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
+	<div align="middle" ><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
 	<div class="navbar">
     <div class="navbar-inner">
 

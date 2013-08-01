@@ -11,6 +11,7 @@
 <cspapp>/rest1.CSP
 <cspapp>/term.csp
 REST.Broker.CLS
+REST.BrokerAdmin.CLS
 REST.JSON.CLS
 Word.Term.CLS
 Word.Tests.PKG
