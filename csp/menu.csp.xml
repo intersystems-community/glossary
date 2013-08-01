@@ -21,7 +21,7 @@
 	</script> -->
 		</head>
 
-		<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="Bootstrap/img/intersystems-header5.gif" hspace="20"></a></div>
+		<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
     <div class="navbar">
     <div class="navbar-inner">
    <!-- <a class="brand" href="#">Title</a> -->
@@ -45,7 +45,8 @@
 				<option value="RussianName">Сначала по русски</option>
  			</select>
     	</form>  
-    	  
+    	<button id="aboutbtn" type="button" class="btn" ng-click="openAbout()">О проекте</button>
+
    
     	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Login, user.PasswordSetter);"> 
 			<input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>

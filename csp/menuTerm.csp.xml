@@ -6,7 +6,7 @@
 			<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
 		</head>
 
-	<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="Bootstrap/img/intersystems-header6.gif" hspace="20"></a></div>
+	<div align="middle" ><a href="/csp/glossary/rest1.CSP"><img src="/csp/glossary/Bootstrap/img/intersystems-header6.gif" hspace="20"></a></div>
     <div class="navbar">
     <div class="navbar-inner">
 
@@ -14,7 +14,7 @@
     		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
 			<input type="submit" class="btn" value="Поиск"/>
     	</form>    	
-   		
+   		<button id="aboutbtn" type="button" class="btn" ng-click="openAbout()">О проекте</button>
     	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Login, user.PasswordSetter);"> 
 			<input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
 			<input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>

@@ -95,9 +95,13 @@
     
     // Redirect to main page with search query
     $scope.dosearch=function(query){
-			window.location.href = "/csp/glossary/rest1.CSP?q="+query;
+			window.location.href = "/rest/terms/"+query;
 	}
 	
+	$scope.openAbout=function(){
+			window.location.href = "/rest/about";
+	}
+		
 	$scope.lettersEn = [
 		{text: "All"},
         {text: "A"},

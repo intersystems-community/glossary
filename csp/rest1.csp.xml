@@ -9,16 +9,16 @@ InterSystems Global Summit 2013
 http://code.angularjs.org/1.1.5/angular.min.js
 -->
 <!doctype html>
-<html ng-app="GlossaryApp">
+<html ng-app="GlossaryApp" >
 <head>
     <title>InterSystems Glossary</title>		
 
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
-    <script src="Bootstrap/js/glossary.js"></script>
-    <script src="Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/glossary.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
     <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
-    <link href="Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
       
   
 </head>
@@ -27,10 +27,45 @@ http://code.angularjs.org/1.1.5/angular.min.js
      search.$=(#($Get(%request.Data("q",1),"undefined"))#); - fill SearchQuery 
      							from menu.csp with query passed as a parameter
      ChangeLetterLanguage('En'); - fill $scope.letters with  letters       -->
-<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("q",1),"undefined"))#); ChangeLetterLanguage('En');"> 
+<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("query",1),"''"))#); ChangeLetterLanguage('En');"> 
 <!-- Alertzone to display errors -->
 <h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
-<CSP:INCLUDE PAGE="menu.csp">
+<!--<div ng-include src="'/csp/glossary/menu.html'"></div>-->
+<!-- MENU -->
+	<div align="middle" ><a href="/rest/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
+    <div class="navbar">
+    <div class="navbar-inner">
+ 
+        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
+    		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
+			<input type="submit" class="btn" value="Поиск"/>
+
+				RU: <input type="checkbox" ng-model="showStateRU">
+				En: <input type="checkbox" ng-model="showStateEN">
+
+ 			<select ng-model="orderProp">
+ 				<option value="">Сортировка</option>
+				<option value="EnglishName">English first</option>
+				<option value="RussianName">Сначала по русски</option>
+ 			</select>
+    	</form>  
+    	<button id="aboutbtn" type="button" class="btn" ng-click="openAbout()">О проекте</button>
+
+   
+    	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Login, user.PasswordSetter);"> 
+			<input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
+			<input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
+			<button type="submit" class="btn" >Вход</button>			
+		</form>  
+			<button id="regbtn" ng-show="loginState!=1" type="button" class="btn pull-right" ng-click="openDialog()">Регистрация</button>
+			<button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right" >Выход</button> 
+    
+    </div>
+     </div>
+
+<!-- END MENU -->
+
+
 <!--  First letter filter bar -->
 <div class="letter_select_bar">
  <div class="letter_select_box" ng-bind="letterLanguage" ng-click="ChangeLetterLanguage(letterLanguage);"></div>
@@ -41,7 +76,7 @@ http://code.angularjs.org/1.1.5/angular.min.js
     <ul class="terms">
     	<!--Loop through all terms -->
         <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filter:filterFL | orderBy:orderProp">
-            <b><a href="/csp/glossary/term.csp?id={{term.ID}}" class="link">{{term.EnglishName}} -
+            <b><a href="/rest/term/{{term.ID}}" class="link">{{term.EnglishName}} -
                 {{term.RussianName}}</a></b><br>            
             <p ng-show="showStateRU">Русское описание: {{term.RussianDefinition}}</p>
             <p ng-show="showStateEN">English definition: {{term.EnglishDefinition}}</p>

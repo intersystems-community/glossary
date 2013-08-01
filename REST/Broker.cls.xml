@@ -21,7 +21,8 @@ https://github.com/MDevelopmentGroup/Recruting
 <Data><![CDATA[
 <Routes>
 
-   <Route Url="/test" Method="GET" Call="REST.Broker:Test"/> 
+   <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>
+    
    
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
    <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
@@ -49,7 +50,11 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/json/user/:userid/:scale" Method="DELETE" Call="REST.JSON:DeleteUser"/>
    <Route Url="/json/user/:userid" Method="PUT" Call="REST.JSON:UpdateUser"/>
      
-   
+  <Route Url="/terms/:query" Method="GET" Call="REST.Broker:LoadTermsPage"/>
+  <Route Url="/terms" Method="GET" Call="csp.rest1:OnPage"/>
+  <Route Url="/terms/" Method="GET" Call="csp.rest1:OnPage"/>
+  <Route Url="/about" Method="GET" Call="csp.about:OnPage"/>
+  <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
    
  </Routes>
 ]]></Data>
@@ -65,9 +70,31 @@ https://github.com/MDevelopmentGroup/Recruting
 ]]></Implementation>
 </Method>
 
+<Method name="LoadTermsPage">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>query:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set %request.Data("query",1)=query
+	Do ##class(csp.rest1).OnPage()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadTermPage">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set %request.Data("id",1)=id
+	Do ##class(csp.term).OnPage()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
 <UDLText name="T">
 <Content><![CDATA[
-// переназначим реакцию на отсутствующую страницу
+// 404 page
 
 ]]></Content>
 </UDLText>

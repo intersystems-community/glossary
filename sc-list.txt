@@ -3,6 +3,7 @@
 <cspapp>/Bootstrap/css/glossary.css
 <cspapp>/Bootstrap/js/glossary.js
 <cspapp>/Bootstrap/js/glossary_admin.js
+<cspapp>/about.csp
 <cspapp>/admin.CSP
 <cspapp>/intersystems-header.gif
 <cspapp>/menu.csp

@@ -124,5 +124,9 @@ html {
 #regbtn {
 	margin-right: 5px;
 	float: right !important;
+}
+
+#aboutbtn {
+	margin-left: 5px;	
 }]]></CSP>
 </Export>

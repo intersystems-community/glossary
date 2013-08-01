@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="about.csp" application="/csp/glossary/" default="1"><![CDATA[
+<!doctype html>
+<html ng-app="GlossaryApp">
+<head>
+    <meta charset="utf-8">
+    <title>InterSystems Glossary</title>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/glossary.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
+    <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body ng-controller="control">
+<h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
+
+	<div align="middle" ><a href="/rest/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif" hspace="20"></a></div>
+	<div class="navbar">
+    <div class="navbar-inner">
+
+        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
+    		<input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
+			<input type="submit" class="btn" value="Поиск"/>
+    	</form>    	
+   		<button id="aboutbtn" type="button" class="btn" ng-click="openAbout()">О проекте</button>
+    	<form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user" ng-submit="doLogin(user.Login, user.PasswordSetter);"> 
+			<input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
+			<input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
+			<button type="submit" class="btn" >Вход</button>
+			
+		</form>  
+			<button id="regbtn" ng-show="loginState!=1" type="button" class="btn pull-right" ng-click="openDialog()">Регистрация</button>
+			<button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right" >Выход</button> 
+    </div>
+     </div>
+
+
+    <div class="container">
+        <div class="row">
+                    <H2>О проекте</H2>
+                    
+                    <div class="terms">
+                    <div class="DefinitionText">
+					Глоссарий технологий InterSystems ставит целью предоставить достоверную информацию о терминах, использующищихся в стеке технологий InterSystems.
+					Для каждого термина представлены английское и русское определения, описания и контексты использования. Ссылки на ресурсы, предоставляющие более подробную информацию.
+					Зарегистрированные пользователи имеют возможность обсуждать термены, предложенные варианты перевода, а также предлагать свои собственные варианты.
+        			</div>
+        			</div>
+
+        </div>
+
+
+    </div>
+
+    </body>
+</html></CSP>
+]]></CSP>
+</Export>
