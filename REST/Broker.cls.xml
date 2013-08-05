@@ -28,8 +28,9 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
 
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
-   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
-   
+   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/>
+   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddUserTerm"/>
+    
    <Route Url="/json/translation" Method="POST" Call="REST.JSON:AddTranslation"/>
    <Route Url="/json/translation/:termid" Method="GET" Call="REST.JSON:GetTranslations"/> 
    
@@ -44,6 +45,8 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/json/users" Method="GET" Call="REST.JSON:GetAllUsers"/>
    <Route Url="/json/user_comment/:userid" Method="GET" Call="REST.JSON:GetCommentsByUser"/>
    <Route Url="/json/user_translation/:userid" Method="GET" Call="REST.JSON:GetTranslationsByUser"/>
+   
+   <Route Url="/json/letter" Method="POST" Call="REST.JSON:AddLetter"/>
 
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
  </Routes>
@@ -67,7 +70,8 @@ Serves client csp.rest1 page</Description>
 <FormalSpec>query:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	Set %request.Data("query",1)=query
+
+	Set %request.Data("query",1)="'"_$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")_"'"
 	Do ##class(csp.rest1).OnPage()
 	quit $$$OK
 ]]></Implementation>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
- angular.module('GlossaryApp', ['ngCookies', 'ui.bootstrap']);
+ angular.module('GlossaryApp', ['ngCookies', 'ui.bootstrap', 'ngSanitize']);
 
  //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
  //.config(function ($cookieStore, $http) {$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookieStore.get('SID');}
@@ -18,13 +18,19 @@
 	$scope.letterLanguage= "En"
 	$scope.loginState=$cookieStore.get('LoginState');
 	$scope.Priveledge=$cookieStore.get('Priveledge');
+  	$scope.alerts = [   	
+  	];
+
+	$scope.closeAlert = function(index) {
+    	$scope.alerts.splice(index, 1);
+  	};
 
     // Get all terms
-    $scope.getTerms = function () {
+    $scope.getTerms = function () { 
         $http.get("/glossary/json/terms").success(function (data) {
             $scope.terms = data.children;
-        }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
+        }).error(function (data, status) {  $scope.alerts.push({ type: "error", msg: "Ошибка загрузки слов." });
+               // $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
             });
             
 
@@ -44,9 +50,9 @@
         $http.post("/glossary/json/translation", translation)
             .success(function (data) {
 	            $scope.getTranslations($scope.terms[0].ID);
-                $scope.alertzone = "Добавили перевод для " + terms[0].EnglishName;
+	            $scope.alerts.push({ type: "success", msg: "Успешно добавили перевод."});
             }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка добавления перевода:( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка добавления перевода."});
             });
     }
     
@@ -57,9 +63,20 @@
         $http.post("/glossary/json/comment/"+$scope.terms[0].ID, comment)
             .success(function (data) {
 	            $scope.getComments($scope.terms[0].ID);
-                $scope.alertzone = "Добавили комментарий для " + terms[0].EnglishName;
+	            $scope.alerts.push({ type: "success", msg: "Успешно добавили комментарий."});
             }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка добавления комментария:( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка добавления комментария."});
+            });
+    }
+    
+    // Write letter to admin
+    $scope.addLetter = function (letter) {
+        letter.class = "Other.Letter";
+        $http.post("/glossary/json/letter", letter)
+            .success(function (data) {
+	            $scope.alerts.push({ type: "success", msg: "Сообщение отпралено."});
+            }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка отправки сообщения."});
             });
     }
 
@@ -70,7 +87,7 @@
             $scope.getTranslations($scope.terms[0].ID);
             $scope.getComments($scope.terms[0].ID);
         }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка загрузки термина :( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки термина."});
             });
 
     }
@@ -80,7 +97,7 @@
         $http.get("/glossary/json/translation/" + termid).success(function (data) {
             $scope.translations = data.children;
         }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки переводов."});
             });
     }
     
@@ -89,17 +106,20 @@
         $http.get("/glossary/json/comment/" + termid).success(function (data) {
             $scope.comments = data.children;
         }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки комментариев."});
             });
     }
     
     // Redirect to main page with search query
     $scope.dosearch=function(query){
+	    if (query) {
 			window.location.href = "/glossary/terms/"+query;
+	    } else {window.location.href = "/glossary/terms";}
 	}
 	
 	$scope.openAbout=function(){
 			window.location.href = "/glossary/about";
+			
 	}
 		
 	$scope.lettersEn = [
@@ -196,49 +216,43 @@
 	user.class = "Word.User";
     $http.post("/glossary/json/user", user)
             .success(function (data) {	           
-                $scope.alertzone = "Регистрация успешна " + user.Login;
+                 $scope.alerts.push({ type: "success", msg: "Регистрация успешна."});
                  $scope.doLogin(user.Login, user.PasswordSetter);
             }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка регистрации:( [" + data + "]";
+	             $scope.alerts.push({ type: "error", msg: "Ошибка регистрации."});
             });
 		
 	}
 	
 	
-	$scope.doLogin  = function(login, password) {           
+	$scope.doLogin  = function(login, password) {     
     $http.get("/glossary/json/user/"+ login + "/" + password)
             .success(function (data) {
 	            if (data.children[0]!=undefined)	{
-                	$cookieStore.put('Login',  data.children[0].Login);  
-                	$cookieStore.put('Priveledge',data.children[0].Priveledge);
-                	//$cookieStore.put('LoginState',1); 
-                	$scope.loginState=1;  
                 	$scope.Priveledge=data.children[0].Priveledge;
-                	$scope.startSession(login, password);           	
-                	$scope.alertzone = "Вход успешен "+$cookieStore.get('Login'); 
-	            } else {$scope.alertzone = "Ошибка входа";  }            
+                	$scope.startSession(login, password);
+                	$scope.loginState=1;             	
+	            } else {$scope.alerts.push({ type: "error", msg: "Ошибка входа."});  }            
             }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка входа:( [" + data + "]";
+                $scope.alerts.push({ type: "error", msg: "Ошибка входа."});
             });
 	}
 	
 	$scope.doExit  = function() {
 		$scope.loginState=0;  
-		$cookieStore.remove("Login");
-		$cookieStore.remove("Priveledge");
-		$cookieStore.put("LoginState",0); 	
+		$scope.Priveledge=-1;
+		document.cookie = "Login" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+		document.cookie = "Priveledge" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";		
 		document.cookie = "LoginState" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 		document.cookie = "SID" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";	
 	}  
 	
-	$scope.startSession = function(login, password) {
+	$scope.startSession = function(login, password) { 
 	  $http.get("/glossary/json/session/"+ login + "/" + password)
-            .success(function (data) {
-	            if (data.children[0]!=undefined)	{
-                	//$cookieStore.put('SID',data.children[0].SID);
-	            } else {$scope.alertzone = "Ошибка входа";  }            
+            .success(function (data) {   
+            	$scope.alerts.push({ type: "success", msg: "Вход успешен."});	                        
             }).error(function (data, status) {
-                $scope.alertzone = "[" + status + "] Ошибка входа:( [" + data + "]";
+               $scope.alerts.push({ type: "error", msg: "Ошибка входа."});
             });
 	}	
 		
@@ -273,6 +287,30 @@
       	}
     	});
   	};
+  	
+  	$scope.readCookie =	function (name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+	};
+	
+	//  Add one UserTerm
+    $scope.addTerm = function (term) {
+        term.class = "Word.UserTerm";
+        $http.post("/glossary/json/term", term)
+            .success(function (data) {
+                $scope.getTerms();
+               	 $scope.alerts.push({ type: "success", msg: "Успешно предложили термин."});
+            }).error(function (data, status) {
+                $scope.alerts.push({ type: "error", msg: "Ошибка добавления термина."});
+            });
+    };
+    
 
 }
 
@@ -280,8 +318,10 @@
 	function RegistrationDialogController($scope, dialog){
   	$scope.close = function(user){
     	dialog.close(user);
-    	//alert(user.Login+" "+user.Email+" "+user.PasswordSetter);
   	};
+  	
+  
+
 }
 
 

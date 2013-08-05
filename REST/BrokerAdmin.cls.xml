@@ -41,6 +41,11 @@
    <Route Url="/json/user/:userid/:scale" Method="DELETE" Call="REST.JSON:DeleteUser"/>
    <Route Url="/json/user/:userid" Method="PUT" Call="REST.JSON:UpdateUser"/>
    
+   <Route Url="/json/userterms" Method="GET" Call="REST.JSON:GetAllUserTerms"/>
+   <Route Url="/json/userterm/:termid" Method="DELETE" Call="REST.JSON:DeleteUserTerm"/>
+   <Route Url="/json/userterm/:termid" Method="POST" Call="REST.JSON:MakeUserTermOfficial"/>
+   <Route Url="/json/letters" Method="GET" Call="REST.JSON:GetAllLetters"/>
+   
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
  </Routes>
 ]]></Data>

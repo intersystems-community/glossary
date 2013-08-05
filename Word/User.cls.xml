@@ -39,7 +39,8 @@ Do (User string password -> encrypted password) transformation via MD5 hash]]></
 <FormalSpec>Arg:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set ..Password  = $system.Encryption.MD5Hash(Arg) 
+	set convarg=$ZCONVERT($ZCONVERT(Arg ,"I","URL") ,"I","UTF8")
+	set ..Password  = $system.Encryption.MD5Hash(convarg) 
 	return $$$OK
 ]]></Implementation>
 </Method>
@@ -89,6 +90,20 @@ User Email</Description>
 <Relationship>1</Relationship>
 </Property>
 
+<Property name="Letters">
+<Type>Other.Letter</Type>
+<Cardinality>many</Cardinality>
+<Inverse>User</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="Terms">
+<Type>Word.UserTerm</Type>
+<Cardinality>many</Cardinality>
+<Inverse>User</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
 <Property name="CreationDate">
 <Type>%Date</Type>
 <InitialExpression>$PIECE($NOW(),",",1)</InitialExpression>
@@ -108,7 +123,7 @@ User Email</Description>
 <IdLocation>^Word.UserD</IdLocation>
 <IndexLocation>^Word.UserI</IndexLocation>
 <StreamLocation>^Word.UserS</StreamLocation>
-<ExtentSize>100000</ExtentSize>
+<ExtentSize>23</ExtentSize>
 <Data name="UserDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
@@ -132,6 +147,29 @@ User Email</Description>
 <Value>CreationTime</Value>
 </Value>
 </Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="CreationDate">
+<Selectivity>13.0435%</Selectivity>
+<OutlierSelectivity>.869565:63029</OutlierSelectivity>
+</Property>
+<Property name="CreationTime">
+<Selectivity>4.7619%</Selectivity>
+</Property>
+<Property name="Email">
+<Selectivity>4.7619%</Selectivity>
+</Property>
+<Property name="Password">
+<Selectivity>4.3478%</Selectivity>
+</Property>
+<Property name="Priveledge">
+<Selectivity>4.3478%</Selectivity>
+<OutlierSelectivity>.913043:1</OutlierSelectivity>
+</Property>
+<SQLMap name="LoginIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
 </Storage>
 </Class>
 </Export>
