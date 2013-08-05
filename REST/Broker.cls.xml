@@ -22,20 +22,22 @@ https://github.com/MDevelopmentGroup/Recruting
 <Routes>
 
    <Route Url="/terms/:query" Method="GET" Call="REST.Broker:LoadTermsPage"/>
-   <Route Url="/terms" Method="GET" Call="csp.rest1:OnPage"/>
-   <Route Url="/terms/" Method="GET" Call="csp.rest1:OnPage"/>
+   <Route Url="/terms" Method="GET" Call="REST.Broker:LoadTermsPageNoQuery"/>
+   <Route Url="/terms/" Method="GET" Call="REST.Broker:LoadTermsPageNoQuery"/>
    <Route Url="/about" Method="GET" Call="csp.about:OnPage"/>
    <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
 
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
-   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
-   
+   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/>
+   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddUserTerm"/>
+    
    <Route Url="/json/translation" Method="POST" Call="REST.JSON:AddTranslation"/>
    <Route Url="/json/translation/:termid" Method="GET" Call="REST.JSON:GetTranslations"/> 
    
    <Route Url="/json/user" Method="POST" Call="REST.JSON:AddUser"/>
    <Route Url="/json/user/:login/:password" Method="GET" Call="REST.JSON:LoginUser"/>
-   
+   <Route Url="/json/user/:email" Method="POST" Call="REST.JSON:SendNewPassword"/>
+      
    <Route Url="/json/session/:login/:password" Method="GET" Call="REST.JSON:StartSession"/>
    
    <Route Url="/json/comment/:termid" Method="GET" Call="REST.JSON:GetComments"/>
@@ -44,6 +46,8 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/json/users" Method="GET" Call="REST.JSON:GetAllUsers"/>
    <Route Url="/json/user_comment/:userid" Method="GET" Call="REST.JSON:GetCommentsByUser"/>
    <Route Url="/json/user_translation/:userid" Method="GET" Call="REST.JSON:GetTranslationsByUser"/>
+   
+   <Route Url="/json/letter" Method="POST" Call="REST.JSON:AddLetter"/>
 
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
  </Routes>
@@ -67,7 +71,23 @@ Serves client csp.rest1 page</Description>
 <FormalSpec>query:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	Set %request.Data("query",1)=query
+
+	Set %request.Data("query",1)="'"_$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")_"'"
+	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
+	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
+	Do ##class(csp.rest1).OnPage()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadTermsPageNoQuery">
+<Description>
+Serves client csp.rest1 page without query</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
+	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
 	Do ##class(csp.rest1).OnPage()
 	quit $$$OK
 ]]></Implementation>
@@ -79,6 +99,8 @@ Serves client csp.rest1 page</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
 	Set %request.Data("id",1)=id
+	Set ^Statistics(id)=$INCREMENT(^Statistics(id))
+	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
 	Do ##class(csp.term).OnPage()
 	quit $$$OK
 ]]></Implementation>
@@ -90,7 +112,8 @@ Serves client csp.rest1 page</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	&html<<h1>Не Работает?!</h1>>
+	do ##class(REST.Broker).LoadTermsPageNoQuery()
+	//&html<<h1>Не Работает?!</h1>>
 	quit $$$OK
 ]]></Implementation>
 </Method>

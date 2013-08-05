@@ -127,6 +127,40 @@ html {
 }
 
 #aboutbtn {
-	margin-left: 5px;	
+	margin-left: 5px;
+	margin-right: 5px;	
+}
+
+#addbtn {
+	margin-left: 5px;
+	margin-right: 5px;	
+}
+
+.checkboxes {
+	margin-left: 5px;
+	margin-right: 5px;
+
+	
+}
+
+.checkboxl {
+	vertical-align:middle;
+	
+}
+
+.term {
+	width: 75%; 
+	margin: 0 auto;
+	
+	
+}
+
+.terms li textarea {
+	width: 200%; 
+}
+
+.alerts{
+	margin-bottom: 0px;
+	margin-left: 20px;
 }]]></CSP>
 </Export>

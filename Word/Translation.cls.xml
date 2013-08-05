@@ -125,6 +125,15 @@ Got to use it right</Description>
 <Value name="5">
 <Value>TermId</Value>
 </Value>
+<Value name="6">
+<Value>User</Value>
+</Value>
+<Value name="7">
+<Value>CreationDate</Value>
+</Value>
+<Value name="8">
+<Value>CreationTime</Value>
+</Value>
 </Data>
 <Data name="TranslationState">
 <Value name="1">

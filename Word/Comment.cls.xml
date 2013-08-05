@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Comment">
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63029,58990.641945</TimeCreated>
+
+<Property name="Text">
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="Term">
+<Type>Word.Term</Type>
+<Cardinality>parent</Cardinality>
+<Inverse>Comments</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="User">
+<Type>Word.User</Type>
+<Cardinality>one</Cardinality>
+<Inverse>Comments</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="CreationDate">
+<Type>%Date</Type>
+<InitialExpression>$PIECE($NOW(),",",1)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Property name="CreationTime">
+<Type>%Time</Type>
+<InitialExpression>$PIECE($NOW(),",",2)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>{%%PARENT}("Comments")</DataLocation>
+<DefaultData>CommentDefaultData</DefaultData>
+<IdLocation>^Word.UserC("Comments")</IdLocation>
+<IndexLocation>^Word.CommentI</IndexLocation>
+<StreamLocation>^Word.CommentS</StreamLocation>
+<ExtentSize>14</ExtentSize>
+<Data name="CommentDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Text</Value>
+</Value>
+<Value name="3">
+<Value>Term</Value>
+</Value>
+<Value name="4">
+<Value>CreationDate</Value>
+</Value>
+<Value name="5">
+<Value>CreationTime</Value>
+</Value>
+<Value name="6">
+<Value>User</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="CreationDate">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="CreationTime">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<Property name="Term">
+<Selectivity>7.6923%</Selectivity>
+</Property>
+<Property name="Text">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<Property name="User">
+<Selectivity>7.6923%</Selectivity>
+</Property>
+<Property name="childsub">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+</Export>

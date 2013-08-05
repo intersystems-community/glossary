@@ -1,6 +1,7 @@
 <cspapp>/Bootstrap/css/bootstrap.css
 <cspapp>/Bootstrap/css/bootstrap.min.css
 <cspapp>/Bootstrap/css/glossary.css
+<cspapp>/Bootstrap/img/intersystems-header.gif
 <cspapp>/Bootstrap/js/glossary.js
 <cspapp>/Bootstrap/js/glossary_admin.js
 <cspapp>/about.csp
@@ -10,10 +11,14 @@
 <cspapp>/menuTerm.csp
 <cspapp>/rest1.CSP
 <cspapp>/term.csp
+Other.Letter.CLS
 REST.Broker.CLS
 REST.BrokerAdmin.CLS
 REST.JSON.CLS
+Word.Comment.CLS
+Word.Session.CLS
 Word.Term.CLS
 Word.Tests.PKG
 Word.Translation.CLS
 Word.User.CLS
+Word.UserTerm.CLS

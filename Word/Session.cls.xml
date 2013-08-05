@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Session">
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63028,46350.765767</TimeCreated>
+
+<Property name="SID">
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="200"/>
+</Property>
+
+<Index name="SIDIndex">
+<Properties>SID</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Method name="SIDGenerate">
+<ReturnType>%Status</ReturnType>
+<ServerOnly>1</ServerOnly>
+<Implementation><![CDATA[
+	set temp = ""
+	set length = 64 + $Random(33)
+	for {
+    	set temp = temp _ $Char(65 + $Random(25))
+    	quit:$Length(temp)>length
+	}
+	set ..SID = temp
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Property User As %String [ Required ];
+
+]]></Content>
+</UDLText>
+
+<UDLText name="T">
+<Content><![CDATA[
+// ForeignKey UserFK(User) References Word.User(LoginIndex);
+
+]]></Content>
+</UDLText>
+
+<Property name="User">
+<Type>Word.User</Type>
+<Cardinality>parent</Cardinality>
+<Inverse>Sessions</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="CreationDate">
+<Type>%Date</Type>
+<InitialExpression>$PIECE($NOW(),",",1)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Property name="CreationTime">
+<Type>%Time</Type>
+<InitialExpression>$PIECE($NOW(),",",2)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Method name="AllowAction">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SID:%String,Action:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	set Priveledge=0
+	try {
+		&sql(SELECT "User"->Priveledge INTO :Priveledge From Word.Session WHERE SID=:SID)
+	} catch ex { 
+		// If someone skrews with client-side js
+		set Priveledge=0  
+	}
+
+	If (Action="AddTranslation") {
+		Quit (Priveledge>0)   
+	}
+	If (Action="AddLetter") {
+		Quit (Priveledge>0)   
+	}
+	ELSEIF (Action="AddUserTerm") {
+		Quit (Priveledge>0) 
+	}
+	ELSEIF (Action="AddTerm") {
+		Quit (Priveledge>1) 
+	}
+	ELSEIF (Action="DeleteTerm") {
+		Quit (Priveledge>2) 
+	}
+	ELSEIF (Action="UpdateTerm") {
+		Quit (Priveledge>1) 
+	}
+	ELSEIF (Action="DeleteTranslation") {
+		Quit (Priveledge>1) 
+	}
+	ELSEIF (Action="MakeTranslationDefault") {
+		Quit (Priveledge>1) 
+	}
+	ELSEIF (Action="AddComment") {
+		Quit (Priveledge>0) 
+	}
+	ELSE {
+		Quit 0
+	}
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Word.SessionD</DataLocation>
+<DefaultData>SessionDefaultData</DefaultData>
+<IdLocation>^Word.SessionD</IdLocation>
+<IndexLocation>^Word.SessionI</IndexLocation>
+<StreamLocation>^Word.SessionS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="SessionDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>SID</Value>
+</Value>
+<Value name="3">
+<Value>CreationTime</Value>
+</Value>
+<Value name="4">
+<Value>CreationDate</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
