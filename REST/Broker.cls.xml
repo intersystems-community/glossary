@@ -73,6 +73,7 @@ Serves client csp.rest1 page</Description>
 <Implementation><![CDATA[
 
 	Set %request.Data("query",1)="'"_$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")_"'"
+<<<<<<< HEAD
 	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
 	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
 	Do ##class(csp.rest1).OnPage()
@@ -88,6 +89,8 @@ Serves client csp.rest1 page without query</Description>
 <Implementation><![CDATA[
 	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
 	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
+=======
+>>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 	Do ##class(csp.rest1).OnPage()
 	quit $$$OK
 ]]></Implementation>

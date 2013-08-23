@@ -337,7 +337,10 @@ Add one user</Description>
 <FormalSpec>login,password</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+<<<<<<< HEAD
 	set st=$$$OK
+=======
+>>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 	set lgn=$ZCONVERT($ZCONVERT(login ,"I","URL") ,"I","UTF8")
 	if (##class(Word.User).%ExistsId(lgn)) {
 		set pwd=$ZCONVERT($ZCONVERT(password ,"I","URL") ,"I","UTF8")
@@ -345,6 +348,7 @@ Add one user</Description>
 		set User=##class(Word.User).%OpenId(lgn)
 		if (User.Password=phash) {
 			do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_lgn_"'")
+<<<<<<< HEAD
 		} else {
 			 set st=$$$ERROR()
 		}
@@ -352,6 +356,11 @@ Add one user</Description>
 		set st=$$$ERROR()
 	}
   quit st
+=======
+		}
+	}
+  quit $$$OK
+>>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 ]]></Implementation>
 </Method>
 
