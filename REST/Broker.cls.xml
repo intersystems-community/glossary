@@ -20,7 +20,6 @@ https://github.com/MDevelopmentGroup/Recruting
 <XData name="UrlMap">
 <Data><![CDATA[
 <Routes>
-
    <Route Url="/terms/:query" Method="GET" Call="REST.Broker:LoadTermsPage"/>
    <Route Url="/terms" Method="GET" Call="REST.Broker:LoadTermsPageNoQuery"/>
    <Route Url="/terms/" Method="GET" Call="REST.Broker:LoadTermsPageNoQuery"/>
@@ -50,6 +49,9 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/json/letter" Method="POST" Call="REST.JSON:AddLetter"/>
 
    <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
+   
+    <Route Url="/testxml/:termid" Method="GET" Call="GetTermXML"/> 
+    <Route Url="/testxml" Method="GET" Call="GetTermsXML"/>   
  </Routes>
 ]]></Data>
 </XData>
@@ -64,6 +66,61 @@ https://github.com/MDevelopmentGroup/Recruting
 ]]></Implementation>
 </Method>
 
+<Method name="GetTermXML">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+	try {
+		set term=##class(Word.Term).%OpenId(termid)
+		set writer=##class(%XML.Writer).%New()
+		set writer.Indent=1
+		//set writer.Charset="UTF-8"
+		set sc=writer.OutputToString()
+		//set sc=writer.RootElement("Terms")
+		//set sc=writer.Object(term,"Term")
+		//set sc=writer.EndRootElement()
+		set sc=writer.RootObject(term)
+		w writer.GetXMLString()
+	} catch ex {
+		set st=ex.AsStatus()
+	}
+	quit st
+]]></Implementation>
+</Method>
+
+<Method name="GetTermsXML">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+	try {
+		//set term=##class(Word.Term).%OpenId(termid)
+		//set writer=##class(%XML.Writer).%New()
+		//set writer.Indent=1
+		//set writer.Charset="UTF-8"
+		//set sc=writer.OutputToString()
+		//set sc=writer.RootElement("Terms")
+		
+		set tStatement = ##class(%SQL.Statement).%New(2)
+		set st = tStatement.%Prepare("SELECT Id,EnglishName FROM Word.Term")
+		set rset = tStatement.%Execute()
+		
+		w rset.%DisplayFormatted(0)
+		
+		
+		//set sc=writer.Object(term,"Term")
+		//set sc=writer.EndRootElement()
+		//set sc=writer.RootObject(term)
+		//w writer.GetXMLString()
+	} catch ex {
+		set st=ex.AsStatus()
+	}
+	quit st
+]]></Implementation>
+</Method>
+
 <Method name="LoadTermsPage">
 <Description>
 Serves client csp.rest1 page</Description>
@@ -71,9 +128,8 @@ Serves client csp.rest1 page</Description>
 <FormalSpec>query:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-
+	Set query=$ZSTRIP(query,"*E'A")
 	Set %request.Data("query",1)="'"_$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")_"'"
-<<<<<<< HEAD
 	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
 	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
 	Do ##class(csp.rest1).OnPage()
@@ -89,8 +145,6 @@ Serves client csp.rest1 page without query</Description>
 <Implementation><![CDATA[
 	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
 	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
-=======
->>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 	Do ##class(csp.rest1).OnPage()
 	quit $$$OK
 ]]></Implementation>
@@ -118,6 +172,115 @@ Serves client csp.rest1 page without query</Description>
 	do ##class(REST.Broker).LoadTermsPageNoQuery()
 	//&html<<h1>Не Работает?!</h1>>
 	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="DispatchRequest">
+<Description>
+Dispatch a REST request according to URL and Method</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pUrl:%String,pMethod:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    #dim tSC As %Status = $$$OK
+    #dim e As %Exception.AbstractException
+    
+    #dim tMatcher As %Regex.Matcher
+    
+    #dim tArgs,tClass,tMatchUrl,tRegEx,tTarget,tAccess As %String
+    #dim tI,tIndex As %Integer
+    #dim tResourceMatched As %Boolean = 0
+    #dim tMethodMatched As %Boolean = 0
+    
+    #; Example: ^ISC.REST.UrlMap(classname,"/udl/(.?)","GET") = GetClassText"
+    Try {
+        #; Check that the effective user ( could be unknown user ) can access this resource
+        Set tAccess=$SYSTEM.Security.Check($Piece($zu(90,21,$namespace),"^",4))
+        If tAccess'["READ,WRITE"
+        {
+            #; Don't want the session token
+            Set %response.OutputSessionToken=0
+            
+            #; Set the Http Status
+            Set %response.Status="401 Unauthorized"
+        
+            #; Write out the header
+            Do %response.WriteHTTPHeader()
+            
+            #; Done
+            Quit
+        }
+        
+        #; Walk the dispatch map in collation order of defintion
+        Set tIndex="" For {
+            
+            #; Get the next index
+            Set tIndex=$Order(^ISC.REST.UrlMap($classname(),tIndex)) If tIndex="" Quit
+                
+            #; Pick out the RegEx
+            Set tRegEx=$Order(^ISC.REST.UrlMap($classname(),tIndex,""))
+            
+            #; Create a matcher
+            Set tMatcher=##class(%Regex.Matcher).%New(tRegEx)
+                
+            #; Extract the match url from the application name
+            Set tMatchUrl="/"_$Extract(pUrl,$Length(%request.Application)+1,*)
+                 
+            #; Test each regular expression in turn, extracting the arguments,
+            #; dispatching to the named method  
+            If tMatcher.Match(tMatchUrl) {
+                
+                #; We have matched the resource
+                Set tResourceMatched=1
+                
+                #; Now check method name
+                Set tTarget=$Get(^ISC.REST.UrlMap($classname(),tIndex,tRegEx,pMethod))
+                
+                #; No match on method name, retry next
+                If tTarget="" Continue
+                
+                #; We have matched a method
+                Set tMethodMatched=1
+                
+                #; Got a match, marshall the arguments
+                If tMatcher.GroupCount {
+                    For tI=1:1:tMatcher.GroupCount Set tArgs(tI)=tMatcher.Group(tI)
+                    Set tArgs=tI
+                } else {
+                    Set tArgs=0
+                }
+                
+                #; Check for optional ClassName prefix
+                Set tClass=$classname()
+                If tTarget[":" Set tClass=$Piece(tTarget,":"),tTarget=$Piece(tTarget,":",2)
+                
+                #; Dispatch
+                if ##class(Word.Session).AllowAction($g(%request.Cookies("SID",1)), tTarget) {
+                	Set tSC=$zobjclassmethod(tClass,tTarget,tArgs...)
+                	If $$$ISERR(tSC) Do ..Http500(##class(%Exception.StatusException).CreateFromStatus(tSC))
+                } else {
+	                Do ..Http500(##class(%Exception.StatusException).CreateFromStatus(tSC))
+	            }
+                #; Don't want multiple matches
+                Quit
+            }
+        }
+        
+        #; Didn't have a match for the resource, report not found
+        If tResourceMatched=0 Set tSC=..Http404() Quit
+        
+        #; Had a match for resource but method not matched
+        If tMethodMatched=0 Set tSC=..Http405() Quit
+            
+    } Catch (e) {
+        
+        #; Issue a '500'
+        Do ..Http500(e)
+    }
+    
+    Set %session.EndSession=('..#UseSession)
+    
+    Quit tSC
 ]]></Implementation>
 </Method>
 </Class>

@@ -81,6 +81,7 @@ Get one term translations in JSON format</Description>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+  set termid=$ZSTRIP(termid,"*E'N")
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Translation WHERE TermId="_termid)
   quit $$$OK
 ]]></Implementation>
@@ -93,6 +94,7 @@ Get all comments on one term</Description>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+	set termid=$ZSTRIP(termid,"*E'N")	
 	// Date format conversion http://docs.intersystems.com/ens20091/csp/docbook/DocBook.UI.Page.cls?KEY=RSQL_convert
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ID, ""User""->Login As Login,Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
   quit $$$OK
@@ -115,7 +117,7 @@ Get all comments by one user</Description>
 <FormalSpec>userid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC, CreationTime DESC")
   quit $$$OK
 ]]></Implementation>
@@ -128,7 +130,7 @@ Get all translations by one user</Description>
 <FormalSpec>userid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT EnglishName, Word.Translation.ID, TranslationContext,TranslationName, TranslationRating, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate,CreationTime FROM Word.Translation JOIN Word.Term ON Word.Term.Id=TermId  WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC,CreationTime DESC")
   quit $$$OK
 ]]></Implementation>
@@ -141,10 +143,8 @@ Get one term</Description>
 <FormalSpec>termid:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+  set termid=$ZSTRIP(termid,"*E'N")
   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Term WHERE %ID="_termid)
-  /*	do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT Word.Term.ID, EnglishNameContext, EnglishDefinition, EnglishName, FurtherRead, RussianDefinition, RussianName, RussianNameContext, RussianNameRating, TranslationContext, TranslationName, TranslationRating "
-  	_"FROM Word.Term LEFT JOIN Word.Translation ON  Word.Term.ID=Word.Translation.Term "
-  	_"WHERE Word.Term.ID="_termid) */
   quit $$$OK
 ]]></Implementation>
 </Method>
@@ -322,8 +322,8 @@ Add one user</Description>
 
 	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))
 	   set obj.Login=$ZCONVERT(obj.Login,"I","UTF8")
+	   set obj.Priveledge=1
 	   // Check password codepage
-	   //set obj.Priveledge="1"
 	   $$$THROWONERROR(st,obj.%Save())
    } catch ex{
 	  set st=ex.AsStatus()
@@ -337,18 +337,19 @@ Add one user</Description>
 <FormalSpec>login,password</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
-<<<<<<< HEAD
 	set st=$$$OK
-=======
->>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 	set lgn=$ZCONVERT($ZCONVERT(login ,"I","URL") ,"I","UTF8")
 	if (##class(Word.User).%ExistsId(lgn)) {
 		set pwd=$ZCONVERT($ZCONVERT(password ,"I","URL") ,"I","UTF8")
 		set phash = $system.Encryption.MD5Hash(pwd)
 		set User=##class(Word.User).%OpenId(lgn)
 		if (User.Password=phash) {
-			do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_lgn_"'")
-<<<<<<< HEAD
+			set metadata=$LISTFROMSTRING("Login,Priveledge")
+			set data=$LB(User.Login,User.Priveledge)	
+			//do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_lgn_"'")
+			w "{ ""children"":[ "
+			set st=##class(%ZEN.Auxiliary.jsonProvider).%ArrayToJSON(.metadata,.data)
+			w "] }"
 		} else {
 			 set st=$$$ERROR()
 		}
@@ -356,11 +357,6 @@ Add one user</Description>
 		set st=$$$ERROR()
 	}
   quit st
-=======
-		}
-	}
-  quit $$$OK
->>>>>>> 1a16d8b8bf821e697d43b71ace2f8f5a4d92f1b1
 ]]></Implementation>
 </Method>
 
@@ -619,7 +615,7 @@ Make new translation default.</Description>
    	try {
 	   	set auth = ##class(%Net.Authenticator).%New()
 		set auth.UserName="glossary"
-		set auth.Password="pojioj4onasd56"
+		set auth.Password="edgt1hxfhj5647"
 		set auth.MechanismList="LOGIN"
 		
 	   	set s=##class(%Net.SMTP).%New()

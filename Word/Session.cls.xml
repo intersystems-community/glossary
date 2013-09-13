@@ -75,7 +75,21 @@
 		// If someone skrews with client-side js
 		set Priveledge=0  
 	}
-
+	//LoadTermsPageNoQuery
+	//If (Action="LoadTermsPageNoQuery")  {
+	///	Quit 1   
+	//}
+	
+	If ((Action="LoadTermsPage") || (Action="LoadTermsPageNoQuery") || 
+		(Action="OnPage") || (Action="LoadTermPage") || 
+		(Action="GetAllTerms") || (Action="GetTerm") || 
+		(Action="GetTranslations") || (Action="AddUser") || 
+		(Action="LoginUser") || (Action="SendNewPassword") || 
+		(Action="StartSession") || (Action="GetComments") || 
+		(Action="GetAllUsers") || (Action="GetCommentsByUser") || 
+		(Action="GetTranslationsByUser")) {
+		Quit 1   
+	} 
 	If (Action="AddTranslation") {
 		Quit (Priveledge>0)   
 	}

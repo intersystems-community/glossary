@@ -10,6 +10,7 @@
 User  name</Description>
 <Type>%String</Type>
 <Required>1</Required>
+<Parameter name="MAXLEN" value="15"/>
 </Property>
 
 <Index name="LoginIndex">
@@ -115,6 +116,16 @@ User Email</Description>
 <InitialExpression>$PIECE($NOW(),",",2)</InitialExpression>
 <Required>1</Required>
 </Property>
+
+<Method name="LoginUserInfo">
+<ReturnType>%Library.ArrayOfDataTypes</ReturnType>
+<Implementation><![CDATA[
+	set a=##class(%Library.ArrayOfDataTypes).%New()
+	set st=a.SetAt("Login",..Login)
+	set st=a.SetAt("Priveledge",..Priveledge)
+	quit a
+]]></Implementation>
+</Method>
 
 <Storage name="Default">
 <Type>%Library.CacheStorage</Type>

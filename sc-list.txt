@@ -2,6 +2,7 @@
 <cspapp>/Bootstrap/css/bootstrap.min.css
 <cspapp>/Bootstrap/css/glossary.css
 <cspapp>/Bootstrap/img/intersystems-header.gif
+<cspapp>/Bootstrap/js/auth.js
 <cspapp>/Bootstrap/js/glossary.js
 <cspapp>/Bootstrap/js/glossary_admin.js
 <cspapp>/about.csp
