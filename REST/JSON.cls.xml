@@ -615,7 +615,7 @@ Make new translation default.</Description>
    	try {
 	   	set auth = ##class(%Net.Authenticator).%New()
 		set auth.UserName="glossary"
-		set auth.Password="edgt1hxfhj5647"
+		set auth.Password="p[iooсpiop&*d1"
 		set auth.MechanismList="LOGIN"
 		
 	   	set s=##class(%Net.SMTP).%New()

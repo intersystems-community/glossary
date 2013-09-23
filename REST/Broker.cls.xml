@@ -255,12 +255,12 @@ Dispatch a REST request according to URL and Method</Description>
                 If tTarget[":" Set tClass=$Piece(tTarget,":"),tTarget=$Piece(tTarget,":",2)
                 
                 #; Dispatch
-                if ##class(Word.Session).AllowAction($g(%request.Cookies("SID",1)), tTarget) {
+               // if ##class(Word.Session).AllowAction($g(%request.Cookies("SID",1)), tClass, tTarget) {
                 	Set tSC=$zobjclassmethod(tClass,tTarget,tArgs...)
                 	If $$$ISERR(tSC) Do ..Http500(##class(%Exception.StatusException).CreateFromStatus(tSC))
-                } else {
-	                Do ..Http500(##class(%Exception.StatusException).CreateFromStatus(tSC))
-	            }
+               // } else {
+	           ///     Do ..Http500(##class(%Exception.StatusException).CreateFromStatus(tSC))
+	            //}
                 #; Don't want multiple matches
                 Quit
             }

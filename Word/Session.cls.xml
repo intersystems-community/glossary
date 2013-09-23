@@ -80,7 +80,7 @@
 	///	Quit 1   
 	//}
 	
-	If ((Action="LoadTermsPage") || (Action="LoadTermsPageNoQuery") || 
+	/*If ((Action="LoadTermsPage") || (Action="LoadTermsPageNoQuery") || 
 		(Action="OnPage") || (Action="LoadTermPage") || 
 		(Action="GetAllTerms") || (Action="GetTerm") || 
 		(Action="GetTranslations") || (Action="AddUser") || 
@@ -89,7 +89,7 @@
 		(Action="GetAllUsers") || (Action="GetCommentsByUser") || 
 		(Action="GetTranslationsByUser")) {
 		Quit 1   
-	} 
+	} */
 	If (Action="AddTranslation") {
 		Quit (Priveledge>0)   
 	}
