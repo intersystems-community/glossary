@@ -332,7 +332,6 @@ Add one user</Description>
 ]]></Implementation>
 </Method>
 
-<<<<<<< HEAD
 <Method name="oAuth">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
@@ -385,8 +384,6 @@ Add one user</Description>
 ]]></Implementation>
 </Method>
 
-=======
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 <Method name="LoginUser">
 <ClassMethod>1</ClassMethod>
 <FormalSpec>login,password</FormalSpec>
