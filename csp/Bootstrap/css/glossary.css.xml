@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/css/glossary.css" application="/csp/glossarygit/" default="1"><![CDATA[
+.terms {
+    list-style: none;
+    margin:  0 0 0 0;
+    
+}
+
+.terms li {
+	margin:  20px 10% 0 10%;
+    /*height: 50px; */
+    clear: both;
+    padding-top: 15px;
+    padding: 4px;
+    border: 1px solid rgb(221, 221, 221);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+    vertical-align: middle;
+    line-height: 40px;
+    border-radius: 4px 4px 4px 4px;
+}
+
+.spoiler_title {
+	border-bottom: 1px dashed;
+	color: #6DA3BD;
+	font-weight: normal;
+	cursor: pointer;
+}
+
+.addTerm {
+	/*margin: 0 0 13px 25px;*/
+    clear: both;
+    padding-top: 15px;
+    padding: 4px;
+    border: 1px solid rgb(221, 221, 221);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+    vertical-align: middle;
+    line-height: 40px;
+    border-radius: 4px 4px 4px 4px;
+    margin:  20px 10% 0 10%;
+    
+}
+
+.addTerm button{ 
+	margin-left:40%;
+  	margin-right:40%;
+  	position: relative;	
+}
+
+.addTerm textarea{
+	width: 95%; 
+}
+
+.addCommentForm {
+   margin:  20px 0 0 0;
+}
+
+.comments {
+    list-style: none;
+    margin:  0 0 0 0;
+    
+}
+
+.messageBlock{
+	margin-left: 10px;
+	color: red;
+}
+
+#AddTermForm {
+	margin: 10px 0 26px 10px;
+}
+.comments li {
+    clear: both;
+    padding-top: 15px;
+    padding: 4px;
+    border: 1px solid rgb(221, 221, 221);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+    vertical-align: middle;
+    line-height: 40px;
+    border-radius: 4px 4px 4px 4px;
+    margin:  20px 10% 0 0;
+}
+
+.terms table {
+    width: 98%;
+    margin: auto;
+    margin-top: 20px;
+}
+.terms table td {
+    vertical-align: text-top;
+    padding: 15px;
+    width: 33%;
+}
+
+
+
+.animate-enter,
+.animate-leave {
+    -webkit-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+.animate-leave.animate-leave-active,
+.animate-enter {
+    opacity: 0;
+    width: 0px;
+    height: 0px;
+}
+
+.animate-enter.animate-enter-active,
+.animate-leave {
+    opacity: 1;
+    width: 150px;
+    height: 30px;
+}
+
+.letter_select_box {
+float: left;
+padding: 5px 10px;
+margin-right: 10px;
+    margin-bottom: 20px;
+
+
+font-size: 1.2em;
+cursor: pointer;
+border-radius: 2px;
+border: 1px solid #EEE;
+}
+
+.letter_select_box:focus
+{
+    background-color:yellow;
+    font-size: 45;
+}
+
+.letter_select_bar {
+    margin-left: 20px;
+
+}
+
+.addTranslation {
+    clear: both;
+    padding-top: 15px;
+    padding: 4px;
+    border: 1px solid rgb(221, 221, 221);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075);
+    vertical-align: middle;
+    line-height: 40px;
+    border-radius: 4px 4px 4px 4px;
+    margin:  20px 0 0 0;
+
+}
+
+
+html {
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+.DefinitionText {
+	text-align: justify; 	
+}
+
+#regbtn {
+	margin-right: 5px;
+	float: right !important;
+}
+
+#aboutbtn {
+	margin-left: 5px;
+	margin-right: 5px;	
+}
+
+#addbtn {
+	margin-left: 5px;
+	margin-right: 5px;	
+}
+
+.checkboxes {
+	margin-left: 5px;
+	margin-right: 5px;
+
+	
+}
+
+.checkboxl {
+	display:inline-block;
+	vertical-align:middle;
+	
+}
+
+
+.term {
+	width: 75%; 
+	margin: 0 auto;
+	
+	
+}
+
+.terms li textarea {
+	width: 200%; 
+}
+
+.alerts{
+	margin:  20px 10% 0 10%;
+}
+
+#uLogin{
+	vertical-align: -45% !important;	
+}
+
+#uLogin > img {
+	vertical-align: baseline !important;
+}]]></CSP>
+</Export>

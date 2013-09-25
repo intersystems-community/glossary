@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Term">
+<Description>
+Class describing terms and their definitions. </Description>
+<SqlTableName>Term</SqlTableName>
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63011,38444.690451</TimeCreated>
+
+<Property name="EnglishName">
+<Description>
+Original EnglishName of Term</Description>
+<Type>%String</Type>
+<Required>1</Required>
+<Parameter name="MAXLEN" value="100"/>
+<Parameter name="POPSPEC" value="Name()"/>
+</Property>
+
+<Index name="EnglishNameIndex">
+<Type>bitmap</Type>
+<Properties>EnglishName</Properties>
+</Index>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Index RussianNameIndex On RussianName [ Type = bitmap ];
+
+]]></Content>
+</UDLText>
+
+<Property name="RussianDefinition">
+<Description>
+RussianName of Term
+Property OfficialTranslation As Word.Translation;
+Definition of Term in Russian</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<Property name="EnglishDefinition">
+<Description>
+Definition of Term in English</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<Property name="FurtherRead">
+<Description>
+HTTP link to documentation/wikipedia/whatever</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="EnglishNameContext">
+<Description>
+Example of how to use Term in english</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="500"/>
+</Property>
+
+<Property name="RussianName">
+<Description>
+Official russian translation</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="RussianNameRating">
+<Description>
+Users' rating of translation</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Property name="RussianNameContext">
+<Description>
+Got to use it right</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Relationship Translations As Word.Translation [ Cardinality = children, Inverse = Term ];
+
+]]></Content>
+</UDLText>
+
+<Property name="Comments">
+<Type>Word.Comment</Type>
+<Cardinality>children</Cardinality>
+<Inverse>Term</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Method name="PopulateXML">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  #dim sc As %Status = $$$OK
+  // очистка существующих данных класса
+  s sc=..%DeleteExtent()  
+  if $$$ISERR(sc) quit sc
+  
+  // загрузка xml-данных блока XData из библиотеки скомпилированных классов  
+  #dim stream As %Stream.Object = ##class(%Dictionary.CompiledXData).%OpenId(..%ClassName(1) _ "||" _ "populate").Data
+  // создание инстанса XML ридера
+  #dim reader As %XML.Reader = ##class(%XML.Reader).%New()
+  // открытие в ридере поток xml 
+  set sc = reader.OpenStream(stream, "literal")
+  if $$$ISERR(sc) quit sc
+  // указание ридеру в каком элементе искать данные класса
+  do reader.Correlate("Term", ..%ClassName(1))
+  
+  #dim obj as %Persistent
+  // загрука в цикле элементов класса
+  while reader.Next(.obj, .sc)
+  {
+    if $$$ISERR(sc) quit
+    // сохранение прочитанного из xml инстанс в базу данных
+    set sc = obj.%Save()
+    if $$$ISERR(sc) quit
+    
+    set obj = ""
+  }
+  
+  quit sc
+]]></Implementation>
+</Method>
+
+<XData name="populate">
+<Data><![CDATA[<xml><Term><EnglishName>CSP Gateway</EnglishName><RussianDefinition>Слой абстрагирования между Web-сервером и Web-приложениями Caché Server Pages.</RussianDefinition><EnglishDefinition>Provides the communications layer between the hosting web server and Caché when you call a Caché Server Page.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=GCGI_intro</FurtherRead><RussianName>CSP шлюз</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Debugging</EnglishName><RussianDefinition>Процесс нахождения и исправления багов (ошибок) в компьютерной программе.</RussianDefinition><EnglishDefinition>Methodical process of finding and reducing the number of bugs, or defects, in a computer program.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=ITECHREF_debugging</FurtherRead><RussianName>Отладка</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Global</EnglishName><RussianDefinition>Многомерная структура данных. В базах данных Caché реализованы с помощью B-деревьев.</RussianDefinition><EnglishDefinition>A multidimensional storage structure. Globals are implemented using balanced-tree technology within a Caché database.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=GGBL_preface</FurtherRead><RussianName>Глобал</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Globals</EnglishName><RussianDefinition>Парадигма программирования, в которой основными концепциями являются понятия объектов и классов, а также методов - действий, которые можно выполнять над объектом и которые сам объект может выполнять.</RussianDefinition><EnglishDefinition>A multidimensional storage structure. Globals are implemented using balanced-tree technology within a Caché database.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=GGBL_preface</FurtherRead><RussianName>Глобалы</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>OOP</EnglishName><RussianDefinition>Действие по записи новых данных вместо уже существующих, удаляя старые данные</RussianDefinition><EnglishDefinition>A programming paradigm that represents concepts as "objects" that have data fields (attributes that describe the object) and associated procedures known as methods.</EnglishDefinition><FurtherRead>http://en.wikipedia.org/wiki/Object-oriented_programming</FurtherRead><RussianName>ООП</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Overwrite</EnglishName><RussianDefinition>Экземпляры хранимого класса могут быть сохранены в базе данных. Все хранимые классы наследуются от класса %Persistent для обеспечения методов хранения/чтения данных</RussianDefinition><EnglishDefinition>To record (new data) on top of already stored data, thus destroying the old data.</EnglishDefinition><RussianName>Перезапись</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Persistent class</EnglishName><RussianDefinition>Web-портал администрирования сервера Cach?.</RussianDefinition><EnglishDefinition>Objects of a persistent class can be stored in the database. Persistent classes inherit the persistent interface from the %Persistent class to manage data storage and retrieval.</EnglishDefinition><FurtherRead><![CDATA[http://docs.intersystems.com/cache20131/csp/documatic/%25CSP.Documatic.cls?APP=1&LIBRARY=%25SYS&CLASSNAME=%25Library.Persistent]]]]><![CDATA[></FurtherRead><RussianName>Хранимый класс</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Portal</EnglishName><RussianDefinition>Для Cach?: программа на языке Caché ObjectScript или Basic, хранится в базе данных.</RussianDefinition><EnglishDefinition>Web based system administration and management tool for Caché.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=TVQS_SysMgmtPortal</FurtherRead><RussianName>Портал</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Routine</EnglishName><RussianDefinition>Набор комманд на языке Caché ObjectScript или Basic, хранится в базе данных.</RussianDefinition><EnglishDefinition>In Cach?: a Caché ObjectScript or Basic program. Routines are stored in a Caché database.</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=GSTD_Routines</FurtherRead><RussianName>Программа</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Studio</EnglishName><RussianDefinition>Приложение windows, интегрированная среда разработки приложений и баз данных Cach?.</RussianDefinition><EnglishDefinition>Windows application that helps you develop applications rapidly, in a single, integrated environment</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=GSTD_Intro</FurtherRead><RussianName>Студия</RussianName><RussianNameRating>0</RussianNameRating></Term><Term><EnglishName>Subscript</EnglishName><RussianDefinition>Все идентификаторы области за исключением первого (имя глобала)</RussianDefinition><EnglishDefinition>All other identifiers in the namespace excluding the root identifier (global name)</EnglishDefinition><FurtherRead>http://docs.intersystems.com/cache20131/csp/docbook/DocBook.UI.Page.cls?KEY=BXJV_globals#BXJV_C100389</FurtherRead><RussianName>Индекс</RussianName><RussianNameRating>0</RussianNameRating></Term></xml>
+]]></Data>
+</XData>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^Word.TermD</DataLocation>
+<DefaultData>TermDefaultData</DefaultData>
+<IdLocation>^Word.TermD</IdLocation>
+<IndexLocation>^Word.TermI</IndexLocation>
+<StreamLocation>^Word.TermS</StreamLocation>
+<ExtentSize>103</ExtentSize>
+<Data name="TermDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>EnglishName</Value>
+</Value>
+<Value name="3">
+<Value>Name</Value>
+</Value>
+<Value name="4">
+<Value>Language</Value>
+</Value>
+<Value name="5">
+<Value>Definition</Value>
+</Value>
+<Value name="6">
+<Value>FurtherRead</Value>
+</Value>
+<Value name="7">
+<Value>Official</Value>
+</Value>
+<Value name="8">
+<Value>Rating</Value>
+</Value>
+<Value name="9">
+<Value>LanguageT</Value>
+</Value>
+<Value name="10">
+<Value>LanguageTr</Value>
+</Value>
+<Value name="11">
+<Value>Cotext</Value>
+</Value>
+<Value name="12">
+<Value>Context</Value>
+</Value>
+<Value name="13">
+<Value>RussianName</Value>
+</Value>
+<Value name="14">
+<Value>RussianDefinition</Value>
+</Value>
+<Value name="15">
+<Value>EnglishDefinition</Value>
+</Value>
+<Value name="16">
+<Value>Translations</Value>
+</Value>
+<Value name="17">
+<Value>Translationss</Value>
+</Value>
+<Value name="18">
+<Value>OfficialTranslation</Value>
+</Value>
+<Value name="19">
+<Value>RussianNameRating</Value>
+</Value>
+<Value name="20">
+<Value>RussianNameContext</Value>
+</Value>
+<Value name="21">
+<Value>EnglishNameContext</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="Context">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Definition">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="EnglishDefinition">
+<Selectivity>0.9709%</Selectivity>
+</Property>
+<Property name="EnglishName">
+<Selectivity>0.9709%</Selectivity>
+</Property>
+<Property name="EnglishNameContext">
+<Selectivity>0.9901%</Selectivity>
+</Property>
+<Property name="FurtherRead">
+<Selectivity>0.9709%</Selectivity>
+</Property>
+<Property name="Language">
+<Selectivity>49.9998%</Selectivity>
+</Property>
+<Property name="LanguageTr">
+<Selectivity>50.0000%</Selectivity>
+</Property>
+<Property name="Name">
+<Selectivity>0.5000%</Selectivity>
+</Property>
+<Property name="Official">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="OfficialTranslation">
+<Selectivity>0.7246%</Selectivity>
+<OutlierSelectivity>.5:</OutlierSelectivity>
+</Property>
+<Property name="Rating">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="RussianDefinition">
+<Selectivity>0.9709%</Selectivity>
+</Property>
+<Property name="RussianName">
+<Selectivity>0.9709%</Selectivity>
+</Property>
+<Property name="RussianNameContext">
+<Selectivity>0.9901%</Selectivity>
+</Property>
+<Property name="RussianNameRating">
+<Selectivity>0.9901%</Selectivity>
+</Property>
+<Property name="Translations">
+<Selectivity>1.0526%</Selectivity>
+</Property>
+<SQLMap name="$Term">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="EnglishNameIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="IDKEY">
+<BlockCount>-8</BlockCount>
+</SQLMap>
+<SQLMap name="NameIndex">
+<BlockCount>-8</BlockCount>
+</SQLMap>
+<SQLMap name="RussianNameIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+</Export>

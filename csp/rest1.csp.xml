@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="rest1.CSP" application="/csp/glossarygit/" default="1"><![CDATA[
+<!-- 
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" by Chris Carmichael and Oliver Caudron
+http://code.angularjs.org/1.1.5/angular.min.js
+-->
+<!doctype html>
+<html ng-app="GlossaryApp">
+<head>
+    <title>InterSystems Glossary</title>
+
+    <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/glossary.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js"></script>
+	<script src="http://ulogin.ru/js/ulogin.js"></script>
+	<!--<script src="http://vk.com/js/api/openapi.js"></script>
+	<script src="/csp/glossary/Bootstrap/js/auth.js"></script>-->	
+
+</head>
+<!-- ng-controller="control" from glossary.js
+     ng-init="getTerms();" - call "getTerms();" from "control" after page load
+     search.$=(#($Get(%request.Data("qusery",1),"''"))#); - fill SearchQuery 
+     							from menu.csp with query passed as a parameter
+     ChangeLetterLanguage('En'); - fill $scope.letters with  letters       -->
+<body ng-controller="control" ng-init="getTerms(); search.$=(#($Get(%request.Data("query",1),"''"))#); ChangeLetterLanguage('En');">
+<!--<div ng-include src="'/csp/glossary/menu.html'"></div>-->
+<!-- MENU -->
+<div align="middle"><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif"
+                                                   hspace="20"></a></div>
+<div class="navbar">
+
+    <div class="navbar-inner">
+        <button id="aboutbtn" type="button" class="btn pull-left" ng-click="openAbout()">О проекте</button>
+        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
+				<span class="checkboxes">
+					<span class="checkboxl">RU: <input type="checkbox" ng-model="showStateRU"></span>
+					<span class="checkboxl">En: <input type="checkbox" ng-model="showStateEN"></span>
+				</span>
+            <select ng-model="orderProp">
+                <option value="">Сортировка</option>
+                <option value="EnglishName">English first</option>
+                <option value="RussianName">Сначала по русски</option>
+            </select>
+
+            <input type="text" name="SearchQuery" class="search-query span4" placeholder="Термин" ng-model="search.$"
+                   autofocus>
+            <input type="submit" class="btn btn-info" value="Найти"/>
+        </form>
+
+
+        <form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user"
+              ng-submit="doLogin(user.Login, user.PasswordSetter);  user='';">
+            <span id="uLogin" data-ulogin="display=small;fields=first_name,last_name;optional=email;providers=vkontakte,odnoklassniki,mailru,facebook;hidden=other;redirect_uri=http%3A%2F%2Fglossary.intersystems.ru%2Fglossary%2FoAuth"></span>
+            <input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
+            <input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
+            <button type="submit" class="btn">Вход</button>
+        </form>
+        <button id="regbtn" ng-show="loginState!=1" type="button" class="btn pull-right" ng-click="openDialog()">
+            Регистрация
+        </button>
+        
+        <button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right">Выход, <span
+                class="label label-info">{{readCookie('Login')}}</span></button>
+
+    </div>
+</div>
+
+<!-- END MENU -->
+
+
+<!--  First letter filter bar -->
+
+<div class="letter_select_bar">
+    <div class="letter_select_box" ng-bind="letterLanguage" ng-click="ChangeLetterLanguage(letterLanguage);"></div>
+    <div class="letter_select_box" ng-repeat="letter in letters" ng-bind="letter.text"
+         ng-click="SetStartLetter(letter.text);"></div>
+</div>
+<br></br>
+<!--  END First letter filter bar -->
+
+<!-- Alertzone to display errors -->
+<div class="alerts">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
+<!-- Add UserTerm-->
+
+<ul ng-if="Priveledge>0" class="addTerm">
+    <button ng-click="showstatechange();" class="btn">Предложить термин</button>
+    <br ng-show=" $scope.showState==1"><br ng-show="showState==1">
+
+    <form id="AddTermForm" ng-show="showState" name="AddTermForm" ng-model="term"
+          ng-submit="term.RussianNameRating=0; addTerm(term); term=''">
+        <input class="span6" type="text" placeholder="English name" ng-model="term.EnglishName" required/> <br>
+        <input class="span6" type="text" placeholder="Русское имя" ng-model="term.RussianName" required/> <br>
+        <textarea class="span6" rows="3" placeholder="Definition" ng-model="term.EnglishDefinition"
+                  required></textarea> <br>
+        <textarea class="span6" rows="3" placeholder="Определение" ng-model="term.RussianDefinition"
+                  required></textarea> <br>
+        <textarea class="span6" rows="3" placeholder="Context"
+                  ng-model="term.EnglishNameContext"> </textarea> <br>
+        <textarea class="span6" rows="3" placeholder="Контекст"
+                  ng-model="term.RussianNameContext"></textarea> <br>
+        <input type="text" class="span6" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/> <br> <input
+            type="submit"
+            class="btn"
+            value="Отправить"/>
+    </form>
+</ul>
+
+<!-- End Add UserTerm-->
+
+<ul class="terms">
+    <!--Loop through all terms -->
+    <li ng-animate="'animate'" ng-repeat="term in terms | filter:search | filter:filterFL | orderBy:orderProp">
+        <b><a href="/glossary/term/{{term.ID}}" class="link">
+        	<span class="termTitle" ng-switch on="orderProp">
+				<span ng-switch-when="EnglishName">{{term.EnglishName}} - {{term.RussianName}}</span>
+				<span ng-switch-when="RussianName">{{term.RussianName}} - {{term.EnglishName}}</span>
+				<span ng-switch-default>{{term.EnglishName}} - {{term.RussianName}}</span>
+			</span>       
+        </a>
+        </b> 
+        <span ng-if="term.AltTranslations!=''"> ({{term.AltTranslations}})</span><br>
+
+        <p ng-show="showStateRU">Русское описание: {{term.RussianDefinition}}</p>
+
+        <p ng-show="showStateEN">English definition: {{term.EnglishDefinition}}</p>
+    </li>
+    <!--END Loop through all terms -->
+</ul>
+<br>
+
+</body>
+</html>
+]]></CSP>
+</Export>

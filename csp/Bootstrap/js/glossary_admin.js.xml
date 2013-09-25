@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/js/glossary_admin.js" application="/csp/glossarygit/" default="1"><![CDATA[
+angular.module('GlossaryApp', ['ui.bootstrap']);
+
+
+//Admin controller. Can get/edit/delete term(s), get/add/delete/make_default translations
+function control($scope, $http) {
+    $scope.showStateEN = "0";
+    $scope.showStateRU = "0";
+
+    // Get all terms
+    $scope.getTerms = function () {
+        $http.get("/glossary/admin/json/terms").success(function (data) {
+            $scope.terms = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
+            });
+
+    }
+    
+     // Get all user terms
+    $scope.getUserTerms = function () {
+        $http.get("/glossary/admin/json/userterms").success(function (data) {
+            $scope.userterms = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки предложений терминов :( [" + data + "]";
+            });
+
+    }
+    
+    // Get all users
+    $scope.getUsers = function () {
+        $http.get("/glossary/admin/json/users").success(function (data) {
+            $scope.users = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки пользователей :( [" + data + "]";
+            });
+
+    }
+    
+    // Get all users' letters to admin
+    $scope.getLetters = function () {
+        $http.get("/glossary/admin/json/letters").success(function (data) {
+            $scope.letters = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки сообщений пользователей :( [" + data + "]";
+            });
+
+    }
+
+    //  Add one term
+    $scope.addTerm = function (term) {
+        $http.post("/glossary/admin/json/term", term)
+            .success(function (data) {
+                $scope.getTerms();
+                $scope.alertzone = "Добавили!!!" + term.EnglishName;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка добавления термина :( [" + data + "]";
+            });
+    }
+
+	// Edit term
+    $scope.updateTerm = function (term) {
+        $http.put("/glossary/admin/json/term/" + term.ID, term)
+            .success(function (data) {
+                $scope.alertzone = "Обновили" + term.EnglishName;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка обновления термина :( [" + data + "]";
+            });
+        $scope.showStateEditForm = '0';
+    }
+    
+    // Edit user
+    $scope.updateUser = function (user) {
+        $http.put("/glossary/admin/json/user/" + user.Login, user)
+            .success(function (data) {
+                $scope.alertzone = "Обновили " + user.Login;
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка обновления пользователя :( [" + data + "]";
+            });
+        $scope.showStateEditForm = '0';
+    }
+
+    // Delete one term
+    $scope.deleteTerm = function (termid) {
+		if (confirm('Действительно удалить термин?')== true) {
+        	$http.delete("/glossary/admin/json/term/" + termid)
+            	.success(function (data) {
+	            	///Page reload because index problems
+                	window.location.reload()
+                	$scope.alertzone = "Удаление!!!";
+            	}).error(function (data, status) {
+                	$scope.alertzone = "[" + status + "] Ошибка удаления термина :( [" + data + "]";
+            	});
+		}
+    }
+    
+    // Delete one user term
+    $scope.deleteUserTerm = function (termid) {
+        	$http.delete("/glossary/admin/json/userterm/" + termid)
+            	.success(function (data) {
+	            	///Page reload because index problems
+                	$scope.alertzone = "Удаление!!!";
+                	$scope.getUserTerms();
+            	}).error(function (data, status) {
+                	$scope.alertzone = "[" + status + "] Ошибка удаления предложения :( [" + data + "]";
+            	});
+    }
+	
+	// Get term translations by its index. Needed to perform no-refresh translations autoupdate
+    $scope.getTranslationsByIndex = function (index) {
+        $http.get("/glossary/admin/json/translation/" + ($scope.terms[index].ID)).success(function (data) {
+            $scope.terms[index].translations = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+            });
+    }
+    
+ 
+	// Get all translations by user. Needed to perform no-refresh translations autoupdate
+    $scope.getTranslationsByUser = function (index) {
+        $http.get("/glossary/admin/json/user_translation/" + ($scope.users[index].Login)).success(function (data) {
+            $scope.users[index].translations = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки перевода :( [" + data + "]";
+            });
+    }
+
+    /// Deletes translation, index - for translations autoupdate
+    $scope.deleteTranslation = function (translationid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/glossary/admin/json/translation/" + translationid)
+            .success(function (data) {
+                $scope.getTranslationsByIndex(index);
+                $scope.alertzone = "Удаление!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления перевода :( [" + data + "]";
+            });
+    }
+    
+    /// Deletes translation, index - for translations autoupdate
+    $scope.deleteTranslationUser = function (translationid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/glossary/admin/json/translation/" + translationid)
+            .success(function (data) {
+                $scope.getTranslationsByUser(index);
+                $scope.alertzone = "Удаление!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления перевода :( [" + data + "]";
+            });
+    }
+
+	// Make translation default one
+    $scope.makeDefaultTranslation = function (translationid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.post("/glossary/admin/json/translation/" + translationid)
+            .success(function (data) {
+                $scope.getTranslationsByIndex(index);
+                $scope.alertzone = "Новая по умолчанию!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка изменения перевода :( [" + data + "]";
+            });
+    }
+    
+    	// Make translation default one
+    $scope.makeUserTermOfficial = function (termid) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.post("/glossary/admin/json/userterm/" + termid)
+            .success(function (data) {
+                $scope.alertzone = "Новый термин!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка утверждения предложенного термина :( [" + data + "]";
+            });
+    }
+    
+    // To the front page
+    $scope.dosearch=function(query){
+			window.location.href = "/glossary/admin/terms/"+query;
+	}
+	
+	  // Get all comments of a term
+    $scope.getCommentsByIndex = function (index) { 
+        $http.get("/glossary/admin/json/comment/" + ($scope.terms[index].ID)).success(function (data) {
+             $scope.terms[index].comments = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
+            });
+    }
+    
+    // Get all comments of a one user
+    $scope.getCommentsByUser = function (index) { 
+        $http.get("/glossary/admin/json/user_comment/" + ($scope.users[index].Login)).success(function (data) {
+             $scope.users[index].comments = data.children;
+        }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка загрузки комментариев :( [" + data + "]";
+            });
+    }
+    
+       $scope.deleteComment = function (commentid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/glossary/admin/json/comment/" + commentid)
+            .success(function (data) {
+                $scope.getCommentsByIndex(index);
+                $scope.alertzone = "Удаление комментария!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления комментария :( [" + data + "]";
+            });
+    }
+    
+    $scope.deleteUser = function (userid) {
+        //    alert($scope.terms.indexOf(termid));
+        var scale=prompt("Действительно хотите удалить пользователя?\nЕсли да, укажите вариант удаления:\n0 - только пользователь,\n1 - пользователь и его комментарии,\n2 - пользователь и его переводы,\n3 - пользователь и его переводы и комментарии."); 
+        if (scale>=0 && scale<=3) {$http.delete("/glossary/admin/json/user/" + userid+"/"+scale)
+        	.success(function (data) {   
+                $scope.alertzone = "Удаление пользователя!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления пользователя :( [" + data + "]";
+            });
+        }
+    }
+    
+           $scope.deleteCommentUser = function (commentid, index) {
+        //    alert($scope.terms.indexOf(termid));
+        $http.delete("/glossary/admin/json/comment/" + commentid)
+            .success(function (data) {
+                $scope.getCommentsByUser(index);
+                $scope.alertzone = "Удаление комментария!!!";
+            }).error(function (data, status) {
+                $scope.alertzone = "[" + status + "] Ошибка удаления комментария :( [" + data + "]";
+            });
+    }
+
+};]]></CSP>
+</Export>

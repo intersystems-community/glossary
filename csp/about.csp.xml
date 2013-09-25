@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="about.csp" application="/csp/glossarygit/" default="1"><![CDATA[
+<!doctype html>
+<html ng-app="GlossaryApp">
+<head>
+    <meta charset="utf-8">
+    <title>InterSystems Glossary</title>
+
+    <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/glossary.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js"></script>
+	<script src="http://ulogin.ru/js/ulogin.js"></script>
+</head>
+
+<body ng-controller="control">
+
+<div align="middle"><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif"
+                                                   hspace="20"></a></div>
+<div class="navbar">
+    <div class="navbar-inner">
+        <button id="gotomainbtn" type="button" class="btn btn-info pull-left" ng-click="dosearch()">На главную</button>
+        <form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user"
+              ng-submit="doLogin(user.Login, user.PasswordSetter); user='';">
+            <span id="uLogin" data-ulogin="display=small;fields=first_name,last_name;optional=email;providers=vkontakte,odnoklassniki,mailru,facebook;hidden=other;redirect_uri=http%3A%2F%2Fglossary.intersystems.ru%2Fglossary%2FoAuth"></span>
+            <input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
+            <input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
+            <button type="submit" class="btn">Вход</button>
+
+        </form>
+        <button id="regbtn" ng-show="loginState!=1" type="button" class="btn pull-right" ng-click="openDialog()">
+            Регистрация
+        </button>
+        <button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right">Выход, <span
+                class="label label-info">{{readCookie('Login')}}</span></button>
+    </div>
+</div>
+
+<div class="alerts">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <H2>О проекте</H2>
+
+        <div class="terms">
+            <div class="DefinitionText">
+                Глоссарий технологий InterSystems ставит целью предоставить достоверную информацию о терминах,
+                использующищихся в стеке технологий InterSystems.
+                Для каждого термина представлены английское и русское определения, описания и контексты использования.
+                Ссылки на ресурсы, предоставляющие более подробную информацию.<br>
+                Зарегистрированные пользователи имеют возможность обсуждать термины, предложенные варианты перевода, а
+                также предлагать свои собственные варианты.
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="Priveledge>0" class="row">
+        <H2>Написать администрации</H2>
+        <ul class="addComentform">
+            <form name="AddLetterForm" ng-model="letter"
+                  ng-submit="addLetter(letter); letter=''">
+                <textarea class="span6" rows="3" placeholder="Текст" ng-model="letter.Text"></textarea> <br>
+                <br>
+                <input type="submit" class="btn" value="Отправить сообщение"/>
+            </form>
+        </ul>
+
+    </div>
+
+
+</div>
+
+</body>
+</html>
+]]></CSP>
+</Export>

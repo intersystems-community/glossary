@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Translation">
+<Description>
+Class describes one translation</Description>
+<Super>%Persistent,%Populate,%XML.Adaptor</Super>
+<TimeCreated>63014,62792.482687</TimeCreated>
+
+<Property name="TranslationName">
+<Description>
+Translation itself</Description>
+<Type>%String</Type>
+<Required>1</Required>
+</Property>
+
+<Property name="TranslationRating">
+<Description>
+Users' rating of translation</Description>
+<Type>%Integer</Type>
+</Property>
+
+<Property name="TranslationContext">
+<Description>
+Got to use it right</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="5000"/>
+</Property>
+
+<UDLText name="T">
+<Content><![CDATA[
+// Relationship Term As Word.Term [ Cardinality = parent, Inverse = Translations ];
+
+]]></Content>
+</UDLText>
+
+<Property name="TermId">
+<Type>%Integer</Type>
+</Property>
+
+<Index name="TermIndex">
+<Properties>TermId</Properties>
+</Index>
+
+<Property name="User">
+<Type>Word.User</Type>
+<Cardinality>one</Cardinality>
+<Inverse>Translations</Inverse>
+<Relationship>1</Relationship>
+</Property>
+
+<Property name="CreationDate">
+<Type>%Date</Type>
+<InitialExpression>$PIECE($NOW(),",",1)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Property name="CreationTime">
+<Type>%Time</Type>
+<InitialExpression>$PIECE($NOW(),",",2)</InitialExpression>
+<Required>1</Required>
+</Property>
+
+<Method name="PopulateXML">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  #dim sc As %Status = $$$OK
+  // очистка существующих данных класса
+  s sc=..%DeleteExtent()  
+  if $$$ISERR(sc) quit sc
+  
+  // загрузка xml-данных блока XData из библиотеки скомпилированных классов  
+  #dim stream As %Stream.Object = ##class(%Dictionary.CompiledXData).%OpenId(..%ClassName(1) _ "||" _ "populate").Data
+  // создание инстанса XML ридера
+  #dim reader As %XML.Reader = ##class(%XML.Reader).%New()
+  // открытие в ридере поток xml 
+  set sc = reader.OpenStream(stream, "literal")
+  if $$$ISERR(sc) quit sc
+  // указание ридеру в каком элементе искать данные класса
+  do reader.Correlate("Translation", ..%ClassName(1))
+  
+  #dim obj as %Persistent
+  // загрука в цикле элементов класса
+  while reader.Next(.obj, .sc)
+  {
+    if $$$ISERR(sc) quit
+    // сохранение прочитанного из xml инстанс в базу данных
+    set sc = obj.%Save()
+    if $$$ISERR(sc) quit
+    
+    set obj = ""
+  }
+  
+  quit sc
+]]></Implementation>
+</Method>
+
+<XData name="populate">
+<Data><![CDATA[<xml><Translation><TranslationName>Глобаль</TranslationName><TranslationRating>0</TranslationRating><TermId>3</TermId></Translation><Translation><TranslationName>Подиндекс</TranslationName><TranslationRating>0</TranslationRating><TermId>11</TermId></Translation><Translation><TranslationName>Ключ</TranslationName><TranslationRating>0</TranslationRating><TermId>11</TermId></Translation></xml>
+]]></Data>
+</XData>
+
+<Storage name="Default">
+<Type>%Library.CacheSerialState</Type>
+<DataLocation>^Word.TranslationD</DataLocation>
+<DefaultData>TranslationDefaultData</DefaultData>
+<IdLocation>^Word.TranslationD</IdLocation>
+<IndexLocation>^Word.TranslationI</IndexLocation>
+<State>TranslationState</State>
+<StreamLocation>^Word.TranslationS</StreamLocation>
+<ExtentSize>100</ExtentSize>
+<Data name="TranslationDefaultData">
+<Subscript>"1"</Subscript>
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>TranslationName</Value>
+</Value>
+<Value name="3">
+<Value>TranslationRating</Value>
+</Value>
+<Value name="4">
+<Value>TranslationContext</Value>
+</Value>
+<Value name="5">
+<Value>TermId</Value>
+</Value>
+<Value name="6">
+<Value>User</Value>
+</Value>
+<Value name="7">
+<Value>CreationDate</Value>
+</Value>
+<Value name="8">
+<Value>CreationTime</Value>
+</Value>
+</Data>
+<Data name="TranslationState">
+<Value name="1">
+<Value>Name</Value>
+</Value>
+<Value name="2">
+<Value>Rating</Value>
+</Value>
+<Value name="3">
+<Value>Context</Value>
+</Value>
+<Value name="4">
+<Value>Term</Value>
+</Value>
+</Data>
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="Context">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Name">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Rating">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="Term">
+<Selectivity>1.6667%</Selectivity>
+</Property>
+<Property name="TranslationContext">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="TranslationName">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="TranslationRating">
+<Selectivity>1.0000%</Selectivity>
+</Property>
+<Property name="childsub">
+<Selectivity>10.0000%</Selectivity>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+<SQLMap name="TermIndex">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+</Storage>
+</Class>
+</Export>

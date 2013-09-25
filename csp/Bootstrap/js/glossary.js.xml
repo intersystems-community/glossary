@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/js/glossary.js" application="/csp/glossarygit/" default="1"><![CDATA[
+ angular.module('GlossaryApp', ['ngCookies', 'ui.bootstrap', 'ngSanitize']);
+
+ //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
+ //.config(function ($cookieStore, $http) {$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookieStore.get('SID');}
+ //.config(['$httpProvider', 	function($httpProvider) {$httpProvider.defaults.withCredentials = true;}]);
+
+
+// User-controller. Can get all/one term(s), get/add translations
+ function control($scope, $http, $cookies, $cookieStore, $dialog) {
+
+	
+    $scope.showStateEN = 0;
+    $scope.showState=0; 
+    $scope.showStateRU = 0;
+    $scope.StartLetter = "";
+	$scope.letterLanguage= "En"
+	$scope.loginState=$cookieStore.get('LoginState');
+	$scope.Priveledge=$cookieStore.get('Priveledge');
+  	$scope.alerts = [   	
+  	];
+
+	$scope.closeAlert = function(index) {
+    	$scope.alerts.splice(index, 1);
+  	};
+
+    // Get all terms
+    $scope.getTerms = function () { 
+        $http.get("/glossary/json/terms").success(function (data) {
+            $scope.terms = data.children;
+        }).error(function (data, status) {  $scope.alerts.push({ type: "error", msg: "Ошибка загрузки слов." });
+               // $scope.alertzone = "[" + status + "] Ошибка загрузки слов :( [" + data + "]";
+            });
+            
+
+    }
+    
+    // Add one translation to term
+	$scope.addTranslation = function (translation) {
+        // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
+        // can specify it in  $http.post. Does not work, though
+		//  "Content-Type": "application/json"
+		// headers: { 'Set-Cookie': "SID="+$cookieStore.get('SID')+";" }
+		///MIME-field = field-name ":" #field-value
+		//data: { email: "111", password: "22"},
+		//translation.SID = $cookieStore.get('SID');
+		// {headers : { "Set-cookie" : "sessionId="+$cookieStore.get('SID')+";"}}
+        $http.post("/glossary/json/translation", translation)
+            .success(function (data) {
+	            $scope.getTranslations($scope.terms[0].ID);
+	            $scope.alerts.push({ type: "success", msg: "Успешно добавили перевод."});
+            }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка добавления перевода."});
+            });
+    }
+    
+    
+     // Add one comment to term
+	$scope.addComment = function (comment) {
+        $http.post("/glossary/json/comment/"+$scope.terms[0].ID, comment)
+            .success(function (data) {
+	            $scope.getComments($scope.terms[0].ID);
+	            $scope.alerts.push({ type: "success", msg: "Успешно добавили комментарий."});
+            }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка добавления комментария."});
+            });
+    }
+    
+    // Write letter to admin
+    $scope.addLetter = function (letter) {
+        $http.post("/glossary/json/letter", letter)
+            .success(function (data) {
+	            $scope.alerts.push({ type: "success", msg: "Сообщение отправлено."});
+            }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка отправки сообщения."});
+            });
+    }
+
+	// Get one term by its id in database
+    $scope.getTerm = function (termid) {  
+        $http.get("/glossary/json/term/" + termid).success(function (data) {
+            $scope.terms = data.children;
+            $scope.getTranslations($scope.terms[0].ID);
+            $scope.getComments($scope.terms[0].ID);
+        }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки термина."});
+            });
+
+    }
+
+	// Get all translations of a term
+    $scope.getTranslations = function (termid) { 
+        $http.get("/glossary/json/translation/" + termid).success(function (data) {
+            $scope.translations = data.children;
+        }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки переводов."});
+            });
+    }
+    
+    // Get all comments of a term
+    $scope.getComments = function (termid) { 
+        $http.get("/glossary/json/comment/" + termid).success(function (data) {
+            $scope.comments = data.children;
+        }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка загрузки комментариев."});
+            });
+    }
+    
+    // Redirect to main page with search query
+    $scope.dosearch=function(query){
+	    if (query) {
+			window.location.href = "/glossary/terms/"+query;
+	    } else {window.location.href = "/glossary/terms";}
+	}
+	
+	$scope.openAbout=function(){
+			window.location.href = "/glossary/about";
+			
+	}
+		
+	$scope.lettersEn = [
+		{text: "All"},
+        {text: "A"},
+        {text: "B"},
+        {text: "C"},
+        {text: "D"},
+        {text: "E"},
+        {text: "F"},
+   		{text: "G"},
+        {text: "H"},
+        {text: "I"},
+        {text: "G"},
+        {text: "K"},
+        {text: "L"},
+        {text: "M"},
+  		{text: "N"},
+        {text: "O"},
+        {text: "P"},
+        {text: "Q"},
+        {text: "R"},
+        {text: "S"},
+        {text: "T"},
+   		{text: "U"},
+        {text: "V"},
+        {text: "W"},
+        {text: "X"},
+        {text: "Y"},
+        {text: "Z"}        
+    ];
+    
+    $scope.lettersRu = [
+		{text: "Все"},
+        {text: "А"},
+        {text: "Б"},
+        {text: "В"},
+        {text: "Г"},
+        {text: "Д"},
+        {text: "Е"},
+   		{text: "Ж"},
+        {text: "З"},
+        {text: "И"},
+        {text: "К"},
+        {text: "Л"},
+        {text: "М"},
+        {text: "Н"},
+  		{text: "О"},
+        {text: "П"},
+        {text: "P"},
+        {text: "С"},
+        {text: "Т"},
+        {text: "У"},
+        {text: "Ф"},
+   		{text: "Х"},
+        {text: "Ц"},
+        {text: "Ч"},
+        {text: "Ш"},
+        {text: "Щ"},
+        {text: "Э"},
+        {text: "Ю"},
+        {text: "Я"}
+              
+    ];
+    
+    // Default letters scope. We push here lettersRu or lettersEn. For 
+    $scope.letters = [];
+    //$scope.userses = [];
+		
+	$scope.SetStartLetter = function(letter) {
+		$scope.showState=0;
+		if ($scope.StartLetter==letter) {$scope.StartLetter = '';} 
+			else {$scope.StartLetter=letter;};
+			
+	}
+	
+	$scope.showstatechange = function() {
+		$scope.showState=!$scope.showState;
+	
+	};
+	
+	// Filter by first letter (custom filter)	
+	$scope.filterFL =  function(term) {
+		if ($scope.StartLetter=='' || $scope.StartLetter=="All" || $scope.StartLetter=="Все") {  return true; } // fasttrack to results
+    	if(term.EnglishName.charAt(0)==$scope.StartLetter || term.RussianName.charAt(0)==$scope.StartLetter)
+    	{
+        	return true; // this will be listed in the results
+    	}
+    	return false; // otherwise it won't be within the results
+	};
+
+	// Change Language of letter bar
+	$scope.ChangeLetterLanguage = function(CurrentActiveLanguage) {
+		$scope.showState=0;
+		if (CurrentActiveLanguage=="En") { $scope.letterLanguage="Ру";  $scope.letters=$scope.lettersRu}
+		 else { $scope.letterLanguage="En";  $scope.letters=$scope.lettersEn;};
+		 $scope.StartLetter = '';		
+	}
+
+	$scope.doRegister = function(user) {
+    $http.post("/glossary/json/user", user)
+            .success(function (data) {	           
+                 $scope.alerts.push({ type: "success", msg: "Регистрация успешна."});
+                 $scope.doLogin(user.Login, user.PasswordSetter);
+            }).error(function (data, status) {
+	             $scope.alerts.push({ type: "error", msg: "Ошибка регистрации."});
+            });
+		
+	}
+	
+	
+	$scope.doLogin  = function(login, password) {     
+    $http.get("/glossary/json/user/"+ login + "/" + password)
+            .success(function (data) {
+	            if (data.children[0]!=undefined)	{
+                	$scope.Priveledge=data.children[0].Priveledge;
+                	$scope.startSession(login, password);
+                	$scope.loginState=1;     
+                        	
+	            } else { $scope.alerts.push({ type: "error", msg: "Ошибка входа."});  }            
+            }).error(function (data, status) { 
+                $scope.alerts.push({ type: "error", msg: "Ошибка входа."});
+            });
+	}
+	
+	$scope.doExit  = function() {
+		$scope.loginState=0;  
+		$scope.Priveledge=-1;
+		document.cookie = "Login" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+		document.cookie = "Priveledge" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";		
+		document.cookie = "LoginState" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+		document.cookie = "SID" + "=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";	
+	}  
+	
+	$scope.startSession = function(login, password) { 
+	  $http.get("/glossary/json/session/"+ login + "/" + password)
+            .success(function (data) {   
+            	$scope.alerts.push({ type: "success", msg: "Вход успешен."});	                        
+            }).error(function (data, status) {
+               $scope.alerts.push({ type: "error", msg: "Ошибка входа."});
+            });
+	}	
+		
+		///__________________REG
+	 var t = '<div class="modal-header">'+
+          '<h3>Регистрация</h3>'+
+          '</div>'+
+          '<div class="modal-body">'+
+          '<p>Все поля обязательны для заполнения</p>'+
+          '<form name="regForm" class="form"  ng-model="user" ng-submit="close(User)">'+          
+          '<p><input ng-model="User.Email" type="email" class="span2" placeholder="Email" required/></p>'+
+          '<p><input ng-model="User.Login" name="loginput" type="text" ng-Maxlength="15" class="span2" placeholder="Логин" required/> <span class="messageBlock" ng-show="regForm.loginput.$error.maxlength"> Не более 15 символов</span><br>'+
+          '<p><input ng-model="User.PasswordSetter" type="password" class="span2" placeholder="Пароль" required/></p>'+
+          '<p><input ng-model="PasswordSetterCheck" type="password" class="span2" placeholder="Повторите пароль"  pw-check="User.PasswordSetter" required/>'+
+          '<span class="messageBlock" ng-show="PasswordSetterCheck!=User.PasswordSetter">Пароли не совпадают</span></p>'+
+          '<button type="submit" class="btn">Регистрация</button>'+
+          '</form>'+    
+          '<p><button class="btn" ng-click="resetPassword()">Восстановление пароля</button></p>'+     
+          '</div>';
+          
+
+  	$scope.opts = {
+    	backdrop: true,
+    	keyboard: true,
+    	backdropClick: true,
+    	template:  t, // OR: templateUrl: 'path/to/view.html',
+    	controller: 'RegistrationDialogController'
+  	};
+
+  	$scope.openDialog = function(){
+    	var d = $dialog.dialog($scope.opts);
+    	d.open().then(function(user){
+      	if(user)
+      	{
+        	$scope.doRegister(user);
+      	}
+    	});
+  	};
+  	
+  	$scope.readCookie =	function (name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+	};
+	
+	//  Add one UserTerm
+    $scope.addTerm = function (term) {
+        $http.post("/glossary/json/term", term)
+            .success(function (data) {
+                $scope.getTerms();
+               	 $scope.alerts.push({ type: "success", msg: "Успешно предложили термин."});
+            }).error(function (data, status) {
+                $scope.alerts.push({ type: "error", msg: "Ошибка добавления термина."});
+            });
+    };
+    
+
+}
+
+	// the dialog is injected in the specified controller
+	function RegistrationDialogController($scope, dialog, $http){
+  	$scope.close = function(user){
+    	dialog.close(user);
+  	};
+  	
+  	$scope.resetPassword = function(){
+	    var email=prompt('Введите ваш email \n На него будет отправлен новый пароль ',null)
+	    if (email) { 
+	    	$http.post("/glossary/json/user/"+email)
+            .success(function (data) {
+               	 $rootScope.alerts.push({ type: "success", msg: "Успешно изменили пароль."});
+            }).error(function (data, status) {
+                 $rootScope.alerts.push({ type: "error", msg: "Ошибка изменения пароля."});
+            });
+		};
+		dialog.close();
+    };
+  	
+  
+
+}
+
+
+
+]]></CSP>
+</Export>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="REST.BrokerAdmin">
+<Super>%CSP.REST</Super>
+<TimeCreated>63035,61098.747218</TimeCreated>
+
+<XData name="UrlMap">
+<Data><![CDATA[
+<Routes>
+
+   <Route Url="/terms/:query" Method="GET" Call="REST.Broker:LoadTermsPage"/>
+   <Route Url="/terms" Method="GET" Call="csp.rest1:OnPage"/>
+   <Route Url="/terms/" Method="GET" Call="csp.rest1:OnPage"/>
+   <Route Url="/about" Method="GET" Call="csp.about:OnPage"/>
+   <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
+   <Route Url="/admin" Method="GET" Call="csp.admin:OnPage"/>
+
+   <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
+   <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/> 
+   <Route Url="/json/term" Method="POST" Call="REST.JSON:AddTerm"/>
+   <Route Url="/json/term/:termid" Method="DELETE" Call="REST.JSON:DeleteTerm"/>
+   <Route Url="/json/term/:termid" Method="PUT" Call="REST.JSON:UpdateTerm"/>
+   
+   <Route Url="/json/translation" Method="POST" Call="REST.JSON:AddTranslation"/>
+   <Route Url="/json/translation/:termid" Method="GET" Call="REST.JSON:GetTranslations"/> 
+   <Route Url="/json/translation/:translationid" Method="DELETE" Call="REST.JSON:DeleteTranslation"/>   
+   <Route Url="/json/translation/:translationid" Method="POST" Call="REST.JSON:MakeTranslationDefault"/>
+   
+   <Route Url="/json/user" Method="POST" Call="REST.JSON:AddUser"/>
+   <Route Url="/json/user/:login/:password" Method="GET" Call="REST.JSON:LoginUser"/>
+   
+   <Route Url="/json/session/:login/:password" Method="GET" Call="REST.JSON:StartSession"/>
+   
+   <Route Url="/json/comment/:termid" Method="GET" Call="REST.JSON:GetComments"/>
+   <Route Url="/json/comment/:termid" Method="POST" Call="REST.JSON:AddComment"/>
+   <Route Url="/json/comment/:commentid" Method="DELETE" Call="REST.JSON:DeleteComment"/>   
+   
+   <Route Url="/json/users" Method="GET" Call="REST.JSON:GetAllUsers"/>
+   <Route Url="/json/user_comment/:userid" Method="GET" Call="REST.JSON:GetCommentsByUser"/>
+   <Route Url="/json/user_translation/:userid" Method="GET" Call="REST.JSON:GetTranslationsByUser"/>
+   <Route Url="/json/user/:userid/:scale" Method="DELETE" Call="REST.JSON:DeleteUser"/>
+   <Route Url="/json/user/:userid" Method="PUT" Call="REST.JSON:UpdateUser"/>
+   
+   <Route Url="/json/userterms" Method="GET" Call="REST.JSON:GetAllUserTerms"/>
+   <Route Url="/json/userterm/:termid" Method="DELETE" Call="REST.JSON:DeleteUserTerm"/>
+   <Route Url="/json/userterm/:termid" Method="POST" Call="REST.JSON:MakeUserTermOfficial"/>
+   <Route Url="/json/letters" Method="GET" Call="REST.JSON:GetAllLetters"/>
+   
+   <Route Url="/test" Method="GET" Call="REST.Broker:Test"/>  
+ </Routes>
+]]></Data>
+</XData>
+
+<Method name="Test">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	&html<<h1>Работает?!</h1>>
+	&html<<h1>Работает!!!</h1>>
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadTermsPage">
+<Description>
+Serves client csp.rest1 page</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>query:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set %request.Data("query",1)=query
+	Do ##class(csp.rest1).OnPage()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadTermPage">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>id:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set %request.Data("id",1)=id
+	Do ##class(csp.term).OnPage()
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Http404">
+<Description>
+404 page</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	&html<<h1>Не Работает?!</h1>>
+	quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

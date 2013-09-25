@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Word.Tests.Utilities">
+<Super>%UnitTest.TestCase</Super>
+<TimeCreated>63011,40987.477678</TimeCreated>
+
+<Method name="Populate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	// do ##class(Word.Tests.Utilities).Populate()
+	w "1111 - success",!
+	w ##class(Word.Translation).%DeleteExtent()
+	w ##class(Word.Term).%DeleteExtent()	
+	//do ##class(Word.Term).Populate(num)
+	//w ##class(Word.Translation).Populate(num)
+	// w ##class(Word.User).Populate(num)
+	// w ##class(Word.Comment).Populate(num)
+	// do ##class(Word.Tests.Utilities).SerializeToFileTerm("D:\Git\terms.xml")
+	// do ##class(Word.Tests.Utilities).SerializeToFileTranslation("D:\Git\translations.xml")
+	
+	
+	w ##class(Word.Term).PopulateXML()
+	w ##class(Word.Translation).PopulateXML()
+]]></Implementation>
+</Method>
+
+<Method name="KillAll">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	// do ##class(Word.Tests.Utilities).KillAll()
+	w ##class(Word.Term).%DeleteExtent()
+	w ##class(Word.Translation).%DeleteExtent()
+	w ##class(Word.Session).%DeleteExtent()
+]]></Implementation>
+</Method>
+
+<Method name="RunQuery">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	do ##class(Word.Term).QueryXecute("A","45,570","0,1",0)
+]]></Implementation>
+</Method>
+
+<Method name="SerializeToFileTerm">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>file:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  #dim sc as %Status
+  #dim wr as %XML.Writer
+  set wr=##class(%XML.Writer).%New()
+  // установка файла, как устройство вывода
+  set sc=wr.OutputToFile(file) if $$$ISERR(sc) quit sc
+  // открытие корневого тега
+  set sc=wr.RootElement("xml") if $$$ISERR(sc) quit sc
+  #dim rset as %ResultSet
+  // выполнение запроса Extent, содержащего все объекты класса
+  set rset = ##class(%ResultSet).%New("Word.Term:Extent")
+   do rset.Execute()
+  #dim obj
+   while (rset.Next()) {
+     set obj=##class(Word.Term).%OpenId(rset.Data("ID"))
+     // сериализация объекта
+     set sc=wr.Object(obj)
+     if $$$ISERR(sc) quit
+  }
+  if $$$ISERR(sc) quit sc
+  // закрытие корневого тега
+  set sc=wr.EndRootElement() 
+  quit sc
+]]></Implementation>
+</Method>
+
+<Method name="SerializeToFileTranslation">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>file:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  #dim sc as %Status
+  #dim wr as %XML.Writer
+  set wr=##class(%XML.Writer).%New()
+  // установка файла, как устройство вывода
+  set sc=wr.OutputToFile(file) if $$$ISERR(sc) quit sc
+  // открытие корневого тега
+  set sc=wr.RootElement("xml") if $$$ISERR(sc) quit sc
+  #dim rset as %ResultSet
+  // выполнение запроса Extent, содержащего все объекты класса
+  set rset = ##class(%ResultSet).%New("Word.Translation:Extent")
+   do rset.Execute()
+  #dim obj
+   while (rset.Next()) {
+     set obj=##class(Word.Translation).%OpenId(rset.Data("ID"))
+     // сериализация объекта
+     set sc=wr.Object(obj)
+     if $$$ISERR(sc) quit
+  }
+  if $$$ISERR(sc) quit sc
+  // закрытие корневого тега
+  set sc=wr.EndRootElement() 
+  quit sc
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="REST.JSON">
+<Description>
+*******************************************************
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" 
+by Chris Carmichael and Oliver Caudron
+*******************************************************
+JSON Test class
+Также использован код из проекта
+https://github.com/MDevelopmentGroup/Recruting</Description>
+<Super>%Base</Super>
+<TimeCreated>63000,44444.255278</TimeCreated>
+
+<Method name="GetAllTerms">
+<Description>
+Get a list of all terms in JSON format</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   
+   set st=$$$OK
+   try{
+	   // do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext,RussianNameContext FROM Word.Term ORDER BY EnglishName")
+	 		do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,
+ 			"SELECT Distinct REPLACE(LIST(Distinct TranslationName), ',', ', ') AS AltTranslations, "_
+ 			"Word.Term.ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext,RussianNameContext "_ 
+ 			"FROM Word.Term "_
+ 			"LEFT JOIN Word.Translation ON Word.Translation.TermID=Word.Term.ID "_
+ 			"GROUP BY Word.Term.ID "_
+ 			"ORDER BY EnglishName")
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="GetAllUserTerms">
+<Description>
+Get all user-added terms</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   
+   set st=$$$OK
+   try{
+ 		do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, EnglishName, RussianName, RussianDefinition, EnglishDefinition, FurtherRead, EnglishNameContext,RussianNameContext FROM Word.UserTerm ORDER BY EnglishName")
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="GetAllUsers">
+<Description>
+Get a list of all Users</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   
+   set st=$$$OK
+   try{
+ 		do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime, Email, Login, Priveledge FROM Word.UserTable ORDER BY CreationDate DESC, CreationTime DESC")
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="GetTranslations">
+<Description>
+Get one term translations in JSON format</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  set termid=$ZSTRIP(termid,"*E'N")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Translation WHERE TermId="_termid)
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetComments">
+<Description>
+Get all comments on one term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set termid=$ZSTRIP(termid,"*E'N")	
+	// Date format conversion http://docs.intersystems.com/ens20091/csp/docbook/DocBook.UI.Page.cls?KEY=RSQL_convert
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ID, ""User""->Login As Login,Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE Term="_termid_" ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetAllLetters">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select ID, ""User""->Login As Login, Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Other.Letter ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetCommentsByUser">
+<Description>
+Get all comments by one user</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT ID, Text, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate, CreationTime FROM Word.Comment WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC, CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTranslationsByUser">
+<Description>
+Get all translations by one user</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"SELECT EnglishName, Word.Translation.ID, TranslationContext,TranslationName, TranslationRating, CONVERT(VARCHAR(20),CreationDate,103) AS CreationDate,CreationTime FROM Word.Translation JOIN Word.Term ON Word.Term.Id=TermId  WHERE ""User""->Login='"_usr_"' ORDER BY CreationDate DESC,CreationTime DESC")
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTerm">
+<Description>
+Get one term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  set termid=$ZSTRIP(termid,"*E'N")
+  do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select * FROM Word.Term WHERE %ID="_termid)
+  quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="AddTerm">
+<Description>
+Add one term</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+		//JSON -> Object
+		set obj=##class(Word.Term).%New()
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))	   
+	   // Solves problems with encoding 
+	   set obj.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       set obj.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       set obj.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       set obj.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       set obj.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       set obj.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       set obj.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+       
+	   $$$THROWONERROR(st,obj.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddUserTerm">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddUserTerm") {
+   		try{
+	   		set Usr=##class(Word.User).%OpenId(%request.Cookies("Login",1))
+		   	
+	   		set obj=##class(Word.UserTerm).%New()
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.UserTerm",.obj,1))	   
+	   		set obj.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       		set obj.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       		set obj.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       		set obj.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       		set obj.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       		set obj.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       		set obj.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+       		set obj.User=Usr
+	   		$$$THROWONERROR(st,obj.%Save())
+	   	
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+   }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="MakeUserTermOfficial">
+<Description>
+Make user-offered term official</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+	   set term=##class(Word.Term).%New()
+	   set userterm=##class(Word.UserTerm).%OpenId(termid) 
+	   set term.RussianName=userterm.RussianName
+       set term.EnglishName=userterm.EnglishName
+       set term.RussianDefinition=userterm.RussianDefinition
+       set term.EnglishDefinition=userterm.EnglishDefinition
+       set term.RussianNameContext=userterm.RussianNameContext
+       set term.EnglishNameContext=userterm.EnglishNameContext
+       set term.FurtherRead=userterm.FurtherRead       
+	   $$$THROWONERROR(st,term.%Save())
+	   $$$THROWONERROR(st,##class(Word.UserTerm).%DeleteId(termid))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddTranslation">
+<Description>
+Add one translation</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+	/// %request.Cookies("SID",1) - get first value of cookie named SID (see StartSession for details)
+	/// AllowAction - return true or false based on arbitrary parameters
+	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddTranslation") {    		
+   		try{	
+   			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
+   			set user=##class(Word.User).%OpenId(Id)
+			//JSON -> Object
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Translation",.obj,1))
+	   		set obj.TranslationName=$ZCONVERT(obj.TranslationName,"I","UTF8")
+	   		set obj.TranslationContext=$ZCONVERT(obj.TranslationContext,"I","UTF8")
+	   		set obj.User=user
+	   		$$$THROWONERROR(st,obj.%Save())
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+	}
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddComment">
+<Description>
+Add one comment</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+
+	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddComment") {    		
+   		try{	
+   			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
+   			set user=##class(Word.User).%OpenId(Id)
+   			set term=##class(Word.Term).%OpenId(termid)
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Comment",.obj,1))
+	   		set obj.Text=$ZCONVERT(obj.Text,"I","UTF8")
+	   		set obj.User=user
+	   		set obj.Term=term
+	   		$$$THROWONERROR(st,obj.%Save())
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+	}
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddLetter">
+<Description>
+Add one letter</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+
+	if ##class(Word.Session).AllowAction(%request.Cookies("SID",1), "AddLetter") {    		
+   		try{	
+   			&sql(SELECT "User"->Login INTO :Id From Word.Session WHERE SID=:%request.Cookies("SID",1))
+   			set user=##class(Word.User).%OpenId(Id)
+	   		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Other.Letter",.obj,1))
+	   		set obj.Text=$ZCONVERT(obj.Text,"I","UTF8")
+	   		set obj.User=user
+	   		$$$THROWONERROR(st,obj.%Save())
+   		} catch ex{
+	  		set st=ex.AsStatus()
+    	}
+	}
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="AddUser">
+<Description>
+Add one user</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	
+
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))
+	   set obj.Login=$ZCONVERT(obj.Login,"I","UTF8")
+	   set obj.Priveledge=1
+	   // Check password codepage
+	   $$$THROWONERROR(st,obj.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="oAuth">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set st=$$$OK
+	Try {
+		Set token=%request.Data("token",1) 
+		Set req=##class(%Net.HttpRequest).%New()
+		Set req.Server="ulogin.ru"
+		Set req.Location="token.php"
+		Do req.InsertParam("token",token)
+		Do req.Get() 
+		Set obj = ##class(%ZEN.proxyObject).%New()
+		Do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(req.HttpResponse.Data,,.obj,1)
+		/*&html<<br>>
+		w "network: ",obj.network &html<<br>>
+		w "first_name: ",obj."first_name" &html<<br>>
+		w "last_name: ",obj."last_name" &html<<br>>	
+		w "identity: ",obj.identity &html<<br>>
+		w "profile: ",obj.profile &html<<br>>
+		w "email: ",obj.email &html<<br>>
+		w "error: ",obj.error &html<<br>>
+		zw obj*/
+		If obj.error="" {	
+			Set lgn=obj."last_name"_" "_obj."first_name"
+			If '(##class(Word.User).%ExistsId(lgn)) {
+				Set usr=##class(Word.User).%New()
+				Set usr.Login=lgn
+				Set usr.Priveledge=1
+				Set usr.Password="oAuth User"
+				Set usr.Email=obj.email
+				$$$THROWONERROR(st,usr.%Save())		
+			}
+			Set Session=##class(Word.Session).%New()
+			Set Usr=##class(Word.User).%OpenId(lgn)
+			Set Session.User=Usr
+			Do Session.SIDGenerate()
+			$$$THROWONERROR(st,Session.%Save())		
+			Do %response.SetCookie("SID",Session.SID,,"/")
+			Do %response.SetCookie("LoginState","1",,"/")
+			Do %response.SetCookie("Login",lgn,,"/")
+			Do %response.SetCookie("Priveledge","1",,"/")
+		}
+		
+	}  Catch ex{
+	  	Set st=ex.AsStatus()
+    }  
+	&html<<script>history.go(-1);</script>>
+	Quit st
+]]></Implementation>
+</Method>
+
+<Method name="LoginUser">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>login,password</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set st=$$$OK
+	set lgn=$ZCONVERT($ZCONVERT(login ,"I","URL") ,"I","UTF8")
+	if (##class(Word.User).%ExistsId(lgn)) {
+		set pwd=$ZCONVERT($ZCONVERT(password ,"I","URL") ,"I","UTF8")
+		set phash = $system.Encryption.MD5Hash(pwd)
+		set User=##class(Word.User).%OpenId(lgn)
+		if (User.Password=phash) {
+			set metadata=$LISTFROMSTRING("Login,Priveledge")
+			set data=$LB(User.Login,User.Priveledge)	
+			//do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_lgn_"'")
+			w "{ ""children"":[ "
+			set st=##class(%ZEN.Auxiliary.jsonProvider).%ArrayToJSON(.metadata,.data)
+			w "] }"
+		} else {
+			 set st=$$$ERROR()
+		}
+	} else {
+		set st=$$$ERROR()
+	}
+  quit st
+]]></Implementation>
+</Method>
+
+<Method name="StartSession">
+<Description>
+Create new session</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>login,password</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set lgn=$ZCONVERT($ZCONVERT(login ,"I","URL") ,"I","UTF8")
+	set pwd=$ZCONVERT($ZCONVERT(password ,"I","URL") ,"I","UTF8")
+	set phash = $system.Encryption.MD5Hash(pwd)
+	  &sql(SELECT Priveledge INTO :Priveledge FROM Word.UserTable WHERE Login = :lgn and Password=:phash)
+    If (SQLCODE = 0) {
+	    try {
+	    	set Session=##class(Word.Session).%New()
+			set Usr=##class(Word.User).%OpenId(lgn)
+			set Session.User=Usr
+			do Session.SIDGenerate()
+			$$$THROWONERROR(st,Session.%Save()) // setContentType(type)
+			/// Important cookie for authentification purposes. Info:
+			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_httpreq
+			/// http://docs.intersystems.com/cache20102/csp/docbook/DocBook.UI.Page.cls?KEY=GCSP_sessions#GCSP_sessions_cookies
+			Do %response.SetCookie("SID",Session.SID,,"/")
+			Do %response.SetCookie("LoginState","1",,"/")
+			Do %response.SetCookie("Login",lgn,,"/")
+			Do %response.SetCookie("Priveledge",Priveledge,,"/")
+	    } catch ex{
+	  		set st=ex.AsStatus()
+    	}    
+    } ELSE {
+	    set st=$$$ERROR()
+    } 
+   
+  //do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_login_"' and Password='"_phash_"'")
+  quit st
+]]></Implementation>
+</Method>
+
+<Method name="UpdateTerm">
+<Description>
+Update term with new values</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{ 
+   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8") <- does not work
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.Term",.obj,1))											   
+       set term=##class(Word.Term).%OpenId(termid)
+       throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       set term.RussianName=$ZCONVERT(obj.RussianName,"I","UTF8")
+       set term.EnglishName=$ZCONVERT(obj.EnglishName,"I","UTF8")
+       set term.RussianDefinition=$ZCONVERT(obj.RussianDefinition,"I","UTF8")
+       set term.EnglishDefinition=$ZCONVERT(obj.EnglishDefinition,"I","UTF8")
+       set term.RussianNameContext=$ZCONVERT(obj.RussianNameContext,"I","UTF8")
+       set term.EnglishNameContext=$ZCONVERT(obj.EnglishNameContext,"I","UTF8")
+       set term.FurtherRead=$ZCONVERT(obj.FurtherRead,"I","UTF8")
+       &html<<h1>Name <b>#(obj.EnglishName)#</b></h1>>  
+       &html<<h1>ID <b>#(termid)#</b></h1>>  
+       $$$THROWONERROR(st,term.%Save())
+ 
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="UpdateUser">
+<Description>
+Update one user.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+
+   try{   
+	   $$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(%request.Content,"Word.User",.obj,1))											   
+       /// url -> encoded url -> utf8
+       set user=##class(Word.User).%OpenId($ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8"))
+       set user.Email = $ZCONVERT(obj.Email ,"I","UTF8")
+       set user.Login = $ZCONVERT(obj.Login ,"I","UTF8")
+       set user.Priveledge = $ZCONVERT(obj.Priveledge ,"I","UTF8")
+       $$$THROWONERROR(st,user.%Save())
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteTerm">
+<Description>
+Delete one term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   $$$THROWONERROR(st,##class(Word.Term).%DeleteId(termid))
+	   do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"DELETE FROM Word.Translation WHERE TermId="_termid)
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteUserTerm">
+<Description>
+Delete user-offered term</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>termid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   $$$THROWONERROR(st,##class(Word.UserTerm).%DeleteId(termid))
+	} catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteUser">
+<Description>
+Delete user. Scale - 0 only user, 1 - user and his comments, 2 - user and his translations
+3 - user and his comments and translations. (User sessions deleted regardless of scale)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>userid:%String,scale:%Integer</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   	set usr=$ZCONVERT($ZCONVERT(userid ,"I","URL") ,"I","UTF8")
+	    IF (scale=0) {
+		   $$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}
+		ELSEIF (scale=1) { 			
+			&SQL(DELETE FROM Word.Comment WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}
+		ELSEIF (scale=2) {
+			
+			&SQL(DELETE FROM Word.Translation WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))			
+		}
+		ELSEIF (scale=3) { 
+			
+			&SQL(DELETE FROM Word.Comment WHERE "User"->Login=:usr)
+			&SQL(DELETE FROM Word.Translation WHERE "User"->Login=:usr)
+			$$$THROWONERROR(st,##class(Word.User).%DeleteId(usr))
+		}						
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteTranslation">
+<Description>
+Delete one translation</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>translationid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{
+	   $$$THROWONERROR(st,##class(Word.Translation).%DeleteId(translationid))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="DeleteComment">
+<Description>
+Delete one comment</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>commentid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{	  
+   		//  HTML encoding -> Plaintext (%7C = |)
+	   $$$THROWONERROR(st,##class(Word.Comment).%DeleteId($ZCONVERT($ZCONVERT(commentid ,"I","URL") ,"I","UTF8")))
+   } catch ex{
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="MakeTranslationDefault">
+<Description>
+Make new translation default.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>translationid:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+   set st=$$$OK
+   try{ 
+   		//set %request.Content=$ZCONVERT(%request.Content,"I","UTF8")
+											   
+       set translation=##class(Word.Translation).%OpenId(translationid)
+       //throw:translation=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       set term=##class(Word.Term).%OpenId(translation.TermId)
+       //throw:term=$$$NULLOREF ##class(%Exception.StatusException).CreateFromStatus($$$ERROR(5001,"Не найдено"))
+       //swapping two objects
+       set tempName =  term.RussianName
+       set tempContext = term.RussianNameContext
+       set tempRating = term.RussianNameRating
+	   //set usrDefault=##class(Word.User).%OpenId("Admin")
+       set term.RussianName = translation.TranslationName
+       set term.RussianNameContext = translation.TranslationContext
+       set term.RussianNameRating = translation.TranslationRating
+       
+       set translation.TranslationName = tempName
+       set translation.TranslationContext = tempContext
+       set translation.TranslationRating = tempRating
+		do term.%Save()
+		do translation.%Save()
+       &html<<h1>Name <b>#(translation.TranslationName)#</b></h1>>  
+       &html<<h1>ID <b>#(translationid)#</b></h1>>  
+       $$$THROWONERROR(st,term.%Save())
+       $$$THROWONERROR(st,translation.%Save())
+ 
+   } catch ex{
+	  &html<<h1>entering <b>CATCH</b> block</h1>>  
+	  set st=ex.AsStatus()
+    }
+    quit st
+]]></Implementation>
+</Method>
+
+<Method name="SendNewPassword">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>email:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#include %occOptions
+	#include %occStatus
+	set st=$$$OK
+	set email=$ZCONVERT($ZCONVERT(email ,"I","URL") ,"I","UTF8")
+	&sql(SELECT Login INTO :login FROM Word.UserTable WHERE Email = :email)
+    If (SQLCODE = 0) {
+   	try {
+	   	set auth = ##class(%Net.Authenticator).%New()
+		set auth.UserName="glossary"
+		set auth.Password="p[iooсpiop&*d1"
+		set auth.MechanismList="LOGIN"
+		
+	   	set s=##class(%Net.SMTP).%New()
+		set s.smtpserver="mail.intersystems.ru"
+		set s.SSLConfiguration="GlossaryMail"
+		set s.UseSTARTTLS=1
+		set s.authenticator=auth
+		
+		set m=##class(%Net.MailMessage).%New()
+		set m.From="glossary@intersystems.ru"
+		do m.To.Insert(email)
+		set m.Subject="InterSystems Glossary - новый пароль"
+		//set m.Charset="iso-8859-1"
+		do m.TextData.WriteLine("Здравствуйте!")	
+		do m.TextData.WriteLine("")
+		do m.TextData.WriteLine("Ваш пароль успешно изменен.")	
+		do m.TextData.WriteLine("Теперь вы можете авторизоваться с новым паролем.")
+		do m.TextData.WriteLine("")	
+		do m.TextData.WriteLine("Имя пользователя: "_login)
+			set user=##class(Word.User).%OpenId(login)
+			set pass = ""
+			for {
+    			set pass = pass _ $Char(65 + $Random(25))
+    			quit:$Length(pass)>15
+			}
+			set user.PasswordSetter=pass
+			do user.%Save()			
+		do m.TextData.WriteLine("Новый пароль: "_pass)
+		do m.TextData.WriteLine("")
+		do m.TextData.WriteLine("С наилучшими пожеланиями, команда ISC Glossary.")
+				
+		set status=s.Send(m)  
+   	} catch ex{
+	  set st=ex.AsStatus()
+    }
+    } else {
+	    set st=$$$ERROR("E-mail не найден в базе.")
+	}
+    quit st
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="admin.CSP" application="/csp/glossarygit/" default="1"><![CDATA[
+<!-- 
+использованы материалы с мероприятия
+some part of this source code getting from
+InterSystems Global Summit 2013 
+"Building Mobile Applications with RESTful Interfaces" by Chris Carmichael and Oliver Caudron
+http://code.angularjs.org/1.1.5/angular.min.js
+-->
+<!doctype html>
+<html ng-app="GlossaryApp">
+<head>
+    <title>InterSystems Glossary - Admin</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/glossary_admin.js"></script>
+    <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
+    <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
+    <!-- -->
+
+</head>
+
+<body ng-controller="control" ng-init="getTerms();">
+
+<h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
+
+<div align="middle"><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif"
+                                                   hspace="20"></a></div>
+<div class="navbar">
+    <div class="navbar-inner">
+
+        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
+            <input type="text" name="SearchQuery" class="search-query" placeholder="Термин" ng-model="search.$">
+            <input type="submit" class="btn" value="Найти"/>
+        </form>
+        <button id="aboutbtn" type="button" class="btn" ng-click="openAbout()">О проекте</button>
+    </div>
+</div>
+
+<tabset>
+    <tab heading="Термины">
+        <ul class="addTerm">
+            <button ng-click="showState=!showState" class="btn">Добавить термин</button>
+            <br ng-show="showState==1"><br ng-show="showState==1">
+
+            <form ng-show="showState" name="AddTermForm" ng-model="term"
+                  ng-submit="term.RussianNameRating=0; addTerm(term); term=''">
+                <input type="text" placeholder="English name" ng-model="term.EnglishName" required/> <br>
+                <input type="text" placeholder="Русское имя" ng-model="term.RussianName" required/> <br>
+                <textarea class="span6" rows="3" placeholder="Definition" ng-model="term.EnglishDefinition"
+                          required></textarea> <br>
+                <textarea class="span6" rows="3" placeholder="Определение" ng-model="term.RussianDefinition"
+                          required></textarea> <br>
+                <textarea class="span6" rows="3" placeholder="Context"
+                          ng-model="term.EnglishNameContext"> </textarea> <br>
+                <textarea class="span6" rows="3" placeholder="Контекст"
+                          ng-model="term.RussianNameContext"></textarea> <br>
+                <input type="text" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/> <br> <input
+                    type="submit"
+                    class="btn"
+                    value="Добавить"/>
+            </form>
+        </ul>
+
+        <ul class="terms">
+            <li ng-animate="'animate'"
+                ng-repeat="term in terms | filter:search | orderBy:orderProp">
+
+
+                <b><a href="/glossary/term/{{term.ID}}" class="link">{{term.EnglishName}} -
+                    {{term.RussianName}}</a></b><br>
+
+                <p ng-model="DefinitionEn" ng-show="showStateEN">{{term.EnglishDefinition}}</p>
+
+                <p ng-show="showStateRU">{{term.RussianDefinition}}</p>
+
+
+                <button ng-click="showStateEditForm=!showStateEditForm; getTranslationsByIndex({{$index}});  getCommentsByIndex({{$index}})"
+                        class="btn">
+                    Редактировать
+                </button>
+                <table ng-show="showStateEditForm" class="table-bordered">
+                    <tr>
+                        <td>
+                            Термин:
+                            <form name="EditTermForm" ng-model="term" ng-submit="updateTerm(term);">
+                                <input type="text" placeholder="Термин" ng-model="term.EnglishName" required/> <br>
+                                <input type="text" placeholder="Перевод" ng-model="term.RussianName" required/> <br>
+                                <textarea rows="6" placeholder="Definition"
+                                          ng-model="term.EnglishDefinition"
+                                          required></textarea> <br>
+                                <textarea rows="6" placeholder="Определение"
+                                          ng-model="term.RussianDefinition"
+                                          required></textarea> <br>
+                                <textarea rows="6" placeholder="Context"
+                                          ng-model="term.EnglishNameContext"> </textarea> <br>
+                                <textarea rows="6" placeholder="Контекст"
+                                          ng-model="term.RussianNameContext"></textarea> <br>
+                                <input type="text" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/>
+                                <br>
+                                <input type="submit" class="btn" value="Сохранить изменения"/>
+                                <button ng-Click="deleteTerm(term.ID)" class="btn">Удалить</button>
+                            </form>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Альтернативные варианты перевода:
+                            <li ng-model="term.translations" ng-repeat="translation in term.translations">
+                                <b>{{translation.TranslationName}} </b> <br>
+                                Контекст: {{translation.TranslationContext}} <br>
+                                Рейтинг: {{translation.TranslationRating}} <br>
+                                <button class="btn"
+                                        ng-click="makeDefaultTranslation(translation.ID, {{$parent.$index}});">
+                                    Сделать переводом
+                                </button>
+                                <button class="btn"
+                                        ng-click="deleteTranslation(translation.ID, {{$parent.$index}});">
+                                    Удалить
+                                </button>
+                            </li>
+                        </td>
+                        <td>
+                            Комментарии:
+                            <li ng-model="term.comments" ng-repeat="comment in term.comments">
+                                <b>{{comment.Login}} </b> писал {{comment.CreationDate}} в {{comment.CreationTime}}
+                                <br>
+                                {{comment.Text}} <br>
+                                <button class="btn" ng-click="deleteComment(comment.ID, {{$parent.$index}});">
+                                    Удалить
+                                </button>
+                            </li>
+
+                        </td>
+                    </tr>
+                </table>
+        </ul>
+        <br>
+    </tab>
+    <tab heading="Пользователи" select="getUsers();">
+        <ul class="terms">
+            <li ng-animate="'animate'"
+                ng-repeat="user in users | orderBy:orderProp">
+                <b>{{user.Login}}</b><br>
+                <button ng-click="showStateEditForm=!showStateEditForm; getCommentsByUser({{$index}}); getTranslationsByUser({{$index}});"
+                        class="btn">
+                    Редактировать
+                </button>
+                <table ng-show="showStateEditForm" class="table-bordered">
+                    <tr>
+                        <td>
+                            Пользователь:
+                            <form name="EditUserForm" ng-model="user" ng-submit="updateUser(user);">
+                                <input type="text" placeholder="Логин" ng-model="user.Login" required/> <br>
+                                <input type="email" placeholder="Email" ng-model="user.Email" required/> <br>
+                                <input type="text" placeholder="Уровень доступа" ng-model="user.Priveledge"
+                                       required/> <br>
+                                <input type="submit" class="btn" value="Сохранить изменения"/>
+                            </form>
+                            <button ng-Click="deleteUser(user.Login)" class="btn">Удалить</button>
+                        </td>
+                        <td>
+                            Комментарии:
+                            <li ng-model="user.comments" ng-repeat="comment in user.comments">
+                                {{comment.CreationDate}} {{comment.CreationTime}} <br>
+                                {{comment.Text}} <br>
+                                <button class="btn" ng-click="deleteCommentUser(comment.ID, {{$parent.$index}});">
+                                    Удалить
+                                </button>
+                            </li>
+                        </td>
+                        <td>
+                            Предложенные варианты перевода:
+                            <li ng-model="user.translations" ng-repeat="translation in user.translations">
+                                <b>{{translation.EnglishName}} - {{translation.TranslationName}} </b> <br>
+                                Контекст: {{translation.TranslationContext}} <br>
+                                Рейтинг: {{translation.TranslationRating}} <br>
+                                <button class="btn"
+                                        ng-click="deleteTranslationUser(translation.ID, {{$parent.$index}});">
+                                    Удалить
+                                </button>
+                            </li>
+
+                        </td>
+                    </tr>
+                </table>
+        </ul>
+
+    </tab>
+    <tab heading="Предложения терминов" select="getUserTerms();">
+
+        <ul class="terms">
+            <li ng-repeat="term in userterms | filter:search | orderBy:orderProp">
+                <b>{{term.EnglishName}} - {{term.RussianName}}</b><br>
+                <button ng-click="showStateEditForm=!showStateEditForm;" class="btn">
+                    Редактировать
+                </button>
+                <button ng-Click="deleteUserTerm(term.ID)" class="btn">Удалить</button>
+                <form ng-show="showStateEditForm" name="EditUserTermForm" ng-model="term"
+                      ng-submit="makeUserTermOfficial(term.ID);">
+                    <br>
+                    <input type="text" placeholder="Термин" ng-model="term.EnglishName" required/> <br>
+                    <input type="text" placeholder="Перевод" ng-model="term.RussianName" required/> <br>
+                    <textarea rows="6" placeholder="Definition"
+                              ng-model="term.EnglishDefinition"
+                              required></textarea> <br>
+                    <textarea rows="6" placeholder="Определение"
+                              ng-model="term.RussianDefinition"
+                              required></textarea> <br>
+                    <textarea rows="6" placeholder="Context"
+                              ng-model="term.EnglishNameContext"> </textarea> <br>
+                    <textarea rows="6" placeholder="Контекст"
+                              ng-model="term.RussianNameContext"></textarea> <br>
+                    <input type="text" placeholder="Дальнейшее чтение" ng-model="term.FurtherRead"/>
+                    <br>
+                    <input type="submit" class="btn" value="В основные"/>
+                </form>
+            </li>
+        </ul>
+    </tab>
+    <tab heading="Письма пользователей" select="getLetters();">
+        <ul class="terms">
+            <li ng-model="letter" ng-repeat="letter in letters">
+                <b>{{letter.Login}} </b> писал {{letter.CreationDate}} в {{letter.CreationTime}} <br>
+                {{letter.Text}} <br>
+                <button class="btn" ng-click="deleteLetter(letter.ID);">
+                    Удалить
+                </button>
+            </li>
+        </ul>
+    </tab>
+    <tab heading="Последние события">
+        В разработке.
+    </tab>
+</tabset>
+
+
+</body>
+</html>
+]]></CSP>
+</Export>

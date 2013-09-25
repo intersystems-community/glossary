@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Project name="Glossary" LastModified="2013-09-25 11:48:24.750294">
+  <Items>
+    <ProjectItem name="Other.Letter" type="CLS"></ProjectItem>
+    <ProjectItem name="REST.Broker" type="CLS"></ProjectItem>
+    <ProjectItem name="REST.BrokerAdmin" type="CLS"></ProjectItem>
+    <ProjectItem name="REST.JSON" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.Comment" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.Session" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.Term" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.Tests.Utilities" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.Translation" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.User" type="CLS"></ProjectItem>
+    <ProjectItem name="Word.UserTerm" type="CLS"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/css/bootstrap.css" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/css/bootstrap.min.css" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/css/glossary.css" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/img/intersystems-header.gif" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/js/glossary.js" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/js/glossary_admin.js" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/about.csp" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/admin.CSP" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/rest1.CSP" type="CSP"></ProjectItem>
+    <ProjectItem name="csp/glossarygit/term.csp" type="CSP"></ProjectItem>
+  </Items>
+</Project>
+</Export>
