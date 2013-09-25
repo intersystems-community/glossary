@@ -1,1 +1,29 @@
+<<<<<<< HEAD
 Glossary.PRJ
+=======
+<cspapp>/Bootstrap/css/bootstrap.css
+<cspapp>/Bootstrap/css/bootstrap.min.css
+<cspapp>/Bootstrap/css/glossary.css
+<cspapp>/Bootstrap/img/intersystems-header.gif
+<cspapp>/Bootstrap/js/auth.js
+<cspapp>/Bootstrap/js/glossary.js
+<cspapp>/Bootstrap/js/glossary_admin.js
+<cspapp>/about.csp
+<cspapp>/admin.CSP
+<cspapp>/intersystems-header.gif
+<cspapp>/menu.csp
+<cspapp>/menuTerm.csp
+<cspapp>/rest1.CSP
+<cspapp>/term.csp
+Other.Letter.CLS
+REST.Broker.CLS
+REST.BrokerAdmin.CLS
+REST.JSON.CLS
+Word.Comment.CLS
+Word.Session.CLS
+Word.Term.CLS
+Word.Tests.PKG
+Word.Translation.CLS
+Word.User.CLS
+Word.UserTerm.CLS
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688

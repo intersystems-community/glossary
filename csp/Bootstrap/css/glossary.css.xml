@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
+<<<<<<< HEAD
 <CSP name="Bootstrap/css/glossary.css" application="/csp/glossarygit/" default="1"><![CDATA[
 .terms {
     list-style: none;
@@ -29,6 +30,16 @@
 
 .addTerm {
 	/*margin: 0 0 13px 25px;*/
+=======
+<CSP name="Bootstrap/css/glossary.css" application="/csp/glossary/" default="1"><![CDATA[
+.terms {
+    list-style: none;
+}
+
+.terms li {
+
+    /*height: 50px; */
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     clear: both;
     padding-top: 15px;
     padding: 4px;
@@ -37,6 +48,7 @@
     vertical-align: middle;
     line-height: 40px;
     border-radius: 4px 4px 4px 4px;
+<<<<<<< HEAD
     margin:  20px 10% 0 10%;
     
 }
@@ -70,6 +82,14 @@
 	margin: 10px 0 26px 10px;
 }
 .comments li {
+=======
+    margin-top:  20px;
+
+
+}
+
+.addTerm {
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     clear: both;
     padding-top: 15px;
     padding: 4px;
@@ -78,7 +98,11 @@
     vertical-align: middle;
     line-height: 40px;
     border-radius: 4px 4px 4px 4px;
+<<<<<<< HEAD
     margin:  20px 10% 0 0;
+=======
+    margin-top: 20px
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 }
 
 .terms table {
@@ -155,7 +179,11 @@ border: 1px solid #EEE;
     vertical-align: middle;
     line-height: 40px;
     border-radius: 4px 4px 4px 4px;
+<<<<<<< HEAD
     margin:  20px 0 0 0;
+=======
+    margin-top:  20px;
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 
 }
 
@@ -192,12 +220,18 @@ html {
 }
 
 .checkboxl {
+<<<<<<< HEAD
 	display:inline-block;
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 	vertical-align:middle;
 	
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 .term {
 	width: 75%; 
 	margin: 0 auto;
@@ -210,6 +244,7 @@ html {
 }
 
 .alerts{
+<<<<<<< HEAD
 	margin:  20px 10% 0 10%;
 }
 
@@ -219,5 +254,9 @@ html {
 
 #uLogin > img {
 	vertical-align: baseline !important;
+=======
+	margin-bottom: 0px;
+	margin-left: 20px;
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 }]]></CSP>
 </Export>

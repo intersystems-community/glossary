@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
+<<<<<<< HEAD
 <CSP name="Bootstrap/js/glossary_admin.js" application="/csp/glossarygit/" default="1"><![CDATA[
+=======
+<CSP name="Bootstrap/js/glossary_admin.js" application="/csp/glossary/" default="1"><![CDATA[
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 angular.module('GlossaryApp', ['ui.bootstrap']);
 
 
@@ -19,6 +23,7 @@ function control($scope, $http) {
 
     }
     
+<<<<<<< HEAD
      // Get all user terms
     $scope.getUserTerms = function () {
         $http.get("/glossary/admin/json/userterms").success(function (data) {
@@ -29,6 +34,8 @@ function control($scope, $http) {
 
     }
     
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     // Get all users
     $scope.getUsers = function () {
         $http.get("/glossary/admin/json/users").success(function (data) {
@@ -38,6 +45,7 @@ function control($scope, $http) {
             });
 
     }
+<<<<<<< HEAD
     
     // Get all users' letters to admin
     $scope.getLetters = function () {
@@ -51,6 +59,12 @@ function control($scope, $http) {
 
     //  Add one term
     $scope.addTerm = function (term) {
+=======
+
+    //  Add one term
+    $scope.addTerm = function (term) {
+        term.class = "Word.Term";
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
         $http.post("/glossary/admin/json/term", term)
             .success(function (data) {
                 $scope.getTerms();
@@ -95,6 +109,7 @@ function control($scope, $http) {
             	});
 		}
     }
+<<<<<<< HEAD
     
     // Delete one user term
     $scope.deleteUserTerm = function (termid) {
@@ -107,6 +122,8 @@ function control($scope, $http) {
                 	$scope.alertzone = "[" + status + "] Ошибка удаления предложения :( [" + data + "]";
             	});
     }
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 	
 	// Get term translations by its index. Needed to perform no-refresh translations autoupdate
     $scope.getTranslationsByIndex = function (index) {
@@ -163,6 +180,7 @@ function control($scope, $http) {
             });
     }
     
+<<<<<<< HEAD
     	// Make translation default one
     $scope.makeUserTermOfficial = function (termid) {
         //    alert($scope.terms.indexOf(termid));
@@ -174,6 +192,8 @@ function control($scope, $http) {
             });
     }
     
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     // To the front page
     $scope.dosearch=function(query){
 			window.location.href = "/glossary/admin/terms/"+query;

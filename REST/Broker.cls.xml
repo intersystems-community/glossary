@@ -25,8 +25,12 @@ https://github.com/MDevelopmentGroup/Recruting
    <Route Url="/terms/" Method="GET" Call="REST.Broker:LoadTermsPageNoQuery"/>
    <Route Url="/about" Method="GET" Call="csp.about:OnPage"/>
    <Route Url="/term/:id" Method="GET" Call="REST.Broker:LoadTermPage"/>
+<<<<<<< HEAD
    <Route Url="/oAuth" Method="POST" Call="REST.JSON:oAuth"/>
 	
+=======
+
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
    <Route Url="/json/terms" Method="GET" Call="REST.JSON:GetAllTerms"/>
    <Route Url="/json/term/:termid" Method="GET" Call="REST.JSON:GetTerm"/>
    <Route Url="/json/term" Method="POST" Call="REST.JSON:AddUserTerm"/>
@@ -129,9 +133,14 @@ Serves client csp.rest1 page</Description>
 <FormalSpec>query:%String</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+<<<<<<< HEAD
 	Set query=$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")
 	Set query=$ZSTRIP(query,"*E'A")
 	Set %request.Data("query",1)="'"_query_"'"
+=======
+	Set query=$ZSTRIP(query,"*E'A")
+	Set %request.Data("query",1)="'"_$ZCONVERT($ZCONVERT(query ,"I","URL") ,"I","UTF8")_"'"
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 	Set ^Statistics("Terms")=$INCREMENT(^Statistics("Terms"))
 	Set ^Statistics($ZDATE($NOW(),4))=$INCREMENT(^Statistics($ZDATE($NOW(),4)))
 	Do ##class(csp.rest1).OnPage()

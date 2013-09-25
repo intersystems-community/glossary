@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
+<<<<<<< HEAD
 <CSPBase64 name="Bootstrap/img/intersystems-header.gif" application="/csp/glossarygit/" default="1">
+=======
+<CSPBase64 name="Bootstrap/img/intersystems-header.gif" application="/csp/glossary/" default="1">
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 R0lGODlhEgJMAPcAADQyZJSWsGhgfOPPwEhhoFFCZHeZxPzt1DRGjFx8rKmyxK/O5F5UdJR6fJS1
 3NHq84R6nMS0sCwmhE5upNTU5oFgcUBTjN33/JSmxPzizDlDf7mXlDk3aVx7tMPD1LzO3GlFZJ/D
 4XxehDQ4d8Te7O3t8rGjsXRwtDZanFxWfISFt2Bgn3BwobS0xtzh5GuLu5aYxExKnIqp1Fo4ZDo3

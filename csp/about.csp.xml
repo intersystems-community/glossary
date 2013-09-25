@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
+<<<<<<< HEAD
 <CSP name="about.csp" application="/csp/glossarygit/" default="1"><![CDATA[
+=======
+<CSP name="about.csp" application="/csp/glossary/" default="1"><![CDATA[
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 <!doctype html>
 <html ng-app="GlossaryApp">
 <head>
@@ -14,10 +18,18 @@
     <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
     <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js"></script>
+<<<<<<< HEAD
 	<script src="http://ulogin.ru/js/ulogin.js"></script>
 </head>
 
 <body ng-controller="control">
+=======
+
+</head>
+
+<body ng-controller="control">
+<h1 ng-model="alertzone"><font color=red>{{alertzone}}</font></h1>
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 
 <div align="middle"><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif"
                                                    hspace="20"></a></div>
@@ -26,7 +38,10 @@
         <button id="gotomainbtn" type="button" class="btn btn-info pull-left" ng-click="dosearch()">На главную</button>
         <form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user"
               ng-submit="doLogin(user.Login, user.PasswordSetter); user='';">
+<<<<<<< HEAD
             <span id="uLogin" data-ulogin="display=small;fields=first_name,last_name;optional=email;providers=vkontakte,odnoklassniki,mailru,facebook;hidden=other;redirect_uri=http%3A%2F%2Fglossary.intersystems.ru%2Fglossary%2FoAuth"></span>
+=======
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
             <input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
             <input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
             <button type="submit" class="btn">Вход</button>

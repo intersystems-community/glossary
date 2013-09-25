@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
+<<<<<<< HEAD
 <CSP name="admin.CSP" application="/csp/glossarygit/" default="1"><![CDATA[
+=======
+<CSP name="admin.CSP" application="/csp/glossary/" default="1"><![CDATA[
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 <!-- 
 использованы материалы с мероприятия
 some part of this source code getting from

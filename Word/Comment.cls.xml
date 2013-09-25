@@ -42,7 +42,11 @@
 <IdLocation>^Word.UserC("Comments")</IdLocation>
 <IndexLocation>^Word.CommentI</IndexLocation>
 <StreamLocation>^Word.CommentS</StreamLocation>
+<<<<<<< HEAD
 <ExtentSize>100000</ExtentSize>
+=======
+<ExtentSize>14</ExtentSize>
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 <Data name="CommentDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
@@ -63,6 +67,33 @@
 <Value>User</Value>
 </Value>
 </Data>
+<<<<<<< HEAD
+=======
+<Property name="%%CLASSNAME">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="CreationDate">
+<Selectivity>100.0000%</Selectivity>
+</Property>
+<Property name="CreationTime">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<Property name="Term">
+<Selectivity>7.6923%</Selectivity>
+</Property>
+<Property name="Text">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<Property name="User">
+<Selectivity>7.6923%</Selectivity>
+</Property>
+<Property name="childsub">
+<Selectivity>7.1429%</Selectivity>
+</Property>
+<SQLMap name="IDKEY">
+<BlockCount>-4</BlockCount>
+</SQLMap>
+>>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 </Storage>
 </Class>
 </Export>

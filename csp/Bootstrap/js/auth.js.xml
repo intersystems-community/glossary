@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="Bootstrap/js/auth.js" application="/csp/glossary/" default="1"><![CDATA[
+VK.init({
+  apiId: 3868657
+});
+function authInfo(response) {
+  if (response.session) {
+    alert('user: '+response.session.mid);
+  } else {
+    alert('not auth');
+  }
+}
+VK.Auth.getLoginStatus(authInfo);
+VK.UI.button('login_button');]]></CSP>
+</Export>
