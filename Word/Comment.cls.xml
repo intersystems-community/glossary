@@ -42,7 +42,6 @@
 <IdLocation>^Word.UserC("Comments")</IdLocation>
 <IndexLocation>^Word.CommentI</IndexLocation>
 <StreamLocation>^Word.CommentS</StreamLocation>
-<<<<<<< HEAD
 <ExtentSize>100000</ExtentSize>
 =======
 <ExtentSize>14</ExtentSize>
@@ -67,7 +66,6 @@
 <Value>User</Value>
 </Value>
 </Data>
-<<<<<<< HEAD
 =======
 <Property name="%%CLASSNAME">
 <Selectivity>100.0000%</Selectivity>
