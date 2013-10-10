@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-<<<<<<< HEAD
-<CSP name="rest1.CSP" application="/csp/glossarygit/" default="1"><![CDATA[
+<CSP name="rest1.CSP" application="/csp/glossary/" default="1"><![CDATA[
 <!-- 
 использованы материалы с мероприятия
 some part of this source code getting from
@@ -13,15 +12,8 @@ http://code.angularjs.org/1.1.5/angular.min.js
 <html ng-app="GlossaryApp">
 <head>
     <title>InterSystems Glossary</title>
-
-=======
-<CSP name="rest1.CSP" application="/csp/glossary/" default="1"><![CDATA[
-<!doctype html>
-<html ng-app="GlossaryApp">
-<head>
-    <meta charset="utf-8">
-    <title>InterSystems Glossary</title>
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
+	<meta name="description" content="InterSystems Glossary. Глоссарий по технологиям InterSystems"> 
+	<meta name="Keywords" content="InterSystems, glossary, Cache, DeepSee, Ensemble, HealthShare, Caché, глоссарий"> 
     <link href="/csp/glossary/Bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/csp/glossary/Bootstrap/css/glossary.css" rel="stylesheet" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
@@ -29,7 +21,6 @@ http://code.angularjs.org/1.1.5/angular.min.js
     <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
     <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js"></script>
-<<<<<<< HEAD
 	<script src="http://ulogin.ru/js/ulogin.js"></script>
 	<!--<script src="http://vk.com/js/api/openapi.js"></script>
 	<script src="/csp/glossary/Bootstrap/js/auth.js"></script>-->	
@@ -60,24 +51,10 @@ http://code.angularjs.org/1.1.5/angular.min.js
                 <option value="RussianName">Сначала по русски</option>
             </select>
 
-=======
-
-</head>
-
-<body ng-controller="control" ng-init="getTerm(#($Get(%request.Data("id",1),1))#);">
-<div align="middle"><a href="/glossary/terms"><img src="/csp/glossary/Bootstrap/img/intersystems-header.gif"
-                                                   hspace="20"></a></div>
-<div class="navbar">
-    <div class="navbar-inner">
-        <button id="aboutbtn" type="button" class="btn pull-left" ng-click="openAbout()">О проекте</button>
-
-        <form class="navbar-form pull-left" ng-submit="dosearch(search.$);">
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
             <input type="text" name="SearchQuery" class="search-query span4" placeholder="Термин" ng-model="search.$"
                    autofocus>
             <input type="submit" class="btn btn-info" value="Найти"/>
         </form>
-<<<<<<< HEAD
 
 
         <form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user"
@@ -86,19 +63,10 @@ http://code.angularjs.org/1.1.5/angular.min.js
             <input ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
             <input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
             <button type="submit" class="btn">Вход</button>
-=======
-        <form class="navbar-form pull-right" ng-show="loginState!=1" ng-model="user"
-              ng-submit="doLogin(user.Login, user.PasswordSetter);  user='';">
-            <input id="searchinput" ng-model="user.Login" type="text" class="span2" placeholder="логин" required>
-            <input ng-model="user.PasswordSetter" type="password" class="span2" placeholder="пароль" required>
-            <button type="submit" class="btn">Вход</button>
-
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
         </form>
         <button id="regbtn" ng-show="loginState!=1" type="button" class="btn pull-right" ng-click="openDialog()">
             Регистрация
         </button>
-<<<<<<< HEAD
         
         <button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right">Выход, <span
                 class="label label-info">{{readCookie('Login')}}</span></button>
@@ -170,105 +138,6 @@ http://code.angularjs.org/1.1.5/angular.min.js
     <!--END Loop through all terms -->
 </ul>
 <br>
-=======
-        <button ng-show="loginState==1" type="button" ng-click="doExit();" class="btn pull-right">Выход, <span
-                class="label label-info">{{readCookie('Login')}}</span></button>
-    </div>
-</div>
-
-<div class="term">
-    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
-    <ul class='nav nav-tabs nav-stacked'>
-        <br>
-
-        <H2>{{terms[0].EnglishName}} - {{terms[0].RussianName}}
-            <button ng-click="showState=!showState" class="btn">Альтернативные определения</button>
-        </H2>
-
-        <div class="translations" ng-show="showState">
-            <ul class="terms">
-
-                <p ng-if="translations[0].TranslationName==undefined"><br> Альтернативные варианты перевода
-                    отсутствуют. Добавить?
-
-                <p ng-if="loginState!=1">Необходимо зарегистрироваться или войти. </p>
-
-                <p ng-if="Priveledge==0">Вы в рид-онли.</p> </p>
-                <li ng-show="translations[0].TranslationName!=undefined"
-                    ng-repeat="translation in translations">
-                    <b>{{translation.TranslationName}}</H3> </b> <br>
-                    Контекст: {{translation.TranslationContext}} <br>
-                    Рейтинг: {{translation.TranslationRating}} <br>
-            </ul>
-
-            <hr>
-            <ul ng-if="Priveledge>0" class="addTranslation">
-                <form name="AddTermForm" ng-model="translation"
-                      ng-submit="translation.TermId='{{terms[0].ID}}';
-						  		translation.TranslationRating='0'; addTranslation(translation); translation='';">
-                    <H3>{{terms[0].EnglishName}}</H3>
-                    <input type="text" placeholder="Перевод" ng-model="translation.TranslationName"
-                           required/>
-                    <br>
-                    <textarea class="span6" rows="3" placeholder="Контекст"
-                              ng-model="translation.TranslationContext"></textarea> <br>
-                    <br>
-                    <input type="submit" class="btn" value="Добавить альтернативное определение"/>
-                </form>
-            </ul>
-        </div>
-        <div class="DefinitionText"><H4>Описание</H4>
-
-            <div ng-bind-html-unsafe="terms[0].RussianDefinition"></div>
-        </div>
-        <br>
-
-        <div class="DefinitionText">Контекст: {{terms[0].RussianNameContext}}</div>
-        <br>
-        <button ng-click="showEngDef=!showEngDef" class="btn">English definition</button>
-        <div class="DefinitionText" ng-if="showEngDef==1">
-            <div ng-bind-html-unsafe="terms[0].EnglishDefinition"></div>
-            <br>Context: {{terms[0].EnglishNameContext}}
-        </div>
-        <p ng-if="showEngDef==undefined"></p>
-
-        <p ng-if="showEngDef==0"></p>
-        <a href='{{terms[0].FurtherRead}}'>Дальнейшее чтение</a>
-    </ul>
-    <div class="comments">
-        <ul class="terms">
-            <p ng-if="comments[0].Text==undefined"><br> Комментарии
-                отсутствуют. Добавить? </p>
-
-            <p ng-if="comments[0].Text!=undefined"><br> Комментарии:</p>
-            <li ng-show="comments[0].Text!=undefined"
-                ng-repeat="comment in comments">
-                <b>{{comment.Login}} </b> писал {{comment.CreationDate}} в {{comment.CreationTime}} <br>
-                {{comment.Text}} <br>
-        </ul>
-
-        <hr>
-        <ul ng-if="Priveledge>0" class="addComentform">
-
-            <form name="AddCommentForm" ng-model="comment"
-                  ng-submit="addComment(comment); comment=''">
-                <textarea class="span6" rows="3" placeholder="Текст" ng-model="comment.Text"></textarea> <br>
-                <br>
-                <input type="submit" class="btn" value="Добавить комментарий"/>
-            </form>
-        </ul>
-        <ul class="terms" ng-if="loginState!=1">Для добавления комментариев необходимо зарегистрироваться или войти.
-        </ul>
-        <ul class="terms" ng-if="Priveledge==0">Вы в рид-онли.</ul>
-    </div>
-
-</div>
-
-<div id="footer">
-    <div class=""></div>
-</div>
-</div>
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 
 </body>
 </html>

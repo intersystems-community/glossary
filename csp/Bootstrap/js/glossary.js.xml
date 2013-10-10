@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-<<<<<<< HEAD
-<CSP name="Bootstrap/js/glossary.js" application="/csp/glossarygit/" default="1"><![CDATA[
-=======
 <CSP name="Bootstrap/js/glossary.js" application="/csp/glossary/" default="1"><![CDATA[
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
  angular.module('GlossaryApp', ['ngCookies', 'ui.bootstrap', 'ngSanitize']);
 
  //.config(function ($routeProvider, $httpProvider) {$httpProvider.defaults.withCredentials = true;}
@@ -16,14 +12,9 @@
  function control($scope, $http, $cookies, $cookieStore, $dialog) {
 
 	
-<<<<<<< HEAD
     $scope.showStateEN = 0;
     $scope.showState=0; 
     $scope.showStateRU = 0;
-=======
-    $scope.showStateEN = "0";
-    $scope.showStateRU = "0";
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     $scope.StartLetter = "";
 	$scope.letterLanguage= "En"
 	$scope.loginState=$cookieStore.get('LoginState');
@@ -48,10 +39,6 @@
     
     // Add one translation to term
 	$scope.addTranslation = function (translation) {
-<<<<<<< HEAD
-=======
-        translation.class = "Word.Translation";
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
         // , {headers: { 'Content-Type': 'application/json; charset=utf-8'}}
         // can specify it in  $http.post. Does not work, though
 		//  "Content-Type": "application/json"
@@ -72,10 +59,6 @@
     
      // Add one comment to term
 	$scope.addComment = function (comment) {
-<<<<<<< HEAD
-=======
-        comment.class = "Word.Comment";
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
         $http.post("/glossary/json/comment/"+$scope.terms[0].ID, comment)
             .success(function (data) {
 	            $scope.getComments($scope.terms[0].ID);
@@ -87,16 +70,9 @@
     
     // Write letter to admin
     $scope.addLetter = function (letter) {
-<<<<<<< HEAD
         $http.post("/glossary/json/letter", letter)
             .success(function (data) {
 	            $scope.alerts.push({ type: "success", msg: "Сообщение отправлено."});
-=======
-        letter.class = "Other.Letter";
-        $http.post("/glossary/json/letter", letter)
-            .success(function (data) {
-	            $scope.alerts.push({ type: "success", msg: "Сообщение отпралено."});
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
             }).error(function (data, status) {
 	             $scope.alerts.push({ type: "error", msg: "Ошибка отправки сообщения."});
             });
@@ -209,29 +185,20 @@
     
     // Default letters scope. We push here lettersRu or lettersEn. For 
     $scope.letters = [];
-<<<<<<< HEAD
     //$scope.userses = [];
 		
 	$scope.SetStartLetter = function(letter) {
 		$scope.showState=0;
-=======
-    $scope.userses = [];
-		
-	$scope.SetStartLetter = function(letter) {	
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 		if ($scope.StartLetter==letter) {$scope.StartLetter = '';} 
 			else {$scope.StartLetter=letter;};
 			
 	}
 	
-<<<<<<< HEAD
 	$scope.showstatechange = function() {
 		$scope.showState=!$scope.showState;
 	
 	};
 	
-=======
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 	// Filter by first letter (custom filter)	
 	$scope.filterFL =  function(term) {
 		if ($scope.StartLetter=='' || $scope.StartLetter=="All" || $scope.StartLetter=="Все") {  return true; } // fasttrack to results
@@ -244,20 +211,13 @@
 
 	// Change Language of letter bar
 	$scope.ChangeLetterLanguage = function(CurrentActiveLanguage) {
-<<<<<<< HEAD
 		$scope.showState=0;
-=======
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 		if (CurrentActiveLanguage=="En") { $scope.letterLanguage="Ру";  $scope.letters=$scope.lettersRu}
 		 else { $scope.letterLanguage="En";  $scope.letters=$scope.lettersEn;};
 		 $scope.StartLetter = '';		
 	}
 
 	$scope.doRegister = function(user) {
-<<<<<<< HEAD
-=======
-	user.class = "Word.User";
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
     $http.post("/glossary/json/user", user)
             .success(function (data) {	           
                  $scope.alerts.push({ type: "success", msg: "Регистрация успешна."});
@@ -275,16 +235,10 @@
 	            if (data.children[0]!=undefined)	{
                 	$scope.Priveledge=data.children[0].Priveledge;
                 	$scope.startSession(login, password);
-<<<<<<< HEAD
                 	$scope.loginState=1;     
                         	
 	            } else { $scope.alerts.push({ type: "error", msg: "Ошибка входа."});  }            
             }).error(function (data, status) { 
-=======
-                	$scope.loginState=1;             	
-	            } else {$scope.alerts.push({ type: "error", msg: "Ошибка входа."});  }            
-            }).error(function (data, status) {
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
                 $scope.alerts.push({ type: "error", msg: "Ошибка входа."});
             });
 	}
@@ -313,7 +267,6 @@
           '</div>'+
           '<div class="modal-body">'+
           '<p>Все поля обязательны для заполнения</p>'+
-<<<<<<< HEAD
           '<form name="regForm" class="form"  ng-model="user" ng-submit="close(User)">'+          
           '<p><input ng-model="User.Email" type="email" class="span2" placeholder="Email" required/></p>'+
           '<p><input ng-model="User.Login" name="loginput" type="text" ng-Maxlength="15" class="span2" placeholder="Логин" required/> <span class="messageBlock" ng-show="regForm.loginput.$error.maxlength"> Не более 15 символов</span><br>'+
@@ -325,15 +278,6 @@
           '<p><button class="btn" ng-click="resetPassword()">Восстановление пароля</button></p>'+     
           '</div>';
           
-=======
-          '<form class="form"  ng-model="user" ng-submit="close(User)">'+          
-          '<p><input ng-model="User.Email" type="email" class="span2" placeholder="Email" required/></p>'+
-          '<p><input ng-model="User.Login" type="text" class="span2" placeholder="Логин" required/></p>'+
-          '<p><input ng-model="User.PasswordSetter" type="text" class="span2" placeholder="Пароль" required/></p>'+
-          '<button type="submit" class="btn">Регистрация</button>'+
-          '</form>'+          
-          '</div>';
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
 
   	$scope.opts = {
     	backdrop: true,
@@ -366,10 +310,6 @@
 	
 	//  Add one UserTerm
     $scope.addTerm = function (term) {
-<<<<<<< HEAD
-=======
-        term.class = "Word.UserTerm";
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
         $http.post("/glossary/json/term", term)
             .success(function (data) {
                 $scope.getTerms();
@@ -383,16 +323,11 @@
 }
 
 	// the dialog is injected in the specified controller
-<<<<<<< HEAD
 	function RegistrationDialogController($scope, dialog, $http){
-=======
-	function RegistrationDialogController($scope, dialog){
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
   	$scope.close = function(user){
     	dialog.close(user);
   	};
   	
-<<<<<<< HEAD
   	$scope.resetPassword = function(){
 	    var email=prompt('Введите ваш email \n На него будет отправлен новый пароль ',null)
 	    if (email) { 
@@ -406,8 +341,6 @@
 		dialog.close();
     };
   	
-=======
->>>>>>> 56cd6220164b1c0beed1791b66e5411d984a6688
   
 
 }
