@@ -13,10 +13,9 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="/csp/glossary/Bootstrap/js/glossary.js"></script>
     <script src="/csp/glossary/Bootstrap/js/ui-bootstrap-tpls-0.4.0.min.js"></script>
-    <script src="http://code.angularjs.org/1.1.5/angular-cookies.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.min.js"></script>
 	<script src="http://ulogin.ru/js/ulogin.js"></script>
-	<script src="/csp/glossary/Bootstrap/js/auth.js"></script>
 </head>
 
 <body ng-controller="control" ng-init="getTerm(#($Get(%request.Data("id",1),1))#);">

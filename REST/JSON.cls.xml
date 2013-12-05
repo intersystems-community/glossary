@@ -12,6 +12,7 @@ by Chris Carmichael and Oliver Caudron
 JSON Test class
 Также использован код из проекта
 https://github.com/MDevelopmentGroup/Recruting</Description>
+<IncludeCode>%occErrors</IncludeCode>
 <Super>%Base</Super>
 <TimeCreated>63000,44444.255278</TimeCreated>
 
@@ -403,10 +404,10 @@ Add one user</Description>
 			set st=##class(%ZEN.Auxiliary.jsonProvider).%ArrayToJSON(.metadata,.data)
 			w "] }"
 		} else {
-			 set st=$$$ERROR()
+			 set st=$$$ERROR($$$GeneralError,"Неправильный пароль")
 		}
 	} else {
-		set st=$$$ERROR()
+		set st=$$$ERROR($$$GeneralError,"Пользователя не существует")
 	}
   quit st
 ]]></Implementation>
@@ -441,7 +442,7 @@ Create new session</Description>
 	  		set st=ex.AsStatus()
     	}    
     } ELSE {
-	    set st=$$$ERROR()
+		set st = $$$ADDSC($System.Status.Error($$$SQLError, SQLCODE, "Имя пользователя или пароль некорректны"), st)
     } 
    
   //do ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select Login, Priveledge FROM Word.UserTable WHERE Login='"_login_"' and Password='"_phash_"'")
@@ -666,8 +667,8 @@ Make new translation default.</Description>
     If (SQLCODE = 0) {
    	try {
 	   	set auth = ##class(%Net.Authenticator).%New()
-		set auth.UserName="glossary"
-		set auth.Password="p[iooсpiop&*d1"
+		set auth.UserName=$g(^email("UserName"))
+		set auth.Password=$g(^email("Password"))
 		set auth.MechanismList="LOGIN"
 		
 	   	set s=##class(%Net.SMTP).%New()
@@ -704,7 +705,7 @@ Make new translation default.</Description>
 	  set st=ex.AsStatus()
     }
     } else {
-	    set st=$$$ERROR("E-mail не найден в базе.")
+	    set st=$$$ERROR($$$GeneralError,"E-mail не найден в базе.")
 	}
     quit st
 ]]></Implementation>
